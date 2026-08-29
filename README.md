@@ -10,8 +10,12 @@ de l'Université Cheikh Anta Diop de Dakar (UCAD)**.
 - **Bibliothèque numérique** (documents et ressources numériques)
 - **Œuvres** : livres, syllabus et articles de référence
 - Comptes étudiants (inscription avec email personnel, connexion sécurisée)
+- **Vérification de l'email** à l'inscription (lien signé valable 24 h)
 - Téléchargement **réservé aux membres connectés**, avec compteur
-- **Interface d'administration** : ajouter / modifier / supprimer les documents
+- **Favoris** ⭐ : chaque étudiant enregistre ses documents préférés
+- **Avis et notes** : les étudiants notent les documents (1 à 5 étoiles) et laissent un commentaire
+- **Interface d'administration** : ajouter / modifier / supprimer les documents, modérer les avis
+- **Statistiques détaillées** : téléchargements, favoris, avis, top documents, derniers membres
 - Recherche de documents, filtres par niveau, pages d'erreur élégantes
 - Design académique responsive (bleu nuit & or), mobile friendly
 
@@ -52,7 +56,7 @@ SCIPO_UCAD/
 ├── requirements.txt        # Dépendances Python
 ├── scipo/
 │   ├── __init__.py         # Fabrique de l'application
-│   ├── models.py           # Modèles : User, Resource
+│   ├── models.py           # Modèles : User, Resource, Favori, Commentaire
 │   ├── auth.py             # Inscription / connexion / déconnexion
 │   ├── main.py             # Pages publiques + téléchargement
 │   ├── admin.py            # Interface d'administration
@@ -62,12 +66,26 @@ SCIPO_UCAD/
 └── uploads/                # Documents téléversés (auto)
 ```
 
+## ✉️ Vérification des emails (optionnel)
+
+Par défaut (développement), le lien de vérification est affiché dans la console du serveur.
+Pour envoyer réellement les emails, définissez ces variables d'environnement avant de lancer
+le site (exemple avec Gmail, qui demande un « mot de passe d'application ») :
+
+```powershell
+$env:SCIPO_SMTP_HOTE = "smtp.gmail.com"
+$env:SCIPO_SMTP_PORT = "587"
+$env:SCIPO_SMTP_UTILISATEUR = "votre.adresse@gmail.com"
+$env:SCIPO_SMTP_MOT_DE_PASSE = "mot-de-passe-d-application"
+$env:SCIPO_EMAIL_EXPEDITEUR = "SciPo UCAD <votre.adresse@gmail.com>"
+```
+
 ## 🗺️ Idées pour la suite (feuille de route)
 
-- [ ] Favoris / signets pour les étudiants
-- [ ] Vérification de l'email à l'inscription
-- [ ] Espace commentaires et notations des documents
-- [ ] Statistiques détaillées pour l'administrateur
+- [x] Favoris / signets pour les étudiants
+- [x] Vérification de l'email à l'inscription
+- [x] Espace commentaires et notations des documents
+- [x] Statistiques détaillées pour l'administrateur
 - [ ] Déploiement en ligne (Render, PythonAnywhere...)
 
 ---

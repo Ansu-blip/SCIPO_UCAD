@@ -1,8 +1,9 @@
-"""Modèles de données : utilisateurs et documents."""
+"""Modèles de données : utilisateurs, documents, favoris et avis."""
 import os
 from datetime import datetime, timezone
 
 from flask_login import UserMixin
+from sqlalchemy import func
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from scipo import db, login_manager
@@ -48,6 +49,7 @@ class User(UserMixin, db.Model):
     nom_complet = db.Column(db.String(120))
     password_hash = db.Column(db.String(256), nullable=False)
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
+    email_verifie = db.Column(db.Boolean, default=False, nullable=False)
     created_at = db.Column(db.DateTime, default=_maintenant)
 
     def set_password(self, mot_de_passe):
@@ -97,5 +99,55 @@ class Resource(db.Model):
     def icone(self):
         return ICONES.get(self.extension, ("bi-file-earmark", "secondary"))
 
+    @property
+    def note_moyenne(self):
+        """Note moyenne des avis (de 1 à 5), None si aucun avis."""
+        moyenne = db.session.query(func.avg(Commentaire.note)).filter_by(resource_id=self.id).scalar()
+        return round(moyenne, 1) if moyenne is not None else None
+
+    @property
+    def nb_commentaires(self):
+        """Nombre d'avis publiés sur ce document."""
+        return db.session.query(Commentaire).filter_by(resource_id=self.id).count()
+
     def __repr__(self):
         return f"<Resource {self.titre!r}>"
+
+
+class Favori(db.Model):
+    """Signet posé par un étudiant sur un document (page « Mes favoris »)."""
+    __tablename__ = "favoris"
+    __table_args__ = (db.UniqueConstraint("user_id", "resource_id", name="favori_unique"),)
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"),
+                        nullable=False, index=True)
+    resource_id = db.Column(db.Integer, db.ForeignKey("resources.id", ondelete="CASCADE"),
+                            nullable=False, index=True)
+    created_at = db.Column(db.DateTime, default=_maintenant)
+
+    utilisateur = db.relationship("User", backref=db.backref("favoris", cascade="all, delete-orphan"))
+    ressource = db.relationship("Resource", backref=db.backref("favoris", cascade="all, delete-orphan"))
+
+    def __repr__(self):
+        return f"<Favori user={self.user_id} resource={self.resource_id}>"
+
+
+class Commentaire(db.Model):
+    """Avis d'un étudiant sur un document : texte et note de 1 à 5 étoiles."""
+    __tablename__ = "commentaires"
+
+    id = db.Column(db.Integer, primary_key=True)
+    contenu = db.Column(db.Text, nullable=False)
+    note = db.Column(db.Integer, nullable=False)   # de 1 à 5
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"),
+                        nullable=False, index=True)
+    resource_id = db.Column(db.Integer, db.ForeignKey("resources.id", ondelete="CASCADE"),
+                            nullable=False, index=True)
+    created_at = db.Column(db.DateTime, default=_maintenant)
+
+    utilisateur = db.relationship("User", backref=db.backref("commentaires", cascade="all, delete-orphan"))
+    ressource = db.relationship("Resource", backref=db.backref("commentaires", cascade="all, delete-orphan"))
+
+    def __repr__(self):
+        return f"<Commentaire user={self.user_id} resource={self.resource_id}>"

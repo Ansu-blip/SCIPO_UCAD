@@ -19,6 +19,14 @@
           <p class="text-muted"><i class="bi bi-person me-1"></i>{{ r.auteur }}</p>
         {% endif %}
 
+        {% if r.note_moyenne %}
+          <p class="mb-2">
+            {% for i in range(1, 6) %}<i class="bi {{ 'bi-star-fill' if i <= (r.note_moyenne|round(0, 'floor')|int) else 'bi-star' }} etoile"></i>{% endfor %}
+            <strong class="ms-1">{{ '%.1f'|format(r.note_moyenne) }}/5</strong>
+            <span class="text-muted petit">({{ r.nb_commentaires }} avis)</span>
+          </p>
+        {% endif %}
+
         {% if r.description %}
           <p class="description-pre">{{ r.description }}</p>
         {% endif %}
@@ -30,16 +38,75 @@
             <i class="bi bi-calendar3 me-1"></i>Ajouté le {{ r.created_at.strftime('%d/%m/%Y') }}
             · <i class="bi bi-download ms-1 me-1"></i>{{ r.telechargements }} téléchargement(s)
           </small>
-          {% if current_user.is_authenticated %}
-            <a href="{{ url_for('main.telecharger', res_id=r.id) }}" class="btn btn-or btn-lg px-4">
-              <i class="bi bi-download me-2"></i>Télécharger
-            </a>
-          {% else %}
-            <a href="{{ url_for('auth.connexion', next=request.path) }}" class="btn btn-contour btn-lg px-4">
-              <i class="bi bi-lock me-2"></i>Connectez-vous pour télécharger
-            </a>
-          {% endif %}
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            {% if current_user.is_authenticated %}
+              <form method="post" action="{{ url_for('main.basculer_favori', res_id=r.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="suivant" value="{{ request.path }}">
+                <button type="submit" class="btn btn-contour-or">
+                  <i class="bi {{ 'bi-star-fill' if r.id in favoris_ids else 'bi-star' }} me-1"></i>
+                  {{ 'Retirer des favoris' if r.id in favoris_ids else 'Ajouter aux favoris' }}
+                </button>
+              </form>
+              <a href="{{ url_for('main.telecharger', res_id=r.id) }}" class="btn btn-or btn-lg px-4">
+                <i class="bi bi-download me-2"></i>Télécharger
+              </a>
+            {% else %}
+              <a href="{{ url_for('auth.connexion', next=request.path) }}" class="btn btn-contour btn-lg px-4">
+                <i class="bi bi-lock me-2"></i>Connectez-vous pour télécharger
+              </a>
+            {% endif %}
+          </div>
         </div>
+      </div>
+
+      <!-- ============ Avis des étudiants ============ -->
+      <div class="carte-auth p-4 p-md-5 mt-4">
+        <h2 class="h5 mb-3"><i class="bi bi-chat-square-text me-2"></i>Avis des étudiants ({{ commentaires|length }})</h2>
+
+        {% if current_user.is_authenticated %}
+          <form method="post" action="{{ url_for('main.commenter', res_id=r.id) }}" class="mb-4">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label class="form-label fw-semibold">Votre note</label>
+            <div class="choix-etoiles mb-3" role="radiogroup" aria-label="Note de 1 à 5 étoiles">
+              {% for i in [5, 4, 3, 2, 1] %}
+                <input type="radio" id="note-{{ i }}" name="note" value="{{ i }}" required>
+                <label for="note-{{ i }}" title="{{ i }} étoile(s)"><i class="bi bi-star-fill"></i></label>
+              {% endfor %}
+            </div>
+            <textarea class="form-control" name="contenu" rows="3" required
+                      placeholder="Partagez votre avis sur ce document…"></textarea>
+            <button type="submit" class="btn btn-or mt-3"><i class="bi bi-send me-2"></i>Publier mon avis</button>
+          </form>
+        {% else %}
+          <p class="text-muted">
+            <i class="bi bi-lock me-1"></i>
+            <a href="{{ url_for('auth.connexion', next=request.path) }}" class="lien-or">Connectez-vous</a>
+            pour laisser un avis et noter ce document.
+          </p>
+        {% endif %}
+
+        {% for c in commentaires %}
+          <div class="carte-commentaire p-3 mb-3">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-1">
+              <strong><i class="bi bi-person-circle me-1"></i>{{ c.utilisateur.nom_complet or c.utilisateur.email }}</strong>
+              <small class="text-muted">{{ c.created_at.strftime('%d/%m/%Y') }}</small>
+            </div>
+            <div class="my-1">
+              {% for i in range(1, 6) %}<i class="bi {{ 'bi-star-fill' if i <= c.note else 'bi-star' }} etoile"></i>{% endfor %}
+            </div>
+            <p class="mb-2">{{ c.contenu }}</p>
+            {% if current_user.is_authenticated and (current_user.id == c.user_id or current_user.is_admin) %}
+              <form method="post" action="{{ url_for('main.supprimer_commentaire', com_id=c.id) }}"
+                    onsubmit="return confirm('Supprimer ce commentaire ?');">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash me-1"></i>Supprimer</button>
+              </form>
+            {% endif %}
+          </div>
+        {% else %}
+          <p class="text-muted mb-0">Aucun avis pour le moment{% if current_user.is_authenticated %} — soyez le premier à en laisser un !{% endif %}</p>
+        {% endfor %}
       </div>
 
       <div class="text-center mt-4">

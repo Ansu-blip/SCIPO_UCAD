@@ -23,6 +23,7 @@ with app.app_context():
         else:
             utilisateur.is_admin = True
             print("✅ Compte existant promu administrateur :", email)
+        utilisateur.email_verifie = True   # pas de vérification d'email pour l'administrateur
         utilisateur.set_password(mot_de_passe)
         db.session.add(utilisateur)
         db.session.commit()

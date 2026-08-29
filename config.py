@@ -23,3 +23,11 @@ class Config:
 
     # Types de fichiers acceptés
     ALLOWED_EXTENSIONS = {"pdf", "doc", "docx", "ppt", "pptx", "txt", "epub", "zip"}
+
+    # Envoi des emails de vérification (SMTP). Sans configuration, le lien de
+    # vérification est simplement affiché dans la console (mode développement).
+    SMTP_HOTE = os.environ.get("SCIPO_SMTP_HOTE", "")
+    SMTP_PORT = int(os.environ.get("SCIPO_SMTP_PORT", "587"))
+    SMTP_UTILISATEUR = os.environ.get("SCIPO_SMTP_UTILISATEUR", "")
+    SMTP_MOT_DE_PASSE = os.environ.get("SCIPO_SMTP_MOT_DE_PASSE", "")
+    EMAIL_EXPEDITEUR = os.environ.get("SCIPO_EMAIL_EXPEDITEUR", "SciPo UCAD <no-reply@scipo-ucad.sn>")

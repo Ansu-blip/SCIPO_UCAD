@@ -41,6 +41,7 @@
               <i class="bi bi-person-circle"></i> {{ current_user.nom_complet or current_user.email }}
             </a>
             <ul class="dropdown-menu dropdown-menu-end ombre-douce">
+              <li><a class="dropdown-item" href="{{ url_for('main.favoris') }}"><i class="bi bi-star me-2"></i>Mes favoris</a></li>
               {% if current_user.is_admin %}
                 <li><a class="dropdown-item" href="{{ url_for('admin.tableau_de_bord') }}"><i class="bi bi-speedometer2 me-2"></i>Administration</a></li>
                 <li><hr class="dropdown-divider"></li>
@@ -56,6 +57,19 @@
     </div>
   </div>
 </nav>
+
+{% if current_user.is_authenticated and not current_user.email_verifie %}
+  <div class="container mt-3">
+    <div class="alert alert-warning d-flex justify-content-between align-items-center flex-wrap gap-2 ombre-douce mb-0" role="alert">
+      <span><i class="bi bi-envelope-exclamation me-2"></i>
+        Votre adresse email <strong>{{ current_user.email }}</strong> n'a pas encore été vérifiée.</span>
+      <form method="post" action="{{ url_for('auth.renvoyer_verification') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn-sm btn-outline-dark"><i class="bi bi-arrow-clockwise me-1"></i>Renvoyer le lien</button>
+      </form>
+    </div>
+  </div>
+{% endif %}
 
 <main>
   {% with messages = get_flashed_messages(with_categories=true) %}

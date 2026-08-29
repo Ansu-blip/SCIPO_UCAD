@@ -11,8 +11,10 @@ import shutil
 import tempfile
 
 from config import Config
+from itsdangerous import URLSafeTimedSerializer
 from scipo import create_app, db
-from scipo.models import Resource, User
+from scipo.auth import SALT_VERIFICATION
+from scipo.models import Commentaire, Resource, User
 
 
 class ConfigTest(Config):
@@ -54,6 +56,21 @@ def main():
 
     accueil = client.get("/").get_data(as_text=True)
     verifier("L'étudiant connecté apparaît sur l'accueil", "Awa Test" in accueil)
+    verifier("La bannière « email non vérifié » apparaît", "pas encore été vérifiée" in accueil)
+
+    with app.app_context():
+        utilisateur = db.session.query(User).filter_by(email="awa.test@exemple.sn").first()
+        verifier("Le nouvel email est enregistré comme non vérifié",
+                 utilisateur.email_verifie is False)
+
+    # 1bis. Vérification de l'email via le lien signé envoyé « par email »
+    jeton_email = URLSafeTimedSerializer(
+        "cle-de-test", salt=SALT_VERIFICATION).dumps("awa.test@exemple.sn")
+    verifier("Le lien de vérification signé fonctionne",
+             client.get(f"/verification/{jeton_email}").status_code == 302)
+    with app.app_context():
+        utilisateur = db.session.query(User).filter_by(email="awa.test@exemple.sn").first()
+        verifier("L'email est maintenant marqué vérifié", utilisateur.email_verifie is True)
 
     # 2. Déconnexion puis reconnexion
     verifier("Déconnexion", client.get("/deconnexion").status_code == 302)
@@ -111,7 +128,62 @@ def main():
     verifier("Téléchargement refusé aux visiteurs (redirection connexion)",
              visiteur.get(f"/telecharger/{ressource_id}").status_code == 302)
 
-    # 8. Modification puis suppression du document
+    # 8. Favoris : ajout, consultation, retrait puis remise (pour la suite)
+    jeton_formulaire = _jeton(client, f"/ressource/{ressource_id}")
+    reponse = client.post(f"/favori/{ressource_id}/basculer", data={
+        "csrf_token": jeton_formulaire, "suivant": f"/ressource/{ressource_id}"})
+    verifier("Ajout du document aux favoris (redirection)", reponse.status_code == 302)
+    page_favoris = client.get("/favoris").get_data(as_text=True)
+    verifier("Le favori apparaît sur la page « Mes favoris »",
+             "Introduction à la Science Politique" in page_favoris)
+
+    reponse = client.post(f"/favori/{ressource_id}/basculer", data={
+        "csrf_token": jeton_formulaire, "suivant": f"/ressource/{ressource_id}"})
+    verifier("Retrait du document des favoris (même bouton)", reponse.status_code == 302)
+    page_favoris = client.get("/favoris").get_data(as_text=True)
+    verifier("La page « Mes favoris » affiche l'état vide",
+             "Aucun favori pour l'instant" in page_favoris)
+
+    reponse = client.post(f"/favori/{ressource_id}/basculer", data={
+        "csrf_token": jeton_formulaire, "suivant": f"/ressource/{ressource_id}"})
+    verifier("Remise en favoris (pour la suite du scénario)", reponse.status_code == 302)
+
+    # 9. Commentaires et notes : publier un avis avec une note de 4
+    reponse = client.post(f"/ressource/{ressource_id}/commenter", data={
+        "note": "4",
+        "contenu": "Très bon support, clair et bien structuré.",
+        "csrf_token": jeton_formulaire,
+    })
+    verifier("Publication d'un avis avec une note (redirection)", reponse.status_code == 302)
+    page_detail = client.get(f"/ressource/{ressource_id}").get_data(as_text=True)
+    verifier("L'avis apparaît sur la page du document",
+             "Très bon support, clair et bien structuré." in page_detail)
+    verifier("La note moyenne est affichée", "4.0/5" in page_detail)
+
+    with app.app_context():
+        nb_avis = db.session.query(Commentaire).count()
+    reponse = client.post(f"/ressource/{ressource_id}/commenter", data={
+        "note": "9", "contenu": "note invalide", "csrf_token": jeton_formulaire})
+    with app.app_context():
+        verifier("Un avis avec une note invalide (9) est refusé",
+                 reponse.status_code == 302 and db.session.query(Commentaire).count() == nb_avis)
+
+    # 10. Le tableau de bord affiche les nouvelles statistiques
+    page_admin = client.get("/admin/").get_data(as_text=True)
+    verifier("Le tableau de bord affiche favoris et avis",
+             "Favoris" in page_admin and "Avis publiés" in page_admin)
+
+    # 11. Modération : suppression de l'avis par l'administrateur
+    with app.app_context():
+        avis = db.session.query(Commentaire).first()
+        avis_id = avis.id if avis else None
+    reponse = client.post(f"/commentaire/{avis_id}/supprimer", data={
+        "csrf_token": jeton_formulaire})
+    verifier("Suppression d'un avis par l'administrateur", reponse.status_code == 302)
+    page_detail = client.get(f"/ressource/{ressource_id}").get_data(as_text=True)
+    verifier("L'avis supprimé n'apparaît plus", "Très bon support" not in page_detail)
+
+    # 12. Modification puis suppression du document
     reponse = client.post(f"/admin/ressource/{ressource_id}/modifier", data={
         "titre": "Introduction à la Science Politique — Chapitre 1 (v2)",
         "categorie": "cours",

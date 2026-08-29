@@ -21,11 +21,18 @@ def main():
         tout_ok = tout_ok and ok
         print(f"{'✅ OK   ' if ok else '❌ ÉCHEC'} {url:30} -> {reponse.status_code}")
 
-    # L'administration doit rediriger (302) vers la connexion si non connecté
-    reponse = client.get("/admin/")
+    # L'administration et les favoris doivent rediriger (302) vers la connexion si non connecté
+    for url in ["/admin/", "/favoris"]:
+        reponse = client.get(url)
+        ok = reponse.status_code == 302
+        tout_ok = tout_ok and ok
+        print(f"{'✅ OK   ' if ok else '❌ ÉCHEC'} {url + ' (non connecté)':30} -> {reponse.status_code}")
+
+    # Un jeton de vérification invalide redirige proprement vers l'accueil
+    reponse = client.get("/verification/jeton-invalide")
     ok = reponse.status_code == 302
     tout_ok = tout_ok and ok
-    print(f"{'✅ OK   ' if ok else '❌ ÉCHEC'} {'/admin/ (non connecté)':30} -> {reponse.status_code}")
+    print(f"{'✅ OK   ' if ok else '❌ ÉCHEC'} {'/verification/jeton-invalide':30} -> {reponse.status_code}")
 
     print("\n🎉 Tous les tests sont passés — le site fonctionne !"
           if tout_ok else "\n❌ Des tests ont échoué, consultez les messages ci-dessus.")

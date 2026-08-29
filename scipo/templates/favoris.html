@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% from "_carte.html" import carte with context %}
+{% block titre %}Mes favoris{% endblock %}
+
+{% block contenu %}
+<section class="entete-page">
+  <div class="container py-5">
+    <h1 class="mb-2"><i class="bi bi-star me-2"></i>{{ titre_page }}</h1>
+    <p class="mb-0">{{ sous_titre }}</p>
+  </div>
+</section>
+
+<section class="container py-4">
+  {% if ressources %}
+    <div class="row g-4">
+      {% for r in ressources %}<div class="col-md-6 col-lg-4">{{ carte(r) }}</div>{% endfor %}
+    </div>
+  {% else %}
+    <div class="etat-vide text-center py-5">
+      <i class="bi bi-star"></i>
+      <h3 class="h5 mt-3">Aucun favori pour l'instant</h3>
+      <p class="text-muted mb-0">Cliquez sur l'étoile d'un document pour l'enregistrer ici. ⭐</p>
+      <a href="{{ url_for('main.cours') }}" class="btn btn-or mt-3"><i class="bi bi-journal-bookmark me-2"></i>Parcourir les cours</a>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

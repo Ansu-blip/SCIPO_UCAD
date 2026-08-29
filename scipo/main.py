@@ -1,12 +1,21 @@
 """Pages publiques du site : accueil, rubriques, recherche, téléchargement."""
-from flask import (Blueprint, abort, current_app, redirect, render_template,
+from flask import (Blueprint, abort, current_app, flash, redirect, render_template,
                    request, send_from_directory, url_for)
 from flask_login import current_user, login_required
 
 from scipo import db
-from scipo.models import LEVELS, Resource
+from scipo.models import LEVELS, Commentaire, Favori, Resource
 
 main = Blueprint("main", __name__)
+
+
+@main.app_context_processor
+def _injecter_favoris():
+    """Met à disposition de tous les modèles l'ensemble des favoris du membre connecté."""
+    if current_user.is_authenticated:
+        lignes = db.session.query(Favori.resource_id).filter_by(user_id=current_user.id).all()
+        return {"favoris_ids": {ligne[0] for ligne in lignes}}
+    return {"favoris_ids": set()}
 
 
 def _requete_ressources(categorie=None):
@@ -89,7 +98,10 @@ def recherche():
 @main.route("/ressource/<int:res_id>")
 def detail(res_id):
     ressource = db.get_or_404(Resource, res_id)
-    return render_template("detail.html", r=ressource)
+    commentaires = (db.session.query(Commentaire)
+                    .filter_by(resource_id=ressource.id)
+                    .order_by(Commentaire.created_at.desc()).all())
+    return render_template("detail.html", r=ressource, commentaires=commentaires)
 
 
 @main.route("/telecharger/<int:res_id>")
@@ -101,3 +113,73 @@ def telecharger(res_id):
     db.session.commit()
     return send_from_directory(current_app.config["UPLOAD_FOLDER"], ressource.nom_fichier,
                                as_attachment=True, download_name=ressource.nom_original)
+
+
+@main.route("/favoris")
+@login_required
+def favoris():
+    """Page « Mes favoris » : les documents enregistrés par le membre."""
+    favoris_utilisateur = (db.session.query(Favori)
+                           .filter_by(user_id=current_user.id)
+                           .order_by(Favori.created_at.desc()).all())
+    ressources = [favori.ressource for favori in favoris_utilisateur]
+    return render_template("favoris.html", titre_page="Mes favoris",
+                           sous_titre=f"{len(ressources)} document(s) enregistré(s) pour y revenir vite")
+
+
+@main.route("/favori/<int:res_id>/basculer", methods=["POST"])
+@login_required
+def basculer_favori(res_id):
+    """Ajoute le document aux favoris, ou le retire s'il y est déjà."""
+    ressource = db.get_or_404(Resource, res_id)
+    existant = db.session.query(Favori).filter_by(user_id=current_user.id,
+                                                  resource_id=ressource.id).first()
+    if existant:
+        db.session.delete(existant)
+        db.session.commit()
+        flash(f"« {ressource.titre} » retiré de vos favoris.", "info")
+    else:
+        db.session.add(Favori(user_id=current_user.id, resource_id=ressource.id))
+        db.session.commit()
+        flash(f"« {ressource.titre} » ajouté à vos favoris. ⭐", "success")
+
+    # Retour à la page d'où vient le membre (protection contre les redirections externes)
+    destination = (request.form.get("suivant") or "").strip()
+    if not destination.startswith("/") or destination.startswith("//"):
+        destination = url_for("main.detail", res_id=ressource.id)
+    return redirect(destination)
+
+
+@main.route("/ressource/<int:res_id>/commenter", methods=["POST"])
+@login_required
+def commenter(res_id):
+    """Publie un avis (texte + note de 1 à 5) sur un document."""
+    ressource = db.get_or_404(Resource, res_id)
+    contenu = request.form.get("contenu", "").strip()
+    note = request.form.get("note", "")
+
+    if not contenu:
+        flash("Votre avis ne peut pas être vide.", "danger")
+    elif note not in {"1", "2", "3", "4", "5"}:
+        flash("Veuillez choisir une note de 1 à 5 étoiles.", "danger")
+    else:
+        avis = Commentaire(contenu=contenu, note=int(note),
+                           user_id=current_user.id, resource_id=ressource.id)
+        db.session.add(avis)
+        db.session.commit()
+        flash("Merci pour votre avis ! ⭐", "success")
+    return redirect(url_for("main.detail", res_id=ressource.id))
+
+
+@main.route("/commentaire/<int:com_id>/supprimer", methods=["POST"])
+@login_required
+def supprimer_commentaire(com_id):
+    """Supprime un avis : l'auteur ou l'administrateur uniquement (modération)."""
+    commentaire = db.get_or_404(Commentaire, com_id)
+    if current_user.id != commentaire.user_id and not current_user.is_admin:
+        abort(403)
+    ressource_id = commentaire.resource_id
+    db.session.delete(commentaire)
+    db.session.commit()
+    flash("Le commentaire a été supprimé.", "info")
+    return redirect(url_for("main.detail", res_id=ressource_id))

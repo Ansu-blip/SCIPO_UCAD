@@ -17,6 +17,22 @@ login_manager.login_message = "Veuillez vous connecter pour accéder à cette pa
 login_manager.login_message_category = "warning"
 
 
+def _mettre_a_jour_base():
+    """Petites migrations SQLite : ajoute les colonnes apparues après la v1.
+
+    db.create_all() ne modifie pas les tables existantes : on ajoute donc
+    manuellement les nouvelles colonnes aux anciennes bases de données.
+    """
+    with db.engine.connect() as connexion:
+        colonnes = {ligne[1] for ligne in connexion.exec_driver_sql("PRAGMA table_info(users)")}
+    if "email_verifie" not in colonnes:
+        with db.engine.connect() as connexion:
+            # Les comptes créés avant cette fonctionnalité sont considérés comme vérifiés.
+            connexion.exec_driver_sql(
+                "ALTER TABLE users ADD COLUMN email_verifie BOOLEAN NOT NULL DEFAULT 1")
+            connexion.commit()
+
+
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
@@ -39,10 +55,11 @@ def create_app(config_class=Config):
     app.register_blueprint(auth)
     app.register_blueprint(admin, url_prefix="/admin")
 
-    # Création des tables
+    # Création des tables + petites migrations
     with app.app_context():
         from scipo import models  # noqa: F401
         db.create_all()
+        _mettre_a_jour_base()
 
     # Pages d'erreur élégantes
     @app.errorhandler(403)

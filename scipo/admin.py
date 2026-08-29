@@ -7,10 +7,11 @@ from functools import wraps
 from flask import (Blueprint, abort, current_app, flash, redirect,
                    render_template, request, url_for)
 from flask_login import current_user, login_required
+from sqlalchemy import func
 from werkzeug.utils import secure_filename
 
 from scipo import db
-from scipo.models import CATEGORIES, LEVELS, Resource, User
+from scipo.models import CATEGORIES, LEVELS, Commentaire, Favori, Resource, User
 
 admin = Blueprint("admin", __name__)
 
@@ -65,9 +66,34 @@ def _lire_formulaire():
 @admin_requis
 def tableau_de_bord():
     ressources = db.session.query(Resource).order_by(Resource.created_at.desc()).all()
-    nb_membres = db.session.query(User).count()
+
+    statistiques = {
+        "documents": len(ressources),
+        "membres": db.session.query(User).count(),
+        "membres_verifies": db.session.query(User).filter_by(email_verifie=True).count(),
+        "telechargements": sum(r.telechargements for r in ressources),
+        "favoris": db.session.query(Favori).count(),
+        "commentaires": db.session.query(Commentaire).count(),
+        "note_moyenne": db.session.query(func.avg(Commentaire.note)).scalar(),
+    }
+
+    # Répartition des documents par rubrique (barres de progression)
+    total = statistiques["documents"] or 1
+    par_categorie = [{"nom": nom,
+                      "nombre": sum(1 for r in ressources if r.categorie == cle),
+                      "pourcentage": round(100 * sum(1 for r in ressources if r.categorie == cle) / total)}
+                     for cle, nom in CATEGORIES.items()]
+
+    top_documents = (db.session.query(Resource)
+                     .order_by(Resource.telechargements.desc()).limit(5).all())
+    derniers_membres = db.session.query(User).order_by(User.created_at.desc()).limit(5).all()
+    derniers_commentaires = (db.session.query(Commentaire)
+                             .order_by(Commentaire.created_at.desc()).limit(5).all())
+
     return render_template("admin/tableau_de_bord.html", ressources=ressources,
-                           nb_membres=nb_membres)
+                           statistiques=statistiques, par_categorie=par_categorie,
+                           top_documents=top_documents, derniers_membres=derniers_membres,
+                           derniers_commentaires=derniers_commentaires)
 
 
 @admin.route("/ressource/ajouter", methods=["GET", "POST"])

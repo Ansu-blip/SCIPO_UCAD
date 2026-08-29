@@ -10,26 +10,46 @@
 
   <!-- Statistiques -->
   <div class="row g-3 mb-4">
-    <div class="col-md-4">
+    <div class="col-sm-6 col-lg-2">
       <div class="carte-stat">
-        <span class="valeur">{{ ressources|length }}</span>
+        <span class="valeur">{{ statistiques.documents }}</span>
         <span class="libelle"><i class="bi bi-files me-2"></i>Documents publiés</span>
       </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-sm-6 col-lg-2">
       <div class="carte-stat">
-        <span class="valeur">{{ nb_membres }}</span>
-        <span class="libelle"><i class="bi bi-people me-2"></i>Membres inscrits</span>
+        <span class="valeur">{{ statistiques.membres }}</span>
+        <span class="libelle"><i class="bi bi-people me-2"></i>Membres<br><small class="text-muted">dont {{ statistiques.membres_verifies }} email(s) vérifié(s)</small></span>
       </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-sm-6 col-lg-2">
       <div class="carte-stat">
-        <span class="valeur">{{ ressources|sum(attribute='telechargements') }}</span>
+        <span class="valeur">{{ statistiques.telechargements }}</span>
         <span class="libelle"><i class="bi bi-download me-2"></i>Téléchargements</span>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-2">
+      <div class="carte-stat">
+        <span class="valeur">{{ statistiques.favoris }}</span>
+        <span class="libelle"><i class="bi bi-star me-2"></i>Favoris</span>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-2">
+      <div class="carte-stat">
+        <span class="valeur">{{ statistiques.commentaires }}</span>
+        <span class="libelle"><i class="bi bi-chat-square-text me-2"></i>Avis publiés</span>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-2">
+      <div class="carte-stat">
+        <span class="valeur">{{ '%.1f'|format(statistiques.note_moyenne) if statistiques.note_moyenne else '—' }}</span>
+        <span class="libelle"><i class="bi bi-star-half me-2"></i>Note moyenne</span>
       </div>
     </div>
   </div>
 
+  <div class="row g-4">
+    <div class="col-lg-8">
   <!-- Tableau des documents -->
   <div class="card carte-admin ombre-douce">
     <div class="table-responsive">
@@ -73,6 +93,87 @@
           {% endfor %}
         </tbody>
       </table>
+    </div>
+  </div>
+    </div>
+
+    <!-- Colonne latérale : répartition, top documents, membres -->
+    <div class="col-lg-4">
+      <div class="card carte-admin ombre-douce mb-4">
+        <div class="card-body p-4">
+          <h2 class="h6 fw-bold mb-3"><i class="bi bi-bar-chart me-2"></i>Répartition par rubrique</h2>
+          {% for c in par_categorie %}
+            <div class="mb-3">
+              <div class="d-flex justify-content-between petit mb-1">
+                <span>{{ c.nom }}</span><strong>{{ c.nombre }}</strong>
+              </div>
+              <div class="progress" style="height: 8px;">
+                <div class="progress-bar bg-warning" role="progressbar" style="width: {{ c.pourcentage }}%;"
+                     aria-valuenow="{{ c.pourcentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="card carte-admin ombre-douce mb-4">
+        <div class="card-body p-4">
+          <h2 class="h6 fw-bold mb-3"><i class="bi bi-trophy me-2"></i>Les plus téléchargés</h2>
+          {% for r in top_documents %}
+            <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+              <span class="petit text-truncate me-2">{{ loop.index }}. {{ r.titre }}</span>
+              <span class="badge badge-or">{{ r.telechargements }}</span>
+            </div>
+          {% else %}
+            <p class="text-muted petit mb-0">Aucun document publié.</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="card carte-admin ombre-douce">
+        <div class="card-body p-4">
+          <h2 class="h6 fw-bold mb-3"><i class="bi bi-people me-2"></i>Derniers membres inscrits</h2>
+          {% for m in derniers_membres %}
+            <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+              <span class="petit text-truncate me-2">{{ m.nom_complet or m.email }}</span>
+              {% if m.email_verifie %}
+                <span class="badge bg-success-subtle text-success-emphasis" title="Email vérifié"><i class="bi bi-patch-check"></i></span>
+              {% else %}
+                <span class="badge bg-warning-subtle text-warning-emphasis" title="Email non vérifié"><i class="bi bi-envelope-exclamation"></i></span>
+              {% endif %}
+            </div>
+          {% else %}
+            <p class="text-muted petit mb-0">Aucun membre inscrit.</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modération des avis -->
+  <div class="card carte-admin ombre-douce mt-4">
+    <div class="card-body p-4">
+      <h2 class="h6 fw-bold mb-3"><i class="bi bi-chat-square-text me-2"></i>Derniers avis publiés</h2>
+      {% for c in derniers_commentaires %}
+        <div class="d-flex justify-content-between align-items-start border-bottom py-3 gap-3">
+          <div>
+            <span class="etoile">
+              {% for i in range(1, 6) %}<i class="bi {{ 'bi-star-fill' if i <= c.note else 'bi-star' }}"></i>{% endfor %}
+            </span>
+            <strong class="ms-2 petit">{{ c.utilisateur.nom_complet or c.utilisateur.email }}</strong>
+            <span class="text-muted petit">sur
+              <a href="{{ url_for('main.detail', res_id=c.resource_id) }}">{{ c.ressource.titre }}</a></span>
+            <p class="mb-0 petit mt-1">{{ c.contenu[:140] }}{% if c.contenu|length > 140 %}…{% endif %}</p>
+          </div>
+          <form method="post" action="{{ url_for('main.supprimer_commentaire', com_id=c.id) }}"
+                onsubmit="return confirm('Supprimer cet avis ?');">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer l'avis"><i class="bi bi-trash"></i></button>
+          </form>
+        </div>
+      {% else %}
+        <p class="text-muted petit mb-0">Aucun avis publié pour l'instant.</p>
+      {% endfor %}
     </div>
   </div>
 </section>

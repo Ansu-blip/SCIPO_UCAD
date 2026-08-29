@@ -192,4 +192,27 @@ h1, h2, .hero-titre, .titre-section, .marque { font-family: 'Playfair Display', 
 /* ---------- Ombres utilitaires ---------- */
 .ombre-douce { box-shadow: 0 6px 20px rgba(20, 32, 60, .1); }
 
+/* ---------- Favoris, étoiles & avis ---------- */
+.btn-favori {
+  border: none; background: transparent; padding: .15rem .35rem;
+  font-size: 1.15rem; line-height: 1; color: #b9c1d0;
+  transition: transform .15s ease, color .15s ease;
+}
+.btn-favori:hover { color: var(--or); transform: scale(1.18); }
+.btn-favori.actif { color: var(--or); }
+.etoile { color: var(--or); }
+
+.carte-commentaire {
+  background: #fff; border: 1px solid #e6eaf2; border-radius: 14px;
+}
+
+/* Choix de la note : radios masqués, étiquettes cliquables (ordre inversé
+   pour que le sélecteur « input:checked ~ label » allume les bonnes étoiles) */
+.choix-etoiles { display: inline-flex; flex-direction: row-reverse; gap: .2rem; }
+.choix-etoiles input { display: none; }
+.choix-etoiles label { cursor: pointer; font-size: 1.4rem; color: #c3cbdb; transition: color .15s ease; }
+.choix-etoiles input:checked ~ label,
+.choix-etoiles label:hover,
+.choix-etoiles label:hover ~ label { color: var(--or); }
+
 
