@@ -1,5 +1,6 @@
 """Interface d'administration : ajouter, modifier et supprimer les documents."""
 import os
+import time
 import uuid
 from functools import wraps
 
@@ -22,6 +23,19 @@ def admin_requis(fonction):
             abort(403)
         return fonction(*args, **kwargs)
     return decorateur
+
+
+def _supprimer_fichier(chemin):
+    """Supprime un fichier du disque en réessayant si Windows le verrouille encore."""
+    for _ in range(5):
+        try:
+            os.remove(chemin)
+            return True
+        except PermissionError:
+            time.sleep(0.2)
+        except FileNotFoundError:
+            return True
+    return False
 
 
 def _fichier_autorise(nom):
@@ -101,8 +115,9 @@ def modifier(res_id):
                 setattr(ressource, cle, valeur)
             if fichier and fichier.filename != "":
                 ancien = os.path.join(current_app.config["UPLOAD_FOLDER"], ressource.nom_fichier)
-                if os.path.exists(ancien):
-                    os.remove(ancien)
+                if not _supprimer_fichier(ancien):
+                    flash("L'ancien fichier n'a pas pu être supprimé du disque (il restera sur le serveur).",
+                          "warning")
                 ressource.nom_fichier = _enregistrer_fichier(fichier)
                 ressource.nom_original = fichier.filename
             db.session.commit()
@@ -119,8 +134,8 @@ def modifier(res_id):
 def supprimer(res_id):
     ressource = db.get_or_404(Resource, res_id)
     chemin = os.path.join(current_app.config["UPLOAD_FOLDER"], ressource.nom_fichier)
-    if os.path.exists(chemin):
-        os.remove(chemin)
+    if not _supprimer_fichier(chemin):
+        flash("Le fichier n'a pas pu être supprimé du disque, mais il a été retiré du site.", "warning")
     db.session.delete(ressource)
     db.session.commit()
     flash(f"Document « {ressource.titre} » supprimé. 🗑️", "info")

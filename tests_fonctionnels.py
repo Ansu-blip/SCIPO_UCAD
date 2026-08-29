@@ -1,0 +1,141 @@
+"""Tests fonctionnels de SciPo UCAD (base de données en mémoire : aucun risque).
+
+Scénario complet : inscription → connexion → administration → publication
+d'un document → recherche → téléchargement → modification → suppression.
+
+Utilisation :  python tests_fonctionnels.py
+"""
+import io
+import re
+import shutil
+import tempfile
+
+from config import Config
+from scipo import create_app, db
+from scipo.models import Resource, User
+
+
+class ConfigTest(Config):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = "sqlite://"   # base de données en mémoire
+    SECRET_KEY = "cle-de-test"
+
+
+def _jeton(client, url):
+    """Récupère le jeton CSRF du formulaire affiché sur la page donnée."""
+    page = client.get(url)
+    correspondance = re.search(rb'name="csrf_token"\s+value="([^"]+)"', page.data)
+    assert correspondance, f"Jeton CSRF introuvable sur {url}"
+    return correspondance.group(1).decode()
+
+
+def main():
+    dossier_temporaire = tempfile.mkdtemp()
+    ConfigTest.UPLOAD_FOLDER = dossier_temporaire
+
+    app = create_app(ConfigTest)
+    client = app.test_client()
+    tout_ok = True
+
+    def verifier(label, condition):
+        nonlocal tout_ok
+        tout_ok = tout_ok and bool(condition)
+        print(f"{'✅ OK   ' if condition else '❌ ÉCHEC'} {label}")
+
+    # 1. Inscription d'un étudiant
+    reponse = client.post("/inscription", data={
+        "nom_complet": "Awa Test",
+        "email": "awa.test@exemple.sn",
+        "password": "motdepasse123",
+        "password2": "motdepasse123",
+        "csrf_token": _jeton(client, "/inscription"),
+    })
+    verifier("Inscription d'un étudiant (redirection)", reponse.status_code == 302)
+
+    accueil = client.get("/").get_data(as_text=True)
+    verifier("L'étudiant connecté apparaît sur l'accueil", "Awa Test" in accueil)
+
+    # 2. Déconnexion puis reconnexion
+    verifier("Déconnexion", client.get("/deconnexion").status_code == 302)
+    reponse = client.post("/connexion", data={
+        "email": "awa.test@exemple.sn",
+        "password": "motdepasse123",
+        "csrf_token": _jeton(client, "/connexion"),
+    })
+    verifier("Reconnexion avec les mêmes identifiants", reponse.status_code == 302)
+
+    # 3. Un simple étudiant n'a pas accès à l'administration
+    verifier("Administration interdite aux étudiants (403)",
+             client.get("/admin/").status_code == 403)
+
+    # 4. Promotion en administrateur puis accès au tableau de bord
+    with app.app_context():
+        utilisateur = db.session.query(User).filter_by(email="awa.test@exemple.sn").first()
+        utilisateur.is_admin = True
+        db.session.commit()
+    verifier("Tableau de bord accessible à l'administrateur",
+             client.get("/admin/").status_code == 200)
+
+    # 5. Publication d'un document
+    reponse = client.post("/admin/ressource/ajouter", data={
+        "titre": "Introduction à la Science Politique — Chapitre 1",
+        "categorie": "cours",
+        "niveau": "licence1",
+        "auteur": "Pr. Test",
+        "description": "Support de cours d'introduction.",
+        "fichier": (io.BytesIO(b"%PDF-1.4 document de test"), "cours_intro.pdf"),
+        "csrf_token": _jeton(client, "/admin/ressource/ajouter"),
+    }, content_type="multipart/form-data")
+    verifier("Publication d'un cours par l'administrateur (redirection)",
+             reponse.status_code == 302)
+
+    with app.app_context():
+        ressource = db.session.query(Resource).first()
+        ressource_id = ressource.id if ressource else None
+    verifier("Le document est enregistré en base de données", ressource_id is not None)
+
+    # 6. Le document apparaît dans la rubrique Cours et dans la recherche
+    page_cours = client.get("/cours?niveau=licence1").get_data(as_text=True)
+    verifier("Le document apparaît dans /cours (filtre Licence 1)",
+             "Introduction à la Science Politique" in page_cours)
+    page_recherche = client.get("/recherche?q=Introduction").get_data(as_text=True)
+    verifier("La recherche trouve le document",
+             "Introduction à la Science Politique" in page_recherche)
+
+    # 7. Téléchargement : autorisé pour un membre, refusé pour un visiteur
+    reponse = client.get(f"/telecharger/{ressource_id}")
+    verifier("Téléchargement par un membre connecté",
+             reponse.status_code == 200 and reponse.data.startswith(b"%PDF"))
+    reponse.close()   # libère le fichier (sinon Windows le garde verrouillé)
+    visiteur = app.test_client()   # nouveau client = non connecté
+    verifier("Téléchargement refusé aux visiteurs (redirection connexion)",
+             visiteur.get(f"/telecharger/{ressource_id}").status_code == 302)
+
+    # 8. Modification puis suppression du document
+    reponse = client.post(f"/admin/ressource/{ressource_id}/modifier", data={
+        "titre": "Introduction à la Science Politique — Chapitre 1 (v2)",
+        "categorie": "cours",
+        "niveau": "licence2",
+        "auteur": "Pr. Test",
+        "description": "Version mise à jour.",
+        "fichier": (io.BytesIO(b"%PDF-1.4 version 2"), "cours_intro_v2.pdf"),
+        "csrf_token": _jeton(client, f"/admin/ressource/{ressource_id}/modifier"),
+    }, content_type="multipart/form-data")
+    verifier("Modification du document", reponse.status_code == 302)
+
+    reponse = client.post(f"/admin/ressource/{ressource_id}/supprimer", data={
+        "csrf_token": _jeton(client, "/admin/"),
+    })
+    verifier("Suppression du document", reponse.status_code == 302)
+    verifier("Le document n'existe plus (404)",
+             client.get(f"/ressource/{ressource_id}").status_code == 404)
+
+    shutil.rmtree(dossier_temporaire, ignore_errors=True)
+
+    print("\n🎉 Tous les tests fonctionnels sont passés — le site est 100 % opérationnel !"
+          if tout_ok else "\n❌ Des tests ont échoué, consultez les messages ci-dessus.")
+    return 0 if tout_ok else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
