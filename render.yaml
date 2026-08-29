@@ -1,0 +1,29 @@
+# ============================================================
+#  SciPo UCAD — Blueprint Render : déploiement en un clic
+#  Sur render.com : New + → Blueprint → sélectionner ce dépôt.
+#  Documentation : https://render.com/docs/blueprint-spec
+# ============================================================
+services:
+  - type: web
+    name: scipo-ucad
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --workers 1 --threads 8 --timeout 120 --access-logfile - --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.13.1"
+      - key: SCIPO_SECRET_KEY
+        generateValue: true          # clé secrète aléatoire générée automatiquement
+      - key: SCIPO_ADMIN_EMAIL
+        sync: false                  # à renseigner lors de la création du service
+      - key: SCIPO_ADMIN_MOT_DE_PASSE
+        sync: false                  # idem (min. 6 caractères) → compte admin auto-créé
+      # Pour conserver les données sur un disque persistant (plan payant
+      # « starter »), décommentez la variable ci-dessous ET le bloc « disk » :
+      # - key: SCIPO_DATA_DIR
+      #   value: /var/data
+    # disk:
+    #   name: scipo-donnees
+    #   mountPath: /var/data
+    #   sizeGB: 1

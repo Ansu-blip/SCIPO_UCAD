@@ -33,6 +33,34 @@ def _mettre_a_jour_base():
             connexion.commit()
 
 
+def _creer_admin_initial():
+    """Crée le premier administrateur au démarrage (utile pour la mise en ligne).
+
+    Sur Render, il n'y a pas de console interactive : définissez les variables
+    d'environnement SCIPO_ADMIN_EMAIL et SCIPO_ADMIN_MOT_DE_PASSE et le compte
+    est créé automatiquement au premier lancement (email déjà vérifié). Le
+    compte n'est jamais créé deux fois ni écrasé.
+    """
+    from scipo.models import User
+
+    email = os.environ.get("SCIPO_ADMIN_EMAIL", "").strip().lower()
+    mot_de_passe = os.environ.get("SCIPO_ADMIN_MOT_DE_PASSE", "")
+    if not email or not mot_de_passe:
+        return
+    if "@" not in email or len(mot_de_passe) < 6:
+        print("⚠️ SCIPO_ADMIN_EMAIL / SCIPO_ADMIN_MOT_DE_PASSE invalides : "
+              "administrateur initial non créé.")
+        return
+    if db.session.query(User).filter_by(email=email).first() is None:
+        administrateur = User(email=email, is_admin=True, email_verifie=True)
+        administrateur.set_password(mot_de_passe)
+        db.session.add(administrateur)
+        db.session.commit()
+        print(f"✅ Administrateur initial créé : {email}")
+    else:
+        print(f"ℹ️ Un compte existe déjà pour {email} : administrateur initial ignoré.")
+
+
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
@@ -40,6 +68,13 @@ def create_app(config_class=Config):
     # Dossiers nécessaires (base de données et documents téléversés)
     os.makedirs(app.config["DB_PATH"].parent, exist_ok=True)
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+
+    # Derrière le proxy HTTPS de Render : URLs absolues en https et cookies sécurisés.
+    # (Render définit automatiquement la variable d'environnement RENDER.)
+    if os.environ.get("RENDER") or os.environ.get("SCIPO_PROXY_FIX") == "1":
+        from werkzeug.middleware.proxy_fix import ProxyFix
+        app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+        app.config["SESSION_COOKIE_SECURE"] = True
 
     # Extensions
     db.init_app(app)
@@ -55,11 +90,12 @@ def create_app(config_class=Config):
     app.register_blueprint(auth)
     app.register_blueprint(admin, url_prefix="/admin")
 
-    # Création des tables + petites migrations
+    # Création des tables + petites migrations + administrateur initial
     with app.app_context():
         from scipo import models  # noqa: F401
         db.create_all()
         _mettre_a_jour_base()
+        _creer_admin_initial()
 
     # Pages d'erreur élégantes
     @app.errorhandler(403)

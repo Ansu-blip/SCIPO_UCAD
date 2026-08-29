@@ -6,13 +6,14 @@ d'un document → recherche → téléchargement → modification → suppressio
 Utilisation :  python tests_fonctionnels.py
 """
 import io
+import os
 import re
 import shutil
 import tempfile
 
 from config import Config
 from itsdangerous import URLSafeTimedSerializer
-from scipo import create_app, db
+from scipo import _creer_admin_initial, create_app, db
 from scipo.auth import SALT_VERIFICATION
 from scipo.models import Commentaire, Resource, User
 
@@ -201,6 +202,27 @@ def main():
     verifier("Suppression du document", reponse.status_code == 302)
     verifier("Le document n'existe plus (404)",
              client.get(f"/ressource/{ressource_id}").status_code == 404)
+
+    # 13. Création automatique de l'administrateur initial (utile en ligne, ex. Render)
+    os.environ["SCIPO_ADMIN_EMAIL"] = "chef@exemple.sn"
+    os.environ["SCIPO_ADMIN_MOT_DE_PASSE"] = "secret123"
+    try:
+        application = create_app(ConfigTest)
+        with application.app_context():
+            admin = db.session.query(User).filter_by(email="chef@exemple.sn").first()
+            verifier("Administrateur initial créé depuis les variables d'environnement",
+                     admin is not None and admin.is_admin and admin.email_verifie)
+
+        # Un compte déjà existant n'est jamais dupliqué ni écrasé
+        os.environ["SCIPO_ADMIN_EMAIL"] = "awa.test@exemple.sn"
+        os.environ["SCIPO_ADMIN_MOT_DE_PASSE"] = "autre-secret-123"
+        with app.app_context():
+            _creer_admin_initial()
+            verifier("Aucune duplication si le compte admin existe déjà",
+                     db.session.query(User).filter_by(email="awa.test@exemple.sn").count() == 1)
+    finally:
+        os.environ.pop("SCIPO_ADMIN_EMAIL", None)
+        os.environ.pop("SCIPO_ADMIN_MOT_DE_PASSE", None)
 
     shutil.rmtree(dossier_temporaire, ignore_errors=True)
 

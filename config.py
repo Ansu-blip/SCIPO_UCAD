@@ -3,6 +3,13 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 
+# Dossier des données persistantes (base de données + documents téléversés).
+# En développement : simplement le dossier du projet. En production (Render,
+# PythonAnywhere…), définissez SCIPO_DATA_DIR pour pointer vers un disque
+# persistant (ex. /var/data) — sinon les données sont perdues au redémarrage.
+_dossier_donnees = os.environ.get("SCIPO_DATA_DIR", "").strip()
+DATA_DIR = Path(_dossier_donnees).resolve() if _dossier_donnees else BASE_DIR
+
 
 class Config:
     """Configuration centrale de l'application SciPo UCAD."""
@@ -11,12 +18,12 @@ class Config:
     SECRET_KEY = os.environ.get("SCIPO_SECRET_KEY", "scipo-ucad-2026-change-moi-en-production")
 
     # Base de données SQLite (créée automatiquement)
-    DB_PATH = BASE_DIR / "instance" / "scipo.db"
+    DB_PATH = DATA_DIR / "instance" / "scipo.db"
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + DB_PATH.as_posix()
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Dossier où sont stockés les documents téléversés
-    UPLOAD_FOLDER = BASE_DIR / "uploads"
+    UPLOAD_FOLDER = DATA_DIR / "uploads"
 
     # Taille maximale d'un fichier : 25 Mo
     MAX_CONTENT_LENGTH = 25 * 1024 * 1024
