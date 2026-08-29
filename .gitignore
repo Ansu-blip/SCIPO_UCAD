@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+
+# Base de données et fichiers téléversés par les utilisateurs
+instance/
+uploads/
+*.db
+
+# Secrets, système et IDE
+.env
+Thumbs.db
+.DS_Store
+.vscode/
+.idea/

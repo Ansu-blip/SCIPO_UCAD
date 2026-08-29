@@ -1,0 +1,195 @@
+/* ============================================================
+   SciPo UCAD — Feuille de style principale
+   Thème académique : bleu nuit & or
+   ============================================================ */
+
+:root {
+  --bleu-nuit: #0e1729;
+  --bleu-fonce: #16233f;
+  --bleu: #1e3a6d;
+  --or: #c9a227;
+  --or-clair: #e8c65a;
+  --or-pale: #f7efd8;
+  --fond: #f6f7fb;
+  --texte: #232a35;
+}
+
+* { font-family: 'Inter', system-ui, sans-serif; }
+
+body {
+  background-color: var(--fond);
+  color: var(--texte);
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+main { flex: 1 0 auto; }
+
+h1, h2, .hero-titre, .titre-section, .marque { font-family: 'Playfair Display', Georgia, serif; }
+
+/* ---------- Barre de navigation ---------- */
+.navbar-scipo {
+  background: linear-gradient(135deg, var(--bleu-nuit), var(--bleu));
+  box-shadow: 0 2px 14px rgba(14, 23, 41, .35);
+}
+.marque { font-size: 1.45rem; font-weight: 800; color: #fff !important; letter-spacing: .3px; }
+.marque span { color: var(--or-clair); }
+.navbar-scipo .nav-link { color: rgba(255, 255, 255, .82); font-weight: 500; }
+.navbar-scipo .nav-link:hover,
+.navbar-scipo .nav-link.actif { color: var(--or-clair); }
+.ma-recherche .form-control {
+  border: none; min-width: 200px;
+  border-radius: 20px 0 0 20px;
+}
+.ma-recherche .btn { border-radius: 0 20px 20px 0; }
+
+/* ---------- Boutons ---------- */
+.btn-or {
+  background: linear-gradient(135deg, var(--or), var(--or-clair));
+  border: none; color: var(--bleu-nuit); font-weight: 600;
+}
+.btn-or:hover { background: linear-gradient(135deg, var(--or-clair), var(--or)); color: var(--bleu-nuit); }
+.btn-contour { border: 2px solid var(--bleu); color: var(--bleu); font-weight: 600; }
+.btn-contour:hover { background: var(--bleu); color: #fff; }
+.btn-contour-clair { border: 2px solid rgba(255, 255, 255, .7); color: #fff; font-weight: 600; }
+.btn-contour-clair:hover { background: #fff; color: var(--bleu-nuit); }
+.btn-contour-or { border: 1.5px solid var(--or); color: var(--or); font-weight: 600; }
+.btn-contour-or:hover { background: var(--or); color: var(--bleu-nuit); }
+.btn-lien { color: var(--bleu); font-weight: 600; }
+
+/* ---------- Hero (accueil) ---------- */
+.hero {
+  background:
+    radial-gradient(circle at 85% 15%, rgba(201, 162, 39, .18), transparent 45%),
+    linear-gradient(135deg, var(--bleu-nuit) 0%, var(--bleu-fonce) 55%, var(--bleu) 100%);
+  color: #fff;
+}
+.badge-hero { background: rgba(201, 162, 39, .18); color: var(--or-clair); border: 1px solid rgba(201, 162, 39, .5); }
+.hero-titre { font-size: clamp(1.9rem, 4vw, 3rem); font-weight: 800; line-height: 1.15; }
+.texte-or { color: var(--or-clair); }
+.hero-texte { color: rgba(255, 255, 255, .85); font-size: 1.1rem; max-width: 540px; }
+.hero-embleme {
+  width: 230px; height: 230px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 7rem; color: var(--or-clair);
+  border: 2px solid rgba(201, 162, 39, .45); border-radius: 50%;
+  background: rgba(255, 255, 255, .04);
+  box-shadow: 0 0 0 18px rgba(201, 162, 39, .07);
+}
+
+/* ---------- Titres & sections ---------- */
+.titre-section { font-weight: 700; color: var(--bleu-fonce); }
+.fond-doux { background: #eef1f7; }
+
+/* ---------- Cartes de rubriques ---------- */
+.carte-rubrique {
+  display: block; text-align: center; text-decoration: none;
+  background: #fff; border-radius: 16px; padding: 2rem 1.2rem;
+  box-shadow: 0 4px 16px rgba(20, 32, 60, .07);
+  transition: transform .25s ease, box-shadow .25s ease;
+  color: var(--texte); height: 100%;
+}
+.carte-rubrique:hover { transform: translateY(-6px); box-shadow: 0 12px 28px rgba(20, 32, 60, .14); }
+.carte-rubrique h3 { font-size: 1.05rem; font-weight: 700; color: var(--bleu-fonce); margin: .9rem 0 .3rem; }
+.carte-rubrique p { color: var(--or); font-weight: 600; margin: 0; }
+.icone-rubrique {
+  width: 66px; height: 66px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem; color: var(--or);
+  background: var(--or-pale); border-radius: 50%;
+}
+
+/* ---------- Cartes de documents ---------- */
+.carte-ressource { border: none; border-radius: 14px; box-shadow: 0 4px 16px rgba(20, 32, 60, .07);
+                   transition: transform .25s ease, box-shadow .25s ease; }
+.carte-ressource:hover { transform: translateY(-4px); box-shadow: 0 12px 26px rgba(20, 32, 60, .14); }
+.card-titre { color: var(--bleu-fonce); }
+.petit { font-size: .875rem; }
+.icone-fichier {
+  width: 46px; height: 46px; font-size: 1.4rem;
+  display: inline-flex; align-items: center; justify-content: center; border-radius: 12px;
+}
+.icone-fichier.grande { width: 62px; height: 62px; font-size: 2rem; }
+.badge-niveau { background: var(--bleu-fonce); color: #fff; font-weight: 500; }
+.badge-or { background: var(--or); color: var(--bleu-nuit); font-weight: 600; }
+
+/* ---------- Filtres de niveau ---------- */
+.filtres { display: flex; flex-wrap: wrap; gap: .55rem; }
+.pill {
+  padding: .45rem 1.1rem; border-radius: 999px; text-decoration: none;
+  background: #fff; color: var(--bleu-fonce); font-weight: 600; font-size: .9rem;
+  border: 1.5px solid #dde3ee; transition: all .2s ease;
+}
+.pill:hover { border-color: var(--or); color: var(--or); }
+.pill-actif { background: var(--bleu-fonce); border-color: var(--bleu-fonce); color: #fff; }
+
+/* ---------- En-tête des pages ---------- */
+.entete-page {
+  background: linear-gradient(135deg, var(--bleu-nuit), var(--bleu));
+  color: #fff;
+}
+.entete-page h1 { font-weight: 800; }
+.entete-page p { color: rgba(255, 255, 255, .8); }
+
+/* ---------- Étapes "comment ça marche" ---------- */
+.etape {
+  position: relative; width: 92px; height: 92px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: center;
+  background: #fff; border-radius: 50%;
+  box-shadow: 0 6px 18px rgba(20, 32, 60, .1);
+  font-size: 2.2rem; color: var(--bleu);
+}
+.etape span {
+  position: absolute; top: -6px; right: -6px;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--or); color: var(--bleu-nuit);
+  font-size: .95rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ---------- Formulaires & pages centrées ---------- */
+.carte-auth { background: #fff; border-radius: 18px; box-shadow: 0 8px 30px rgba(20, 32, 60, .09); }
+.icone-rond {
+  width: 74px; height: 74px; font-size: 2.1rem; color: var(--or);
+  background: var(--or-pale); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.lien-or { color: var(--or); font-weight: 600; text-decoration: none; }
+.lien-or:hover { text-decoration: underline; }
+.description-pre { white-space: pre-line; }
+
+/* ---------- Administration ---------- */
+.carte-stat {
+  background: #fff; border-radius: 14px; padding: 1.2rem 1.4rem;
+  box-shadow: 0 4px 14px rgba(20, 32, 60, .07);
+  display: flex; align-items: center; gap: 1rem; height: 100%;
+}
+.carte-stat .valeur { font-size: 2rem; font-weight: 800; color: var(--bleu-fonce); line-height: 1; }
+.carte-stat .libelle { color: #6b7484; font-size: .95rem; }
+.carte-admin { border: none; border-radius: 14px; overflow: hidden; }
+.carte-admin thead { background: var(--bleu-fonce); color: #fff; }
+.carte-admin thead th { font-weight: 600; border: none; }
+
+/* ---------- États vides & erreurs ---------- */
+.etat-vide i { font-size: 3.4rem; color: #c3cbdb; }
+.erreur-code {
+  font-size: 5.5rem; font-weight: 800; color: var(--or); line-height: 1;
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+/* ---------- Pied de page ---------- */
+.footer-scipo { background: var(--bleu-nuit); color: rgba(255, 255, 255, .75); margin-top: auto; }
+.marque-footer { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; color: #fff; }
+.marque-footer span { color: var(--or-clair); }
+.titre-footer { color: var(--or-clair); text-transform: uppercase; letter-spacing: 1px; font-size: .85rem; }
+.texte-footer { font-size: .93rem; }
+.liste-footer { list-style: none; padding: 0; margin: 0; }
+.liste-footer li { margin-bottom: .5rem; }
+.liste-footer a { color: rgba(255, 255, 255, .75); text-decoration: none; }
+.liste-footer a:hover { color: var(--or-clair); }
+.separateur-footer { border-color: rgba(255, 255, 255, .12); }
+
+/* ---------- Ombres utilitaires ---------- */
+.ombre-douce { box-shadow: 0 6px 20px rgba(20, 32, 60, .1); }
+
+

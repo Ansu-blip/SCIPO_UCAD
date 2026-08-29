@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block titre %}{{ 'Modifier' if r else 'Ajouter' }} un document{% endblock %}
+
+{% block contenu %}
+<section class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <h1 class="h3 mb-4">
+        <i class="bi {{ 'bi-pencil-square' if r else 'bi-cloud-arrow-up' }} me-2"></i>
+        {{ 'Modifier le document' if r else 'Ajouter un nouveau document' }}
+      </h1>
+
+      <form method="post" enctype="multipart/form-data" class="carte-auth p-4 p-md-5">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="mb-3">
+          <label for="titre" class="form-label">Titre du document <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="titre" name="titre" required
+                 value="{{ r.titre if r else '' }}" placeholder="Ex : Introduction à la Science Politique — Chapitre 1">
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="categorie" class="form-label">Rubrique <span class="text-danger">*</span></label>
+            <select class="form-select" id="categorie" name="categorie" required>
+              <option value="" disabled {{ 'selected' if not r }}>— Choisir une rubrique —</option>
+              {% for cle, nom in categories.items() %}
+                <option value="{{ cle }}" {{ 'selected' if r and r.categorie == cle }}>{{ nom }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="niveau" class="form-label">Niveau</label>
+            <select class="form-select" id="niveau" name="niveau">
+              <option value="">— Tous niveaux —</option>
+              {% for cle, nom in niveaux.items() %}
+                <option value="{{ cle }}" {{ 'selected' if r and r.niveau == cle }}>{{ nom }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="auteur" class="form-label">Auteur / Enseignant <span class="text-muted">(optionnel)</span></label>
+          <input type="text" class="form-control" id="auteur" name="auteur"
+                 value="{{ r.auteur if r else '' }}" placeholder="Ex : Pr. Fatou Sow">
+        </div>
+
+        <div class="mb-3">
+          <label for="description" class="form-label">Description <span class="text-muted">(optionnel)</span></label>
+          <textarea class="form-control" id="description" name="description" rows="4"
+                    placeholder="Décrivez brièvement le contenu du document…">{{ r.description if r else '' }}</textarea>
+        </div>
+
+        <div class="mb-4">
+          <label for="fichier" class="form-label">
+            Fichier <span class="text-danger">*</span>
+            {% if r %}<span class="text-muted">(laisser vide pour conserver « {{ r.nom_original }} »)</span>{% endif %}
+          </label>
+          <input type="file" class="form-control" id="fichier" name="fichier" {{ '' if r else 'required' }}
+                 accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.epub,.zip">
+          <div class="form-text">Formats acceptés : PDF, Word, PowerPoint, TXT, EPUB, ZIP — 25 Mo maximum.</div>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-or px-4">
+            <i class="bi bi-check-lg me-1"></i>{{ 'Enregistrer les modifications' if r else 'Publier le document' }}
+          </button>
+          <a href="{{ url_for('admin.tableau_de_bord') }}" class="btn btn-contour">Annuler</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% macro carte(r) %}
+<div class="card carte-ressource h-100">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+      <span class="icone-fichier bg-{{ r.icone[1] }}-subtle text-{{ r.icone[1] }}-emphasis"><i class="bi {{ r.icone[0] }}"></i></span>
+      <span class="badge badge-niveau">{{ r.niveau_nom }}</span>
+    </div>
+    <h3 class="h6 card-titre mb-2">{{ r.titre }}</h3>
+    <p class="card-text text-muted petit mb-0">
+      {{ r.description[:110] }}{% if r.description|length > 110 %}…{% endif %}
+    </p>
+  </div>
+  <div class="card-footer bg-transparent d-flex justify-content-between align-items-center">
+    <small class="text-muted"><i class="bi bi-download"></i> {{ r.telechargements }}</small>
+    <a href="{{ url_for('main.detail', res_id=r.id) }}" class="btn btn-sm btn-contour-or">Voir <i class="bi bi-arrow-right"></i></a>
+  </div>
+</div>
+{% endmacro %}

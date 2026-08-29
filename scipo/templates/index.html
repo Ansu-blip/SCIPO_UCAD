@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% from "_carte.html" import carte %}
+{% block titre %}Accueil{% endblock %}
+
+{% block contenu %}
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="container py-5">
+    <div class="row align-items-center g-5 py-lg-4">
+      <div class="col-lg-7">
+        <span class="badge rounded-pill badge-hero mb-3">🎓 Université Cheikh Anta Diop de Dakar</span>
+        <h1 class="hero-titre">La bibliothèque des étudiants en <span class="texte-or">Science Politique</span></h1>
+        <p class="hero-texte">
+          Cours, travaux dirigés, livres et articles de référence, réunis au même endroit
+          pour réussir votre parcours, de la Licence 1 au Master 1.
+        </p>
+        <div class="d-flex gap-3 flex-wrap mt-4">
+          <a href="{{ url_for('main.cours') }}" class="btn btn-or btn-lg px-4"><i class="bi bi-journal-bookmark me-2"></i>Parcourir les cours</a>
+          <a href="{{ url_for('auth.inscription') }}" class="btn btn-contour-clair btn-lg px-4"><i class="bi bi-person-plus me-2"></i>Créer un compte gratuit</a>
+        </div>
+      </div>
+      <div class="col-lg-5 text-center">
+        <div class="hero-embleme"><i class="bi bi-bank2"></i></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CATÉGORIES ============ -->
+<section class="container py-5">
+  <div class="text-center mb-5">
+    <h2 class="titre-section">Explorer par rubrique</h2>
+    <p class="text-muted">Tout ce dont vous avez besoin, bien rangé au même endroit.</p>
+  </div>
+  <div class="row g-4">
+    <div class="col-md-6 col-lg-3">
+      <a href="{{ url_for('main.cours') }}" class="carte-rubrique">
+        <div class="icone-rubrique"><i class="bi bi-journal-bookmark-fill"></i></div>
+        <h3>Cours</h3>
+        <p>{{ stats.cours }} document(s)</p>
+      </a>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <a href="{{ url_for('main.td') }}" class="carte-rubrique">
+        <div class="icone-rubrique"><i class="bi bi-pencil-square"></i></div>
+        <h3>Travaux Dirigés</h3>
+        <p>{{ stats.td }} document(s)</p>
+      </a>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <a href="{{ url_for('main.bibliotheque') }}" class="carte-rubrique">
+        <div class="icone-rubrique"><i class="bi bi-library"></i></div>
+        <h3>Bibliothèque numérique</h3>
+        <p>{{ stats.bibliotheque }} document(s)</p>
+      </a>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <a href="{{ url_for('main.oeuvres') }}" class="carte-rubrique">
+        <div class="icone-rubrique"><i class="bi bi-book-half"></i></div>
+        <h3>Œuvres</h3>
+        <p>{{ stats.oeuvres }} document(s)</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DERNIERS AJOUTS ============ -->
+<section class="fond-doux py-5">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+      <div>
+        <h2 class="titre-section mb-1">Derniers ajouts</h2>
+        <p class="text-muted mb-0">Les documents les plus récents de la plateforme.</p>
+      </div>
+      <span class="badge badge-or fs-6">{{ stats.documents }} document(s) au total</span>
+    </div>
+    {% if recents %}
+      <div class="row g-4">
+        {% for r in recents %}<div class="col-md-6 col-lg-4">{{ carte(r) }}</div>{% endfor %}
+      </div>
+    {% else %}
+      <div class="etat-vide text-center py-5">
+        <i class="bi bi-inbox"></i>
+        <h3 class="h5 mt-3">Les premiers documents arrivent bientôt !</h3>
+        <p class="text-muted mb-0">Revenez très vite découvrir la bibliothèque.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- ============ COMMENT ÇA MARCHE ============ -->
+<section class="container py-5">
+  <div class="text-center mb-5">
+    <h2 class="titre-section">Comment ça marche ?</h2>
+    <p class="text-muted">Trois étapes suffisent pour accéder à toutes les ressources.</p>
+  </div>
+  <div class="row g-4">
+    <div class="col-md-4 text-center">
+      <div class="etape"><span>1</span><i class="bi bi-person-plus"></i></div>
+      <h3 class="h5 mt-3">Créez votre compte</h3>
+      <p class="text-muted">Inscription gratuite avec votre email personnel, en moins d'une minute.</p>
+    </div>
+    <div class="col-md-4 text-center">
+      <div class="etape"><span>2</span><i class="bi bi-search"></i></div>
+      <h3 class="h5 mt-3">Trouvez vos documents</h3>
+      <p class="text-muted">Parcourez par rubrique et par niveau, ou utilisez la recherche.</p>
+    </div>
+    <div class="col-md-4 text-center">
+      <div class="etape"><span>3</span><i class="bi bi-download"></i></div>
+      <h3 class="h5 mt-3">Téléchargez librement</h3>
+      <p class="text-muted">Cours, TD et livres disponibles en téléchargement immédiat.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

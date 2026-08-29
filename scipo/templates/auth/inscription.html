@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block titre %}Inscription{% endblock %}
+
+{% block contenu %}
+<section class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="carte-auth p-4 p-md-5">
+        <div class="text-center mb-4">
+          <div class="icone-rond mx-auto mb-3"><i class="bi bi-mortarboard"></i></div>
+          <h1 class="h3 mb-1">Créer un compte</h1>
+          <p class="text-muted mb-0">Gratuit, réservé aux étudiants en Science Politique de l'UCAD.</p>
+        </div>
+
+        <form method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="mb-3">
+            <label for="nom_complet" class="form-label">Nom complet <span class="text-muted">(optionnel)</span></label>
+            <input type="text" class="form-control" id="nom_complet" name="nom_complet"
+                   placeholder="Ex : Awa Diop" autofocus>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Votre email personnel</label>
+            <input type="email" class="form-control" id="email" name="email" required
+                   placeholder="vous@exemple.com">
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Mot de passe <span class="text-muted">(min. 6 caractères)</span></label>
+            <input type="password" class="form-control" id="password" name="password" required minlength="6">
+          </div>
+          <div class="mb-4">
+            <label for="password2" class="form-label">Confirmez le mot de passe</label>
+            <input type="password" class="form-control" id="password2" name="password2" required minlength="6">
+          </div>
+          <button type="submit" class="btn btn-or btn-lg w-100"><i class="bi bi-mortarboard me-2"></i>Je m'inscris</button>
+        </form>
+
+        <p class="text-center mt-4 mb-0">
+          Déjà inscrit ?
+          <a href="{{ url_for('auth.connexion') }}" class="lien-or">Connectez-vous</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

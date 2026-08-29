@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block titre %}Erreur {{ code }}{% endblock %}
+
+{% block contenu %}
+<section class="container py-5">
+  <div class="row justify-content-center text-center">
+    <div class="col-lg-6 py-5">
+      <div class="erreur-code">{{ code }}</div>
+      <h1 class="h4 mb-3">{{ message }}</h1>
+      <p class="text-muted mb-4">Pas de panique : la bibliothèque vous attend toujours.</p>
+      <a href="{{ url_for('main.index') }}" class="btn btn-or px-4"><i class="bi bi-house me-2"></i>Retour à l'accueil</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
