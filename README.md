@@ -55,6 +55,7 @@ SCIPO_UCAD/
 ├── creer_admin.py          # Script de création du compte admin
 ├── requirements.txt        # Dépendances Python
 ├── render.yaml             # Blueprint de déploiement Render (un clic)
+├── deploy/                 # Scripts d'installation PythonAnywhere (WSGI + console)
 ├── scipo/
 │   ├── __init__.py         # Fabrique de l'application
 │   ├── models.py           # Modèles : User, Resource, Favori, Commentaire
@@ -83,41 +84,48 @@ $env:SCIPO_EMAIL_EXPEDITEUR = "SciPo UCAD <votre.adresse@gmail.com>"
 
 ## 🚀 Mise en ligne
 
-Le projet est prêt à être déployé. Deux options gratuites :
+Le projet est prêt à être déployé. Deux options gratuites, qui supposent que le
+code est d'abord poussé sur GitHub (depuis votre PC) :
+
+```powershell
+git remote add origin https://github.com/votre-compte/SCIPO_UCAD.git
+git push -u origin master
+```
 
 ### Option A — PythonAnywhere (recommandée : disque persistant gratuit)
 
-La base de données et les documents téléversés **restent en place** — idéal pour ce projet.
+La base de données et les documents téléversés **restent en place** — idéal pour
+ce projet. Deux fichiers prêts à l'emploi se trouvent dans le dossier `deploy/`.
 
 1. Créez un compte gratuit sur [pythonanywhere.com](https://www.pythonanywhere.com) :
    votre site sera accessible à l'adresse `votre-nom.pythonanywhere.com`.
-2. Onglet **Consoles** → ouvrez une console **Bash**, puis :
+2. Onglet **Consoles** → ouvrez une console **Bash**, puis lancez :
+
    ```bash
-   git clone https://github.com/votre-compte/SCIPO_UCAD.git
-   cd SCIPO_UCAD
-   mkvirtualenv scipo --python=python3.13
-   pip install -r requirements.txt
-   python creer_admin.py
+   git clone https://github.com/votre-compte/SCIPO_UCAD.git ~/SCIPO_UCAD
+   cd ~/SCIPO_UCAD && bash deploy/pythonanywhere_console.sh
    ```
-3. Onglet **Web** → **Add a new web app** → *Manual configuration* → même version
-   de Python que le virtualenv.
-4. Section **Virtualenv** : `/home/votre-nom/.virtualenvs/scipo`
+
+   Le script installe tout (virtualenv, dépendances, dossier de données) et vous
+   demande votre email + mot de passe pour créer le compte administrateur.
+3. Onglet **Web** → **Add a new web app** → *Manual configuration* → Python 3.13.
+4. Section **Code** :
+   - Working directory : `/home/votre-nom/SCIPO_UCAD`
+   - Virtualenv : `/home/votre-nom/.virtualenvs/scipo`
 5. Section **Static files** : URL `/static/` → répertoire
    `/home/votre-nom/SCIPO_UCAD/scipo/static`
-6. Cliquez sur le lien **WSGI configuration file** et remplacez son contenu par :
-   ```python
-   import os
+6. Cliquez sur **WSGI configuration file** et remplacez tout son contenu par le
+   contenu de `deploy/pythonanywhere_wsgi.py` — **rien à modifier dedans** : le
+   nom d'utilisateur, la clé secrète et le dossier de données sont gérés
+   automatiquement.
+7. Cochez **Force HTTPS**, cliquez sur le bouton vert **Reload** : le site est
+   en ligne sur `https://votre-nom.pythonanywhere.com` ! 🎉
 
-   os.environ["SCIPO_SECRET_KEY"] = "une-longue-chaine-aleatoire-unique"
-   os.environ["SCIPO_DATA_DIR"] = "/home/votre-nom/donnees-scipo"
-
-   from app import app as application
-   ```
-7. Bouton vert **Reload** : le site est en ligne ! 🎉
-
-> 💡 La clé secrète peut être générée avec `python -c "import secrets; print(secrets.token_hex(32))"`.
-> Le plan gratuit de PythonAnywhere bloque l'envoi d'emails vers les serveurs SMTP
-> non autorisés (smtp.gmail.com fait partie des serveurs autorisés).
+> 💡 Le plan gratuit de PythonAnywhere bloque l'envoi d'emails vers les serveurs
+> SMTP non autorisés (smtp.gmail.com fait partie des serveurs autorisés).
+>
+> 🔄 Pour déployer une mise à jour plus tard : `cd ~/SCIPO_UCAD && git pull`
+> dans une console Bash, puis bouton **Reload** dans l'onglet Web.
 
 ### Option B — Render (blueprint prêt : `render.yaml`)
 
