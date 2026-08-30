@@ -35,6 +35,9 @@ pip install -q -r requirements.txt
 
 echo "==> 3/4  Dossier des données persistantes (base + documents)"
 mkdir -p "$DOSSIER_DONNEES"
+# Indispensable : creer_admin.py doit écrire dans la MÊME base que le site web
+# (celui-ci reçoit SCIPO_DATA_DIR via le fichier WSGI).
+export SCIPO_DATA_DIR="$DOSSIER_DONNEES"
 
 echo "==> 4/4  Compte administrateur (email + mot de passe demandés)"
 python creer_admin.py
