@@ -15,10 +15,20 @@ DOSSIER_DONNEES="$HOME/donnees-scipo"
 cd "$DOSSIER_CODE"
 
 echo "==> 1/4  Environnement virtuel Python"
-if ! workon scipo 2>/dev/null; then
-    mkvirtualenv scipo --python=python3.13 \
-        || mkvirtualenv scipo --python=python3.12
+VENV="$HOME/.virtualenvs/scipo"
+if [ ! -f "$VENV/bin/activate" ]; then
+    mkdir -p "$(dirname "$VENV")"
+    if command -v python3.13 >/dev/null 2>&1; then
+        python3.13 -m venv "$VENV"
+    elif command -v python3.12 >/dev/null 2>&1; then
+        python3.12 -m venv "$VENV"
+    elif command -v python3.11 >/dev/null 2>&1; then
+        python3.11 -m venv "$VENV"
+    else
+        python3 -m venv "$VENV"
+    fi
 fi
+source "$VENV/bin/activate"
 
 echo "==> 2/4  Installation des dépendances"
 pip install -q -r requirements.txt
@@ -34,7 +44,7 @@ echo ""
 echo "============================================================"
 echo "Installation terminée ! Dernières étapes, onglet « Web » :"
 echo ""
-echo "  1. Add a new web app  ->  Manual configuration  ->  Python 3.13"
+echo "  1. Add a new web app  ->  Manual configuration  ->  $(python --version)"
 echo "  2. Section « Code » :"
 echo "       Working directory : $DOSSIER_CODE"
 echo "       Virtualenv        : /home/$NOM/.virtualenvs/scipo"
