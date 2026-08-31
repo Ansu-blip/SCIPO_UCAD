@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=6) }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=7) }}">
 </head>
 <body class="{% block classe_body %}{% endblock %}">
 
@@ -22,16 +22,12 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="menuPrincipal">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item"><a class="nav-link {{ 'actif' if request.endpoint == 'main.index' }}" href="{{ url_for('main.index') }}">Accueil</a></li>
-        <li class="nav-item"><a class="nav-link {{ 'actif' if request.endpoint == 'main.bibliotheque' }}" href="{{ url_for('main.bibliotheque') }}">Bibliothèque</a></li>
-      </ul>
-      <form class="d-flex ma-recherche mx-lg-auto my-lg-0 my-2" role="search" action="{{ url_for('main.recherche') }}" method="get">
+      <form class="d-flex ma-recherche my-2 my-lg-0" role="search" action="{{ url_for('main.recherche') }}" method="get">
         <input class="form-control" type="search" name="q" placeholder="Rechercher un document…"
                value="{{ request.args.get('q', '') }}" aria-label="Rechercher">
         <button class="btn btn-or" type="submit" aria-label="Lancer la recherche"><i class="bi bi-search"></i></button>
       </form>
-      <ul class="navbar-nav align-items-lg-center">
+      <ul class="navbar-nav align-items-lg-center ms-lg-auto">
         {% if current_user.is_authenticated %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">

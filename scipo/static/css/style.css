@@ -58,14 +58,32 @@ h1, h2, h3, .hero-titre, .titre-section, .marque {
   background: linear-gradient(135deg, var(--bleu-nuit), var(--bleu-clair));
   box-shadow: 0 2px 14px rgba(12, 31, 51, .35);
 }
+.navbar-scipo .container { position: relative; }   /* repère du champ de recherche central */
 .marque { font-size: 1.45rem; font-weight: 800; color: #fff !important; letter-spacing: .3px; }
 .marque span { color: #9cc3e5; }
 .navbar-scipo .nav-link { color: rgba(255, 255, 255, .85); font-weight: 500; }
 .navbar-scipo .nav-link:hover,
 .navbar-scipo .nav-link.actif { color: #fff; }
-.ma-recherche .form-control { border: none; min-width: 200px; border-radius: 20px 0 0 20px; }
-.ma-recherche .btn-or { background: var(--glace); color: var(--bleu-nuit); border-radius: 0 20px 20px 0; }
+.ma-recherche .form-control {
+  border: none; min-width: 200px; border-radius: 20px 0 0 20px;
+  padding: .5rem 1.1rem;
+}
+.ma-recherche .btn-or {
+  background: var(--glace); color: var(--bleu-nuit); border-radius: 0 20px 20px 0;
+  padding-left: 1rem; padding-right: 1rem;
+}
 .ma-recherche .btn-or:hover { background: #fff; color: var(--bleu-nuit); }
+
+/* Grand écran : le champ de recherche occupe le centre exact de la barre,
+   indépendamment de la marque (à gauche) et des boutons (à droite) */
+@media (min-width: 992px) {
+  .ma-recherche {
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(480px, 42vw); margin: 0;
+  }
+  .ma-recherche .form-control { min-width: 0; }
+}
 
 /* ---------- Boutons ---------- */
 .btn-or {
