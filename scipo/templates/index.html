@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% from "_carte.html" import carte with context %}
 {% block titre %}Accueil{% endblock %}
 
 {% block contenu %}
@@ -72,65 +71,51 @@
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Suivant</span>
   </button>
+
+  <!-- Panneau « Choisissez votre niveau » : superposé aux photos, liste verticale successive -->
+  <aside class="panneau-niveaux" aria-label="Choisissez votre niveau">
+    <p class="panneau-sur-titre">Votre parcours commence ici</p>
+    <h2 class="panneau-titre">Choisissez votre niveau</h2>
+    <div class="liste-niveaux" role="tablist">
+      {% for cle, nom in niveaux %}
+        <button class="bouton-niveau {{ 'active' if loop.first }}" type="button"
+                data-bs-toggle="pill" data-bs-target="#niveau-{{ cle }}"
+                role="tab" aria-controls="niveau-{{ cle }}"
+                aria-selected="{{ 'true' if loop.first else 'false' }}">
+          <span class="rang-niveau">0{{ loop.index }}</span>
+          <span class="nom-niveau">{{ nom }}</span>
+          <span class="compte-niveau">{{ totaux[cle] }} document{{ 's' if totaux[cle] > 1 else '' }}</span>
+          <i class="bi bi-chevron-right chevron-niveau" aria-hidden="true"></i>
+        </button>
+      {% endfor %}
+    </div>
+  </aside>
 </div>
 
-<!-- ============ NIVEAUX & RUBRIQUES ============ -->
-<section class="container py-5">
-  <div class="text-center mb-4">
-    <h2 class="titre-section">Choisissez votre niveau</h2>
-    <p class="text-muted mb-0">Dans chaque niveau : cours, travaux dirigés, épreuves et œuvres.</p>
-  </div>
+<!-- ============ RUBRIQUES DU NIVEAU CHOISI (centrées et élargies) ============ -->
+<section id="niveaux" class="section-niveaux py-5">
+  <div class="container conteneur-niveaux">
+    <div class="tab-content">
 
-  <ul class="nav onglets-niveaux justify-content-center mb-4" role="tablist">
-    {% for cle, nom in niveaux %}
-      <li class="nav-item" role="presentation">
-        <button class="nav-link {{ 'active' if loop.first }}" data-bs-toggle="pill"
-                data-bs-target="#niveau-{{ cle }}" type="button" role="tab"
-                aria-selected="{{ 'true' if loop.first else 'false' }}">{{ nom }}</button>
-      </li>
-    {% endfor %}
-  </ul>
-
-  <div class="tab-content">
-    {% for cle, nom in niveaux %}
-      <div class="tab-pane fade {{ 'show active' if loop.first }}" id="niveau-{{ cle }}" role="tabpanel">
-        <div class="row g-4">
-          {% for endpoint, categorie, rubrique, icone in rubriques %}
-            <div class="col-md-6 col-lg-3">
+      {% for cle, nom in niveaux %}
+        <div class="tab-pane fade {{ 'show active' if loop.first }}" id="niveau-{{ cle }}" role="tabpanel" aria-label="{{ nom }}">
+          <header class="entete-niveau text-center">
+            <p class="sur-titre-niveau">Niveau sélectionné</p>
+            <h2 class="titre-niveau">{{ nom }}</h2>
+            <p class="sous-titre-niveau">Tout votre niveau réuni : cours, travaux dirigés, épreuves anciennes et œuvres.</p>
+          </header>
+          <div class="grille-rubriques">
+            {% for endpoint, categorie, rubrique, icone in rubriques %}
               <a href="{{ url_for(endpoint, niveau=cle) }}" class="carte-rubrique">
                 <div class="icone-rubrique"><i class="bi {{ icone }}"></i></div>
                 <h3>{{ rubrique }}</h3>
                 <p>{{ par_niveau[cle].get(categorie, 0) }} document(s)</p>
+                <span class="cta-rubrique">Consulter <i class="bi bi-arrow-right ms-1"></i></span>
               </a>
-            </div>
-          {% endfor %}
+            {% endfor %}
+          </div>
         </div>
-      </div>
     {% endfor %}
-  </div>
-</section>
-
-<!-- ============ DERNIERS AJOUTS ============ -->
-<section class="fond-doux py-5">
-  <div class="container">
-    <div class="d-flex justify-content-between align-items-end mb-4">
-      <div>
-        <h2 class="titre-section mb-1">Derniers ajouts</h2>
-        <p class="text-muted mb-0">Les documents les plus récents de la plateforme.</p>
-      </div>
-      <span class="badge badge-or fs-6">{{ stats.documents }} document(s) au total</span>
-    </div>
-    {% if recents %}
-      <div class="row g-4">
-        {% for r in recents %}<div class="col-md-6 col-lg-4">{{ carte(r) }}</div>{% endfor %}
-      </div>
-    {% else %}
-      <div class="etat-vide text-center py-5">
-        <i class="bi bi-inbox"></i>
-        <h3 class="h5 mt-3">Les premiers documents arrivent bientôt !</h3>
-        <p class="text-muted mb-0">Revenez très vite découvrir la bibliothèque.</p>
-      </div>
-    {% endif %}
   </div>
 </section>
 
@@ -160,21 +145,34 @@
 </section>
 
 <script>
-/* Parallaxe légère : la légende suit doucement la souris (désactivé sur tactile) */
 (() => {
   const carrousel = document.getElementById('carrouselAccueil');
-  if (!carrousel || window.matchMedia('(hover: none)').matches) return;
-  const legendes = carrousel.querySelectorAll('.carousel-caption');
-  carrousel.addEventListener('mousemove', (e) => {
-    const dx = e.clientX / window.innerWidth - 0.5;
-    const dy = e.clientY / window.innerHeight - 0.5;
-    legendes.forEach((legende) => {
-      legende.style.transform =
-        `translate(${(-dx * 16).toFixed(1)}px, ${(-dy * 10).toFixed(1)}px)`;
+  if (!carrousel) return;
+
+  /* Parallaxe légère : la légende suit doucement la souris (désactivé sur tactile) */
+  if (!window.matchMedia('(hover: none)').matches) {
+    const legendes = carrousel.querySelectorAll('.carousel-caption');
+    carrousel.addEventListener('mousemove', (e) => {
+      const dx = e.clientX / window.innerWidth - 0.5;
+      const dy = e.clientY / window.innerHeight - 0.5;
+      legendes.forEach((legende) => {
+        legende.style.transform =
+          `translate(${(-dx * 16).toFixed(1)}px, ${(-dy * 10).toFixed(1)}px)`;
+      });
     });
-  });
-  carrousel.addEventListener('mouseleave', () => {
-    legendes.forEach((legende) => { legende.style.transform = ''; });
+    carrousel.addEventListener('mouseleave', () => {
+      legendes.forEach((legende) => { legende.style.transform = ''; });
+    });
+  }
+
+  /* Un niveau choisi dans le panneau : défilement doux vers ses rubriques */
+  const rubriquesNiveau = document.getElementById('niveaux');
+  document.querySelectorAll('.bouton-niveau').forEach((bouton) => {
+    bouton.addEventListener('click', () => {
+      window.setTimeout(() => {
+        rubriquesNiveau.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 80);
+    });
   });
 })();
 </script>

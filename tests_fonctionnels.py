@@ -193,8 +193,12 @@ def main():
     verifier("L'épreuve apparaît dans la rubrique Épreuves",
              "Session 2024" in page_epreuves)
     page_accueil = client.get("/").get_data(as_text=True)
-    verifier("L'accueil affiche le carrousel et le choix du niveau",
-             "carrouselAccueil" in page_accueil and "Choisissez votre niveau" in page_accueil)
+    verifier("L'accueil affiche le carrousel et le panneau « Choisissez votre niveau »",
+             "carrouselAccueil" in page_accueil
+             and "Choisissez votre niveau" in page_accueil
+             and "Licence 2" in page_accueil and "Master 1" in page_accueil)
+    verifier("La section « Derniers ajouts » a bien été retirée de l'accueil",
+             "Derniers ajouts" not in page_accueil)
 
     # 7. Téléchargement : autorisé pour un membre, refusé pour un visiteur
     reponse = client.get(f"/telecharger/{ressource_id}")

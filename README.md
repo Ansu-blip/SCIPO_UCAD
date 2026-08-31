@@ -10,7 +10,7 @@ de l'Université Cheikh Anta Diop de Dakar (UCAD)**.
 - **Bibliothèque numérique** (documents et ressources numériques)
 - **Épreuves anciennes** : les sujets des années passées pour réviser en conditions réelles
 - **Œuvres** : livres, syllabus et articles de référence
-- **Accueil vivant** : carrousel photo animé (défilement automatique 3,5 s, effet « Ken Burns », légendes en cascade, parallaxe), navigation par niveau (Licence 1 → Master 1) avec les 4 rubriques de chaque niveau
+- **Accueil vivant** : carrousel photo animé (défilement automatique 3,5 s, effet « Ken Burns », légendes en cascade, parallaxe) et panneau « Choisissez votre niveau » superposé aux photos — liste verticale Licence 1 → Master 1 ; le niveau choisi révèle, centré et élargi, ses 4 rubriques (cours, TD, épreuves, œuvres)
 - **Documents filtrés par niveau** : chaque étudiant ne voit que son niveau (et les documents ouverts à tous les niveaux)
 - Comptes étudiants (inscription avec adresse **Gmail** et choix du **niveau d'étude**)
 - **Connexion en deux étapes** : code à 6 chiffres envoyé par email (valable 10 minutes)

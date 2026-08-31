@@ -130,7 +130,7 @@ h1, h2, h3, .hero-titre, .titre-section, .marque {
   transition: opacity 1.15s ease-in-out;   /* fondu doux entre les photos */
 }
 .carrousel-accueil .carousel-item img {
-  width: 100%; height: min(78vh, 700px); object-fit: cover;
+  width: 100%; height: min(calc(100vh - 66px), 800px); min-height: 560px; object-fit: cover;
   transform: scale(1.14);                  /* état de base : zoomé… */
   transition: transform 1.15s ease;        /* …retour doux de l'image sortante */
   will-change: transform; filter: saturate(1.05);
@@ -218,38 +218,163 @@ h1, h2, h3, .hero-titre, .titre-section, .marque {
   font-size: .8rem; font-weight: 700; color: #9cc3e5;
 }
 @media (max-width: 767.98px) {
-  .carrousel-accueil .carousel-item img { height: 92vh; }
-  .carrousel-accueil .carousel-caption { bottom: 7%; }
+  .carrousel-accueil .carousel-item img { height: min(calc(100vh - 130px), 720px); min-height: 540px; }
   .sous-titre-diapo { font-size: .95rem; }
   .pastille-logo img { height: 32px; }
 }
 
-/* ---------- Onglets de niveaux (accueil) ---------- */
-.onglets-niveaux { gap: .5rem; }
-.onglets-niveaux .nav-link {
-  border: 1.5px solid #d4e0ee; border-radius: 999px; background: #fff;
-  color: var(--bleu-fonce); font-weight: 700; padding: .5rem 1.5rem;
+/* ---------- Panneau « Choisissez votre niveau » (superposé aux photos) ---------- */
+.panneau-niveaux {
+  position: absolute; z-index: 5;
+  top: 50%; right: clamp(84px, 8vw, 140px);
+  transform: translateY(-50%);
+  width: min(400px, 88vw);
+  padding: 1.5rem 1.4rem;
+  border-radius: 22px;
+  overflow: hidden;
+  background: linear-gradient(160deg, rgba(12, 31, 51, .58), rgba(22, 50, 79, .40));
+  border: 1px solid rgba(255, 255, 255, .30);
+  box-shadow: 0 24px 60px rgba(8, 22, 40, .45);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  animation: surgir-panneau .9s .25s cubic-bezier(.22, .61, .36, 1) both;
 }
-.onglets-niveaux .nav-link:hover { border-color: var(--bleu-fonce); color: var(--bleu-nuit); }
-.onglets-niveaux .nav-link.active {
-  background: var(--bleu-nuit); border-color: var(--bleu-nuit); color: #fff;
+@keyframes surgir-panneau {
+  from { opacity: 0; transform: translateY(calc(-50% + 34px)); }
+  to   { opacity: 1; transform: translateY(-50%); }
 }
+.panneau-sur-titre {
+  text-transform: uppercase; letter-spacing: 2.5px;
+  font-size: .72rem; font-weight: 700; color: #9cc3e5; margin-bottom: .25rem;
+}
+.panneau-titre { color: #fff; font-size: 1.3rem; font-weight: 800; margin-bottom: 1.1rem; }
+.liste-niveaux { display: flex; flex-direction: column; gap: .65rem; }
+.bouton-niveau {
+  position: relative; overflow: hidden;
+  display: flex; align-items: center; gap: .85rem;
+  width: 100%; text-align: left;
+  padding: .8rem 1rem; border-radius: 14px;
+  background: rgba(255, 255, 255, .10);
+  border: 1px solid rgba(255, 255, 255, .30);
+  color: #fff; font-weight: 600; font-size: 1.02rem; line-height: 1.2;
+  transition: transform .25s ease, background .25s ease, border-color .25s ease, box-shadow .25s ease;
+  animation: surgir-bouton .7s cubic-bezier(.22, .61, .36, 1) both;
+}
+.bouton-niveau:nth-child(1) { animation-delay: .55s; }
+.bouton-niveau:nth-child(2) { animation-delay: .68s; }
+.bouton-niveau:nth-child(3) { animation-delay: .81s; }
+.bouton-niveau:nth-child(4) { animation-delay: .94s; }
+@keyframes surgir-bouton {
+  from { opacity: 0; transform: translateX(28px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+/* Reflet lumineux qui balaie le bouton au survol */
+.bouton-niveau::before {
+  content: ""; position: absolute; top: 0; left: -70%;
+  width: 45%; height: 100%;
+  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, .35), transparent);
+  transform: skewX(-20deg); transition: left .55s ease;
+}
+.bouton-niveau:hover { transform: translateX(8px); background: rgba(255, 255, 255, .22); }
+.bouton-niveau:hover::before { left: 140%; }
+.bouton-niveau:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.bouton-niveau.active {
+  background: #fff; border-color: #fff; color: var(--bleu-nuit);
+  box-shadow: 0 12px 30px rgba(8, 22, 40, .4);
+}
+.rang-niveau { flex: none; width: 1.5rem; font-size: .78rem; font-weight: 800; color: #9cc3e5; }
+.bouton-niveau.active .rang-niveau { color: var(--bleu-clair); }
+.nom-niveau { flex: 1 1 auto; }
+.compte-niveau {
+  flex: none; font-size: .72rem; font-weight: 700;
+  padding: .2rem .6rem; border-radius: 999px;
+  background: rgba(255, 255, 255, .18); color: #fff; white-space: nowrap;
+}
+.bouton-niveau.active .compte-niveau { background: var(--glace-pale); color: var(--bleu-fonce); }
+.chevron-niveau { flex: none; font-size: .9rem; opacity: .8; transition: transform .25s ease; }
+.bouton-niveau:hover .chevron-niveau { transform: translateX(3px); }
+.bouton-niveau.active .chevron-niveau { color: var(--bleu-clair); opacity: 1; }
+
+/* Grand écran : la légende ne passe jamais sous le panneau. Sur mobile,
+   le panneau se centre sur les photos et les légendes s'effacent. */
+@media (min-width: 992px) {
+  .carrousel-accueil .carousel-caption { right: clamp(380px, 36vw, 500px); }
+}
+@media (max-width: 991.98px) {
+  @keyframes surgir-panneau {
+    from { opacity: 0; transform: translate(50%, calc(-50% + 34px)); }
+    to   { opacity: 1; transform: translate(50%, -50%); }
+  }
+  .panneau-niveaux { right: 50%; transform: translate(50%, -50%); }
+  .carrousel-accueil .carousel-caption { display: none; }
+  .carrousel-accueil .carousel-control-prev,
+  .carrousel-accueil .carousel-control-next { display: none; }
+}
+
+/* ---------- Rubriques du niveau choisi (accueil) ---------- */
+#niveaux { scroll-margin-top: 86px; }
+.section-niveaux {
+  background: linear-gradient(180deg, #fff 0%, var(--glace-pale) 100%);
+  border-bottom: 1px solid #dbe7f3;
+}
+.conteneur-niveaux { max-width: 1060px; }
+.tab-pane.fade.active.show { animation: reveler-niveau .6s cubic-bezier(.22, .61, .36, 1); }
+@keyframes reveler-niveau {
+  from { opacity: 0; transform: translateY(26px) scale(.985); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.entete-niveau { margin-bottom: 2.2rem; }
+.sur-titre-niveau {
+  text-transform: uppercase; letter-spacing: 2.5px;
+  font-size: .75rem; font-weight: 700; color: var(--bleu-clair); margin-bottom: .3rem;
+}
+.titre-niveau { font-size: clamp(1.9rem, 4vw, 2.6rem); color: var(--bleu-nuit); line-height: 1.1; }
+.titre-niveau::after {
+  content: ""; display: block; width: 64px; height: 4px; border-radius: 4px;
+  margin: .85rem auto 0; background: linear-gradient(90deg, var(--bleu-clair), #9cc3e5);
+}
+.sous-titre-niveau { color: #5f6d7e; max-width: 640px; margin: .9rem auto 0; }
+.grille-rubriques { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; }
+@media (max-width: 1199.98px) { .grille-rubriques { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 575.98px) { .grille-rubriques { grid-template-columns: 1fr; } }
 
 /* ---------- Cartes de rubriques ---------- */
 .carte-rubrique {
-  display: block; text-align: center; text-decoration: none;
-  background: #fff; border-radius: 16px; padding: 2rem 1.2rem;
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  text-decoration: none; background: #fff;
+  border: 1px solid #e2eaf3; border-radius: 20px;
+  padding: 2.1rem 1.3rem 1.7rem;
   box-shadow: 0 4px 16px rgba(12, 31, 51, .08);
-  transition: transform .25s ease, box-shadow .25s ease;
+  transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
   color: var(--texte); height: 100%;
 }
-.carte-rubrique:hover { transform: translateY(-6px); box-shadow: 0 12px 28px rgba(12, 31, 51, .16); }
-.carte-rubrique h3 { font-size: 1.05rem; font-weight: 700; color: var(--bleu-fonce); margin: .9rem 0 .3rem; }
+.carte-rubrique::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--bleu-clair), #9cc3e5);
+  transform: scaleX(0); transform-origin: left; transition: transform .35s ease;
+}
+.carte-rubrique:hover {
+  transform: translateY(-8px); box-shadow: 0 16px 34px rgba(12, 31, 51, .16);
+  border-color: #cfe0f0;
+}
+.carte-rubrique:hover::before { transform: scaleX(1); }
+.carte-rubrique h3 { font-size: 1.15rem; font-weight: 700; color: var(--bleu-fonce); margin: 1rem 0 .35rem; }
 .carte-rubrique p { color: var(--bleu-clair); font-weight: 600; margin: 0; }
+.carte-rubrique .icone-rubrique { transition: transform .28s ease, background .28s ease, color .28s ease; }
+.carte-rubrique:hover .icone-rubrique {
+  transform: scale(1.08) rotate(-3deg); background: var(--bleu-nuit); color: #fff;
+}
+.cta-rubrique {
+  margin-top: .9rem; font-size: .85rem; font-weight: 700; color: var(--bleu-clair);
+  opacity: 0; transform: translateY(6px);
+  transition: opacity .28s ease, transform .28s ease;
+}
+.carte-rubrique:hover .cta-rubrique { opacity: 1; transform: translateY(0); }
 .icone-rubrique {
-  width: 66px; height: 66px; margin: 0 auto;
+  width: 72px; height: 72px; margin: 0 auto;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.8rem; color: var(--bleu-fonce);
+  font-size: 1.9rem; color: var(--bleu-fonce);
   background: var(--glace-pale); border-radius: 50%;
 }
 

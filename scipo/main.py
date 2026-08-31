@@ -75,18 +75,9 @@ def _page_rubrique(categorie, titre, sous_titre, filtre_niveau=True):
 @main.route("/")
 def index():
     visibles = _visible_pour(db.session.query(Resource))
-    stats = {
-        "documents": visibles.count(),
-        "cours": visibles.filter_by(categorie="cours").count(),
-        "td": visibles.filter_by(categorie="td").count(),
-        "epreuves": visibles.filter_by(categorie="epreuves").count(),
-        "bibliotheque": visibles.filter_by(categorie="bibliotheque").count(),
-        "oeuvres": visibles.filter_by(categorie="oeuvres").count(),
-    }
-    recents = visibles.order_by(Resource.created_at.desc()).limit(6).all()
 
     # Accueil « par niveau » : nombre de documents (niveau, rubrique) pour les
-    # compteurs affichés sous chaque onglet Licence 1 → Master 1.
+    # compteurs du panneau « Choisissez votre niveau » et de ses rubriques.
     lignes = (visibles.with_entities(Resource.niveau, Resource.categorie, func.count())
               .filter(Resource.niveau.in_(LEVELS))
               .group_by(Resource.niveau, Resource.categorie).all())
@@ -94,9 +85,13 @@ def index():
     for niveau, categorie, nombre in lignes:
         par_niveau[niveau][categorie] = nombre
 
-    return render_template("index.html", stats=stats, recents=recents,
-                           par_niveau=par_niveau, niveaux=list(LEVELS.items()),
-                           rubriques=RUBRIQUES_NIVEAU)
+    # Total de documents par niveau (les 4 rubriques du panneau d'accueil)
+    categories_rubriques = [categorie for _, categorie, _, _ in RUBRIQUES_NIVEAU]
+    totaux = {cle: sum(par_niveau[cle].get(cat, 0) for cat in categories_rubriques)
+              for cle in LEVELS}
+
+    return render_template("index.html", par_niveau=par_niveau, totaux=totaux,
+                           niveaux=list(LEVELS.items()), rubriques=RUBRIQUES_NIVEAU)
 
 
 @main.route("/cours")
