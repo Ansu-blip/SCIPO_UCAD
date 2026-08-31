@@ -3,64 +3,110 @@
 {% block titre %}Accueil{% endblock %}
 
 {% block contenu %}
-<!-- ============ HERO ============ -->
-<section class="hero">
-  <div class="container py-5">
-    <div class="row align-items-center g-5 py-lg-4">
-      <div class="col-lg-7">
-        <span class="badge rounded-pill badge-hero mb-3">🎓 Université Cheikh Anta Diop de Dakar</span>
-        <h1 class="hero-titre">La bibliothèque des étudiants en <span class="texte-or">Science Politique</span></h1>
-        <p class="hero-texte">
-          Cours, travaux dirigés, livres et articles de référence, réunis au même endroit
-          pour réussir votre parcours, de la Licence 1 au Master 1.
-        </p>
+<!-- ============ CARROUSEL D'ACCUEIL ============ -->
+<div id="carrouselAccueil" class="carousel slide carousel-fade carrousel-accueil" data-bs-ride="carousel">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#carrouselAccueil" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Diapositive 1"></button>
+    <button type="button" data-bs-target="#carrouselAccueil" data-bs-slide-to="1" aria-label="Diapositive 2"></button>
+    <button type="button" data-bs-target="#carrouselAccueil" data-bs-slide-to="2" aria-label="Diapositive 3"></button>
+    <button type="button" data-bs-target="#carrouselAccueil" data-bs-slide-to="3" aria-label="Diapositive 4"></button>
+    <button type="button" data-bs-target="#carrouselAccueil" data-bs-slide-to="4" aria-label="Diapositive 5"></button>
+  </div>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="{{ url_for('static', filename='img/carrousel/diapo1.jpg') }}"
+           alt="Rassemblement citoyen avec des drapeaux">
+      <div class="carousel-caption">
+        <span class="pastille-logo mb-3"><img src="{{ url_for('static', filename='img/sciencespo.svg') }}" alt="Sciences Po"></span>
+        <h1 class="titre-diapo">La bibliothèque des étudiants en Science Politique</h1>
+        <p class="sous-titre-diapo">Cours, travaux dirigés, épreuves anciennes et œuvres de référence, réunis au même
+          endroit pour réussir votre parcours à l'Université Cheikh Anta Diop de Dakar.</p>
         <div class="d-flex gap-3 flex-wrap mt-4">
           <a href="{{ url_for('main.cours') }}" class="btn btn-or btn-lg px-4"><i class="bi bi-journal-bookmark me-2"></i>Parcourir les cours</a>
           <a href="{{ url_for('auth.inscription') }}" class="btn btn-contour-clair btn-lg px-4"><i class="bi bi-person-plus me-2"></i>Créer un compte gratuit</a>
         </div>
       </div>
-      <div class="col-lg-5 text-center">
-        <div class="hero-embleme"><i class="bi bi-bank2"></i></div>
+    </div>
+    <div class="carousel-item">
+      <img src="{{ url_for('static', filename='img/carrousel/diapo2.jpg') }}"
+           alt="Bâtiment historique d'une université" loading="lazy">
+      <div class="carousel-caption">
+        <p class="sur-titre-diapo mb-1">Cours &amp; Travaux Dirigés</p>
+        <h2 class="titre-diapo titre-diapo-2">Vos supports de cours, de la Licence 1 au Master 1</h2>
+        <a href="{{ url_for('main.cours') }}" class="btn btn-contour-clair mt-3">Découvrir les cours <i class="bi bi-arrow-right ms-1"></i></a>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="{{ url_for('static', filename='img/carrousel/diapo3.jpg') }}"
+           alt="Notes et documents de révision sur une table" loading="lazy">
+      <div class="carousel-caption">
+        <p class="sur-titre-diapo mb-1">Épreuves anciennes</p>
+        <h2 class="titre-diapo titre-diapo-2">Entraînez-vous avec les sujets des années passées</h2>
+        <a href="{{ url_for('main.epreuves') }}" class="btn btn-contour-clair mt-3">Voir les épreuves <i class="bi bi-arrow-right ms-1"></i></a>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="{{ url_for('static', filename='img/carrousel/diapo4.jpg') }}"
+           alt="Rayonnages d'une grande bibliothèque" loading="lazy">
+      <div class="carousel-caption">
+        <p class="sur-titre-diapo mb-1">Bibliothèque numérique &amp; Œuvres</p>
+        <h2 class="titre-diapo titre-diapo-2">Livres, articles et syllabus de référence</h2>
+        <a href="{{ url_for('main.bibliotheque') }}" class="btn btn-contour-clair mt-3">Explorer la bibliothèque <i class="bi bi-arrow-right ms-1"></i></a>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="{{ url_for('static', filename='img/carrousel/diapo5.jpg') }}"
+           alt="Amphithéâtre pendant une conférence" loading="lazy">
+      <div class="carousel-caption">
+        <p class="sur-titre-diapo mb-1">Favoris, avis &amp; notes</p>
+        <h2 class="titre-diapo titre-diapo-2">Organisez vos révisions et partagez vos avis</h2>
+        <a href="{{ url_for('main.favoris') }}" class="btn btn-contour-clair mt-3">Voir mes favoris <i class="bi bi-arrow-right ms-1"></i></a>
       </div>
     </div>
   </div>
-</section>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carrouselAccueil" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Précédent</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carrouselAccueil" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Suivant</span>
+  </button>
+</div>
 
-<!-- ============ CATÉGORIES ============ -->
+<!-- ============ NIVEAUX & RUBRIQUES ============ -->
 <section class="container py-5">
-  <div class="text-center mb-5">
-    <h2 class="titre-section">Explorer par rubrique</h2>
-    <p class="text-muted">Tout ce dont vous avez besoin, bien rangé au même endroit.</p>
+  <div class="text-center mb-4">
+    <h2 class="titre-section">Choisissez votre niveau</h2>
+    <p class="text-muted mb-0">Dans chaque niveau : cours, travaux dirigés, épreuves et œuvres.</p>
   </div>
-  <div class="row g-4">
-    <div class="col-md-6 col-lg-3">
-      <a href="{{ url_for('main.cours') }}" class="carte-rubrique">
-        <div class="icone-rubrique"><i class="bi bi-journal-bookmark-fill"></i></div>
-        <h3>Cours</h3>
-        <p>{{ stats.cours }} document(s)</p>
-      </a>
-    </div>
-    <div class="col-md-6 col-lg-3">
-      <a href="{{ url_for('main.td') }}" class="carte-rubrique">
-        <div class="icone-rubrique"><i class="bi bi-pencil-square"></i></div>
-        <h3>Travaux Dirigés</h3>
-        <p>{{ stats.td }} document(s)</p>
-      </a>
-    </div>
-    <div class="col-md-6 col-lg-3">
-      <a href="{{ url_for('main.bibliotheque') }}" class="carte-rubrique">
-        <div class="icone-rubrique"><i class="bi bi-library"></i></div>
-        <h3>Bibliothèque numérique</h3>
-        <p>{{ stats.bibliotheque }} document(s)</p>
-      </a>
-    </div>
-    <div class="col-md-6 col-lg-3">
-      <a href="{{ url_for('main.oeuvres') }}" class="carte-rubrique">
-        <div class="icone-rubrique"><i class="bi bi-book-half"></i></div>
-        <h3>Œuvres</h3>
-        <p>{{ stats.oeuvres }} document(s)</p>
-      </a>
-    </div>
+
+  <ul class="nav onglets-niveaux justify-content-center mb-4" role="tablist">
+    {% for cle, nom in niveaux %}
+      <li class="nav-item" role="presentation">
+        <button class="nav-link {{ 'active' if loop.first }}" data-bs-toggle="pill"
+                data-bs-target="#niveau-{{ cle }}" type="button" role="tab"
+                aria-selected="{{ 'true' if loop.first else 'false' }}">{{ nom }}</button>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <div class="tab-content">
+    {% for cle, nom in niveaux %}
+      <div class="tab-pane fade {{ 'show active' if loop.first }}" id="niveau-{{ cle }}" role="tabpanel">
+        <div class="row g-4">
+          {% for endpoint, categorie, rubrique, icone in rubriques %}
+            <div class="col-md-6 col-lg-3">
+              <a href="{{ url_for(endpoint, niveau=cle) }}" class="carte-rubrique">
+                <div class="icone-rubrique"><i class="bi {{ icone }}"></i></div>
+                <h3>{{ rubrique }}</h3>
+                <p>{{ par_niveau[cle].get(categorie, 0) }} document(s)</p>
+              </a>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
   </div>
 </section>
 

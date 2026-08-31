@@ -8,7 +8,9 @@ de l'Université Cheikh Anta Diop de Dakar (UCAD)**.
 - **Cours** classés par niveau : Licence 1, Licence 2, Licence 3, Master 1
 - **Travaux Dirigés** par niveau
 - **Bibliothèque numérique** (documents et ressources numériques)
+- **Épreuves anciennes** : les sujets des années passées pour réviser en conditions réelles
 - **Œuvres** : livres, syllabus et articles de référence
+- **Accueil vivant** : carrousel photo, navigation par niveau (Licence 1 → Master 1) avec les 4 rubriques de chaque niveau
 - **Documents filtrés par niveau** : chaque étudiant ne voit que son niveau (et les documents ouverts à tous les niveaux)
 - Comptes étudiants (inscription avec adresse **Gmail** et choix du **niveau d'étude**)
 - **Connexion en deux étapes** : code à 6 chiffres envoyé par email (valable 10 minutes)
@@ -20,6 +22,10 @@ de l'Université Cheikh Anta Diop de Dakar (UCAD)**.
 - **Statistiques détaillées** : téléchargements, favoris, avis, top documents, derniers membres
 - Recherche de documents, filtres par niveau, pages d'erreur élégantes
 - Design académique responsive (bleu nuit & or), mobile friendly
+
+> 🖼️ Les photos du carrousel d'accueil sont **dans le projet** : `scipo/static/img/carrousel/`
+> (`diapo1.jpg` → `diapo5.jpg`). Remplacez-les par vos propres images (mêmes noms de fichiers)
+> pour personnaliser l'accueil — rien d'autre à modifier.
 
 ## 🛠️ Technologies
 

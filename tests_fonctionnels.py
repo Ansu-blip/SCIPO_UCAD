@@ -178,6 +178,24 @@ def main():
     verifier("La recherche trouve le document",
              "Introduction à la Science Politique" in page_recherche)
 
+    # 6bis. La rubrique « Épreuves anciennes » : publication puis affichage
+    reponse = client.post("/admin/ressource/ajouter", data={
+        "titre": "Épreuve de Science Politique — Session 2024",
+        "categorie": "epreuves",
+        "niveau": "licence1",
+        "auteur": "UCAD",
+        "description": "Sujet d'examen des années passées.",
+        "fichier": (io.BytesIO(b"%PDF-1.4 epreuve"), "epreuve_2024.pdf"),
+        "csrf_token": _jeton(client, "/admin/ressource/ajouter"),
+    }, content_type="multipart/form-data")
+    verifier("Publication d'une épreuve ancienne (redirection)", reponse.status_code == 302)
+    page_epreuves = client.get("/epreuves").get_data(as_text=True)
+    verifier("L'épreuve apparaît dans la rubrique Épreuves",
+             "Session 2024" in page_epreuves)
+    page_accueil = client.get("/").get_data(as_text=True)
+    verifier("L'accueil affiche le carrousel et le choix du niveau",
+             "carrouselAccueil" in page_accueil and "Choisissez votre niveau" in page_accueil)
+
     # 7. Téléchargement : autorisé pour un membre, refusé pour un visiteur
     reponse = client.get(f"/telecharger/{ressource_id}")
     verifier("Téléchargement par un membre connecté",

@@ -12,6 +12,7 @@ from scipo import db, login_manager
 CATEGORIES = {
     "cours": "Cours",
     "td": "Travaux Dirigés",
+    "epreuves": "Épreuves",
     "bibliotheque": "Bibliothèque numérique",
     "oeuvres": "Œuvres",
 }

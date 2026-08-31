@@ -2,11 +2,21 @@
 from flask import (Blueprint, abort, current_app, flash, redirect, render_template,
                    request, send_from_directory, url_for)
 from flask_login import current_user, login_required
+from sqlalchemy import func
 
 from scipo import db
 from scipo.models import LEVELS, Commentaire, Favori, Resource
 
 main = Blueprint("main", __name__)
+
+# Rubriques accessibles depuis chaque niveau (section « Choisissez votre niveau »
+# de l'accueil) : (endpoint, clé de catégorie, libellé, icône Bootstrap)
+RUBRIQUES_NIVEAU = [
+    ("main.cours", "cours", "Cours", "bi-journal-bookmark-fill"),
+    ("main.td", "td", "Travaux Dirigés", "bi-pencil-square"),
+    ("main.epreuves", "epreuves", "Épreuves", "bi-file-earmark-ruled"),
+    ("main.oeuvres", "oeuvres", "Œuvres", "bi-book-half"),
+]
 
 
 @main.app_context_processor
@@ -69,11 +79,24 @@ def index():
         "documents": visibles.count(),
         "cours": visibles.filter_by(categorie="cours").count(),
         "td": visibles.filter_by(categorie="td").count(),
+        "epreuves": visibles.filter_by(categorie="epreuves").count(),
         "bibliotheque": visibles.filter_by(categorie="bibliotheque").count(),
         "oeuvres": visibles.filter_by(categorie="oeuvres").count(),
     }
     recents = visibles.order_by(Resource.created_at.desc()).limit(6).all()
-    return render_template("index.html", stats=stats, recents=recents)
+
+    # Accueil « par niveau » : nombre de documents (niveau, rubrique) pour les
+    # compteurs affichés sous chaque onglet Licence 1 → Master 1.
+    lignes = (visibles.with_entities(Resource.niveau, Resource.categorie, func.count())
+              .filter(Resource.niveau.in_(LEVELS))
+              .group_by(Resource.niveau, Resource.categorie).all())
+    par_niveau = {cle: {} for cle in LEVELS}
+    for niveau, categorie, nombre in lignes:
+        par_niveau[niveau][categorie] = nombre
+
+    return render_template("index.html", stats=stats, recents=recents,
+                           par_niveau=par_niveau, niveaux=list(LEVELS.items()),
+                           rubriques=RUBRIQUES_NIVEAU)
 
 
 @main.route("/cours")
@@ -86,6 +109,12 @@ def cours():
 def td():
     return _page_rubrique("td", "Travaux Dirigés",
                           "Séries de TD, énoncés et corrigés, par niveau")
+
+
+@main.route("/epreuves")
+def epreuves():
+    return _page_rubrique("epreuves", "Épreuves anciennes",
+                          "Les sujets des années passées pour vous entraîner en conditions réelles")
 
 
 @main.route("/bibliotheque")

@@ -107,6 +107,48 @@ h1, h2, h3, .hero-titre, .titre-section, .marque {
 .titre-section { font-weight: 800; color: var(--bleu-fonce); }
 .fond-doux { background: #e3eef8; }
 
+/* ---------- Carrousel d'accueil ---------- */
+.carrousel-accueil .carousel-item img {
+  width: 100%; height: min(78vh, 700px); object-fit: cover;
+}
+.carrousel-accueil .carousel-item::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(12, 31, 51, .8), rgba(12, 31, 51, .3) 46%, rgba(12, 31, 51, .9));
+}
+.carrousel-accueil .carousel-caption {
+  z-index: 2; text-align: left;
+  left: 7%; right: 7%; bottom: 13%;
+}
+.carrousel-accueil .carousel-indicators { margin-bottom: 1.1rem; }
+.pastille-logo {
+  display: inline-block; background: #fff; border-radius: 12px;
+  padding: .55rem 1.1rem; box-shadow: 0 8px 24px rgba(8, 22, 40, .35);
+}
+.pastille-logo img { height: 42px; width: auto; display: block; }
+.titre-diapo { font-weight: 800; font-size: clamp(1.7rem, 4vw, 3rem); line-height: 1.12; }
+.titre-diapo-2 { font-size: clamp(1.4rem, 3vw, 2.3rem); }
+.sous-titre-diapo { color: rgba(255, 255, 255, .92); font-size: 1.08rem; max-width: 640px; }
+.sur-titre-diapo {
+  text-transform: uppercase; letter-spacing: 2px;
+  font-size: .8rem; font-weight: 700; color: #9cc3e5;
+}
+@media (max-width: 767.98px) {
+  .carrousel-accueil .carousel-item img { height: 92vh; }
+  .carrousel-accueil .carousel-caption { bottom: 7%; }
+  .sous-titre-diapo { font-size: .95rem; }
+}
+
+/* ---------- Onglets de niveaux (accueil) ---------- */
+.onglets-niveaux { gap: .5rem; }
+.onglets-niveaux .nav-link {
+  border: 1.5px solid #d4e0ee; border-radius: 999px; background: #fff;
+  color: var(--bleu-fonce); font-weight: 700; padding: .5rem 1.5rem;
+}
+.onglets-niveaux .nav-link:hover { border-color: var(--bleu-fonce); color: var(--bleu-nuit); }
+.onglets-niveaux .nav-link.active {
+  background: var(--bleu-nuit); border-color: var(--bleu-nuit); color: #fff;
+}
+
 /* ---------- Cartes de rubriques ---------- */
 .carte-rubrique {
   display: block; text-align: center; text-decoration: none;

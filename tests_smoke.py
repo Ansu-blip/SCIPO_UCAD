@@ -10,7 +10,7 @@ def main():
     client = app.test_client()
     tout_ok = True
 
-    pages = ["/", "/cours", "/travaux-diriges", "/bibliotheque", "/oeuvres",
+    pages = ["/", "/cours", "/travaux-diriges", "/epreuves", "/bibliotheque", "/oeuvres",
              "/inscription", "/connexion", "/recherche?q=politique",
              "/page-inexistante"]
 
