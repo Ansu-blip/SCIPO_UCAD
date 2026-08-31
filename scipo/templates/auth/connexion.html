@@ -15,9 +15,9 @@
         <form method="post">
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
           <div class="mb-3">
-            <label for="email" class="form-label">Adresse email</label>
-            <input type="email" class="form-control" id="email" name="email" required autofocus
-                   placeholder="vous@exemple.com">
+            <label for="email" class="form-label">Adresse Gmail</label>
+            <input type="email" class="form-control" id="email" name="email" required
+                   placeholder="vous@gmail.com" autofocus>
           </div>
           <div class="mb-3">
             <label for="password" class="form-label">Mot de passe</label>
@@ -31,8 +31,10 @@
         </form>
 
         <p class="text-center mt-4 mb-0">
-          Pas encore de compte ?
-          <a href="{{ url_for('auth.inscription') }}" class="lien-or">Inscrivez-vous gratuitement</a>
+          {% if not current_user.is_authenticated %}
+            Pas encore de compte ?
+            <a href="{{ url_for('auth.inscription') }}" class="lien-or">Inscrivez-vous gratuitement</a>
+          {% endif %}
         </p>
       </div>
     </div>

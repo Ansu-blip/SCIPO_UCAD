@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block titre %}Code de vérification{% endblock %}
+
+{% block contenu %}
+<section class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="carte-auth p-4 p-md-5">
+        <div class="text-center mb-4">
+          <div class="icone-rond mx-auto mb-3"><i class="bi bi-shield-lock"></i></div>
+          <h1 class="h3 mb-1">Code de vérification</h1>
+          <p class="text-muted mb-0">
+            Un code à 6 chiffres vient d'être envoyé à<br><strong>{{ email }}</strong>.
+          </p>
+        </div>
+
+        <form method="post" autocomplete="off">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="mb-3">
+            <label for="code" class="form-label visually-hidden">Code à 6 chiffres</label>
+            <input type="text" class="form-control form-control-lg text-center champ-code"
+                   id="code" name="code" required inputmode="numeric" pattern="[0-9]{6}"
+                   maxlength="6" placeholder="••••••" autofocus>
+            <div class="form-text text-center">Valable <strong>10 minutes</strong> — 5 tentatives maximum.</div>
+          </div>
+          <button type="submit" class="btn btn-or btn-lg w-100">
+            <i class="bi bi-unlock me-2"></i>Vérifier et se connecter
+          </button>
+        </form>
+
+        <form method="post" action="{{ url_for('auth.renvoyer_otp') }}" class="text-center mt-4 mb-0">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          Vous n'avez rien reçu ? <button type="submit" class="btn btn-link lien-or p-0">Renvoyer un code</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

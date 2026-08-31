@@ -17,10 +17,11 @@ admin = Blueprint("admin", __name__)
 
 
 def admin_requis(fonction):
-    """Décorateur : accès réservé aux comptes administrateurs."""
+    """Décorateur : accès réservé aux administrateurs autorisés (liste ADMIN_EMAILS)."""
     @wraps(fonction)
     def decorateur(*args, **kwargs):
-        if not current_user.is_authenticated or not current_user.is_admin:
+        if not current_user.is_authenticated or not current_user.is_admin \
+                or current_user.email not in current_app.config["ADMIN_EMAILS"]:
             abort(403)
         return fonction(*args, **kwargs)
     return decorateur

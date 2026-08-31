@@ -27,3 +27,8 @@ with app.app_context():
         utilisateur.set_password(mot_de_passe)
         db.session.add(utilisateur)
         db.session.commit()
+
+        if email not in app.config["ADMIN_EMAILS"]:
+            print("⚠️  Attention : cet email n'est pas dans la liste des administrateurs autorisés.")
+            print("    L'accès à /admin restera bloqué (403) tant que vous n'aurez pas défini,")
+            print(f"    dans le WSGI ou l'environnement :  SCIPO_ADMIN_EMAILS=\"{email}\"")

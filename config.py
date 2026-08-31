@@ -31,6 +31,15 @@ class Config:
     # Types de fichiers acceptés
     ALLOWED_EXTENSIONS = {"pdf", "doc", "docx", "ppt", "pptx", "txt", "epub", "zip"}
 
+    # Comptes administrateurs autorisés (séparés par des virgules si plusieurs)
+    ADMIN_EMAILS = set(filter(None, os.environ.get(
+        "SCIPO_ADMIN_EMAILS", "ansoucamara668@gmail.com").replace(";", ",").split(",")))
+
+    # Code OTP à la connexion : actif uniquement si l'envoi d'emails est configuré
+    # (sans SMTP, le code ne pourrait pas être remis aux utilisateurs).
+    OTP_ACTIVE = bool(os.environ.get("SCIPO_SMTP_HOTE", "")) \
+        and os.environ.get("SCIPO_OTP_ACTIF", "1") != "0"
+
     # Envoi des emails de vérification (SMTP). Sans configuration, le lien de
     # vérification est simplement affiché dans la console (mode développement).
     SMTP_HOTE = os.environ.get("SCIPO_SMTP_HOTE", "")

@@ -9,7 +9,9 @@ de l'Université Cheikh Anta Diop de Dakar (UCAD)**.
 - **Travaux Dirigés** par niveau
 - **Bibliothèque numérique** (documents et ressources numériques)
 - **Œuvres** : livres, syllabus et articles de référence
-- Comptes étudiants (inscription avec email personnel, connexion sécurisée)
+- **Documents filtrés par niveau** : chaque étudiant ne voit que son niveau (et les documents ouverts à tous les niveaux)
+- Comptes étudiants (inscription avec adresse **Gmail** et choix du **niveau d'étude**)
+- **Connexion en deux étapes** : code à 6 chiffres envoyé par email (valable 10 minutes)
 - **Vérification de l'email** à l'inscription (lien signé valable 24 h)
 - Téléchargement **réservé aux membres connectés**, avec compteur
 - **Favoris** ⭐ : chaque étudiant enregistre ses documents préférés
@@ -68,9 +70,10 @@ SCIPO_UCAD/
 └── uploads/                # Documents téléversés (auto)
 ```
 
-## ✉️ Vérification des emails (optionnel)
+## ✉️ Emails : vérification et code de connexion (optionnel)
 
-Par défaut (développement), le lien de vérification est affiché dans la console du serveur.
+Par défaut (développement), le lien de vérification et le code de connexion sont
+affichés dans la console du serveur, et la connexion se fait par simple mot de passe.
 Pour envoyer réellement les emails, définissez ces variables d'environnement avant de lancer
 le site (exemple avec Gmail, qui demande un « mot de passe d'application ») :
 
@@ -81,6 +84,18 @@ $env:SCIPO_SMTP_UTILISATEUR = "votre.adresse@gmail.com"
 $env:SCIPO_SMTP_MOT_DE_PASSE = "mot-de-passe-d-application"
 $env:SCIPO_EMAIL_EXPEDITEUR = "SciPo UCAD <votre.adresse@gmail.com>"
 ```
+
+> 💡 Dès que le SMTP est configuré, **la connexion demande un code à 6 chiffres**
+> envoyé par email (valable 10 minutes, 5 tentatives maximum) — c'est pourquoi
+> l'inscription est réservée aux adresses **@gmail.com**. Pour désactiver ce code :
+> `$env:SCIPO_OTP_ACTIF = "0"`.
+>
+> 🔒 L'accès à l'administration est réservé aux emails listés dans
+> `SCIPO_ADMIN_EMAILS` (séparez plusieurs adresses par des virgules) :
+>
+> ```powershell
+> $env:SCIPO_ADMIN_EMAILS = "votre.adresse@gmail.com,autre.admin@gmail.com"
+> ```
 
 ## 🚀 Mise en ligne
 
@@ -144,6 +159,8 @@ ce projet. Deux fichiers prêts à l'emploi se trouvent dans le dossier `deploy/
 
 - [x] Favoris / signets pour les étudiants
 - [x] Vérification de l'email à l'inscription
+- [x] Connexion en deux étapes (code à 6 chiffres envoyé par email)
+- [x] Restriction des documents par niveau d'étude
 - [x] Espace commentaires et notations des documents
 - [x] Statistiques détaillées pour l'administrateur
 - [x] Mise en ligne — configuration et procédure prêtes (voir « 🚀 Mise en ligne »)

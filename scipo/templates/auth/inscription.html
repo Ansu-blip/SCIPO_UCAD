@@ -20,9 +20,22 @@
                    placeholder="Ex : Awa Diop" autofocus>
           </div>
           <div class="mb-3">
-            <label for="email" class="form-label">Votre email personnel</label>
+            <label for="email" class="form-label">Votre adresse Gmail</label>
             <input type="email" class="form-control" id="email" name="email" required
-                   placeholder="vous@exemple.com">
+                   pattern="[^@\s]+@gmail\.com" title="Une adresse se terminant par @gmail.com"
+                   placeholder="vous@gmail.com">
+            <div class="form-text">L'inscription se fait avec une adresse <strong>@gmail.com</strong> :
+              c'est là que vous recevrez votre code de connexion.</div>
+          </div>
+          <div class="mb-3">
+            <label for="niveau" class="form-label">Votre niveau d'étude</label>
+            <select class="form-select" id="niveau" name="niveau" required>
+              <option value="" selected>Choisissez votre niveau…</option>
+              {% for cle, nom in niveaux.items() %}
+                <option value="{{ cle }}">{{ nom }}</option>
+              {% endfor %}
+            </select>
+            <div class="form-text">Vous ne verrez que les documents de votre niveau (et ceux ouverts à tous).</div>
           </div>
           <div class="mb-3">
             <label for="password" class="form-label">Mot de passe <span class="text-muted">(min. 6 caractères)</span></label>

@@ -18,6 +18,21 @@ def _injecter_favoris():
     return {"favoris_ids": set()}
 
 
+def _ressource_visible(ressource):
+    """Un étudiant connecté n'accède qu'à son niveau et aux documents tous niveaux."""
+    if not current_user.is_authenticated or current_user.is_admin or not current_user.niveau:
+        return True
+    return ressource.niveau is None or ressource.niveau == current_user.niveau
+
+
+def _visible_pour(requete):
+    """Applique la restriction par niveau à une requête de ressources."""
+    if current_user.is_authenticated and not current_user.is_admin and current_user.niveau:
+        requete = requete.filter(
+            db.or_(Resource.niveau.is_(None), Resource.niveau == current_user.niveau))
+    return requete
+
+
 def _requete_ressources(categorie=None):
     """Construit la liste des ressources selon filtres (rubrique, niveau, recherche)."""
     requete = db.session.query(Resource)
@@ -38,7 +53,7 @@ def _requete_ressources(categorie=None):
                    Resource.auteur.ilike(motif))
         )
 
-    return requete.order_by(Resource.created_at.desc()).all()
+    return _visible_pour(requete).order_by(Resource.created_at.desc()).all()
 
 
 def _page_rubrique(categorie, titre, sous_titre, filtre_niveau=True):
@@ -49,14 +64,15 @@ def _page_rubrique(categorie, titre, sous_titre, filtre_niveau=True):
 
 @main.route("/")
 def index():
+    visibles = _visible_pour(db.session.query(Resource))
     stats = {
-        "documents": db.session.query(Resource).count(),
-        "cours": db.session.query(Resource).filter_by(categorie="cours").count(),
-        "td": db.session.query(Resource).filter_by(categorie="td").count(),
-        "bibliotheque": db.session.query(Resource).filter_by(categorie="bibliotheque").count(),
-        "oeuvres": db.session.query(Resource).filter_by(categorie="oeuvres").count(),
+        "documents": visibles.count(),
+        "cours": visibles.filter_by(categorie="cours").count(),
+        "td": visibles.filter_by(categorie="td").count(),
+        "bibliotheque": visibles.filter_by(categorie="bibliotheque").count(),
+        "oeuvres": visibles.filter_by(categorie="oeuvres").count(),
     }
-    recents = db.session.query(Resource).order_by(Resource.created_at.desc()).limit(6).all()
+    recents = visibles.order_by(Resource.created_at.desc()).limit(6).all()
     return render_template("index.html", stats=stats, recents=recents)
 
 
@@ -98,6 +114,8 @@ def recherche():
 @main.route("/ressource/<int:res_id>")
 def detail(res_id):
     ressource = db.get_or_404(Resource, res_id)
+    if not _ressource_visible(ressource):
+        abort(403)
     commentaires = (db.session.query(Commentaire)
                     .filter_by(resource_id=ressource.id)
                     .order_by(Commentaire.created_at.desc()).all())
@@ -109,6 +127,8 @@ def detail(res_id):
 def telecharger(res_id):
     """Téléchargement réservé aux membres connectés."""
     ressource = db.get_or_404(Resource, res_id)
+    if not _ressource_visible(ressource):
+        abort(403)
     ressource.telechargements += 1
     db.session.commit()
     return send_from_directory(current_app.config["UPLOAD_FOLDER"], ressource.nom_fichier,
@@ -122,7 +142,8 @@ def favoris():
     favoris_utilisateur = (db.session.query(Favori)
                            .filter_by(user_id=current_user.id)
                            .order_by(Favori.created_at.desc()).all())
-    ressources = [favori.ressource for favori in favoris_utilisateur]
+    ressources = [favori.ressource for favori in favoris_utilisateur
+                  if _ressource_visible(favori.ressource)]
     return render_template("favoris.html", titre_page="Mes favoris",
                            sous_titre=f"{len(ressources)} document(s) enregistré(s) pour y revenir vite")
 

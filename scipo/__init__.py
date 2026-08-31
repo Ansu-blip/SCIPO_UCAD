@@ -1,7 +1,7 @@
 """Fabrique de l'application SciPo UCAD (pattern application factory)."""
 import os
 
-from flask import Flask, render_template
+from flask import Flask, current_app, render_template
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
@@ -23,14 +23,20 @@ def _mettre_a_jour_base():
     db.create_all() ne modifie pas les tables existantes : on ajoute donc
     manuellement les nouvelles colonnes aux anciennes bases de données.
     """
+    colonnes_requises = {
+        # Les comptes créés avant la vérification d'email sont considérés comme vérifiés.
+        "email_verifie": "BOOLEAN NOT NULL DEFAULT 1",
+        "niveau": "VARCHAR(20)",
+        "otp_hash": "VARCHAR(256)",
+        "otp_expiration": "DATETIME",
+    }
     with db.engine.connect() as connexion:
-        colonnes = {ligne[1] for ligne in connexion.exec_driver_sql("PRAGMA table_info(users)")}
-    if "email_verifie" not in colonnes:
-        with db.engine.connect() as connexion:
-            # Les comptes créés avant cette fonctionnalité sont considérés comme vérifiés.
-            connexion.exec_driver_sql(
-                "ALTER TABLE users ADD COLUMN email_verifie BOOLEAN NOT NULL DEFAULT 1")
-            connexion.commit()
+        presentes = {ligne[1] for ligne in connexion.exec_driver_sql("PRAGMA table_info(users)")}
+    for nom, definition in colonnes_requises.items():
+        if nom not in presentes:
+            with db.engine.connect() as connexion:
+                connexion.exec_driver_sql(f"ALTER TABLE users ADD COLUMN {nom} {definition}")
+                connexion.commit()
 
 
 def _creer_admin_initial():
@@ -51,6 +57,9 @@ def _creer_admin_initial():
         print("⚠️ SCIPO_ADMIN_EMAIL / SCIPO_ADMIN_MOT_DE_PASSE invalides : "
               "administrateur initial non créé.")
         return
+    # L'administrateur créé automatiquement doit toujours accéder à /admin
+    current_app.config["ADMIN_EMAILS"] = set(current_app.config["ADMIN_EMAILS"]) | {email}
+
     if db.session.query(User).filter_by(email=email).first() is None:
         administrateur = User(email=email, is_admin=True, email_verifie=True)
         administrateur.set_password(mot_de_passe)

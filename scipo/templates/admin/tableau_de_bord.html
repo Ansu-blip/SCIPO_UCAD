@@ -135,7 +135,8 @@
           <h2 class="h6 fw-bold mb-3"><i class="bi bi-people me-2"></i>Derniers membres inscrits</h2>
           {% for m in derniers_membres %}
             <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-              <span class="petit text-truncate me-2">{{ m.nom_complet or m.email }}</span>
+              <span class="petit text-truncate me-2">{{ m.nom_complet or m.email }}
+                <span class="badge badge-niveau ms-1">{{ m.niveau_nom }}</span></span>
               {% if m.email_verifie %}
                 <span class="badge bg-success-subtle text-success-emphasis" title="Email vérifié"><i class="bi bi-patch-check"></i></span>
               {% else %}

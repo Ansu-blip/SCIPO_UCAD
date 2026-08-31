@@ -50,7 +50,14 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(256), nullable=False)
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
     email_verifie = db.Column(db.Boolean, default=False, nullable=False)
+    niveau = db.Column(db.String(20))                    # clé de LEVELS (admin = None)
+    otp_hash = db.Column(db.String(256))                 # code de connexion temporaire
+    otp_expiration = db.Column(db.DateTime)
     created_at = db.Column(db.DateTime, default=_maintenant)
+
+    @property
+    def niveau_nom(self):
+        return LEVELS.get(self.niveau, "Accès complet") if self.niveau else "Accès complet"
 
     def set_password(self, mot_de_passe):
         self.password_hash = generate_password_hash(mot_de_passe)

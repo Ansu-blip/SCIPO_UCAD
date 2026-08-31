@@ -148,6 +148,13 @@ h1, h2, .hero-titre, .titre-section, .marque { font-family: 'Playfair Display', 
 }
 
 /* ---------- Formulaires & pages centrées ---------- */
+/* Champ du code à 6 chiffres (connexion en deux étapes) */
+.champ-code {
+  font-size: 1.6rem; font-weight: 700; text-align: center;
+  /* letter-spacing espace les chiffres ; text-indent identique recentre l'ensemble */
+  letter-spacing: .55em; text-indent: .55em;
+}
+.carte-auth { background: #fff; border-radius: 18px; box-shadow: 0 8px 30px rgba(20, 32, 60, .09); }
 .carte-auth { background: #fff; border-radius: 18px; box-shadow: 0 8px 30px rgba(20, 32, 60, .09); }
 .icone-rond {
   width: 74px; height: 74px; font-size: 2.1rem; color: var(--or);

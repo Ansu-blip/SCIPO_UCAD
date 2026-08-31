@@ -10,9 +10,12 @@ import os
 import re
 import shutil
 import tempfile
+from datetime import datetime, timedelta, timezone
 
 from config import Config
 from itsdangerous import URLSafeTimedSerializer
+from werkzeug.security import generate_password_hash
+
 from scipo import _creer_admin_initial, create_app, db
 from scipo.auth import SALT_VERIFICATION
 from scipo.models import Commentaire, Resource, User
@@ -22,6 +25,8 @@ class ConfigTest(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite://"   # base de données en mémoire
     SECRET_KEY = "cle-de-test"
+    # Les administrateurs utilisés dans les tests doivent figurer dans la liste autorisée
+    ADMIN_EMAILS = {"awa.test@gmail.com", "chef@exemple.sn"}
 
 
 def _jeton(client, url):
@@ -48,9 +53,10 @@ def main():
     # 1. Inscription d'un étudiant
     reponse = client.post("/inscription", data={
         "nom_complet": "Awa Test",
-        "email": "awa.test@exemple.sn",
+        "email": "awa.test@gmail.com",
         "password": "motdepasse123",
         "password2": "motdepasse123",
+        "niveau": "licence1",
         "csrf_token": _jeton(client, "/inscription"),
     })
     verifier("Inscription d'un étudiant (redirection)", reponse.status_code == 302)
@@ -60,27 +66,79 @@ def main():
     verifier("La bannière « email non vérifié » apparaît", "pas encore été vérifiée" in accueil)
 
     with app.app_context():
-        utilisateur = db.session.query(User).filter_by(email="awa.test@exemple.sn").first()
+        utilisateur = db.session.query(User).filter_by(email="awa.test@gmail.com").first()
         verifier("Le nouvel email est enregistré comme non vérifié",
                  utilisateur.email_verifie is False)
 
     # 1bis. Vérification de l'email via le lien signé envoyé « par email »
     jeton_email = URLSafeTimedSerializer(
-        "cle-de-test", salt=SALT_VERIFICATION).dumps("awa.test@exemple.sn")
+        "cle-de-test", salt=SALT_VERIFICATION).dumps("awa.test@gmail.com")
     verifier("Le lien de vérification signé fonctionne",
              client.get(f"/verification/{jeton_email}").status_code == 302)
     with app.app_context():
-        utilisateur = db.session.query(User).filter_by(email="awa.test@exemple.sn").first()
+        utilisateur = db.session.query(User).filter_by(email="awa.test@gmail.com").first()
         verifier("L'email est maintenant marqué vérifié", utilisateur.email_verifie is True)
+
+    # 1ter. L'inscription est réservée aux adresses Gmail (le code de connexion y est envoyé)
+    verifier("Déconnexion pour soumettre le formulaire public",
+             client.get("/deconnexion").status_code == 302)
+    with app.app_context():
+        membres_avant = db.session.query(User).count()
+    reponse = client.post("/inscription", data={
+        "nom_complet": "Sans Gmail",
+        "email": "autre@exemple.sn",
+        "password": "motdepasse123",
+        "password2": "motdepasse123",
+        "niveau": "licence1",
+        "csrf_token": _jeton(client, "/inscription"),
+    })
+    with app.app_context():
+        verifier("Inscription refusée sans adresse Gmail",
+                 reponse.status_code == 200 and db.session.query(User).count() == membres_avant)
 
     # 2. Déconnexion puis reconnexion
     verifier("Déconnexion", client.get("/deconnexion").status_code == 302)
     reponse = client.post("/connexion", data={
-        "email": "awa.test@exemple.sn",
+        "email": "awa.test@gmail.com",
         "password": "motdepasse123",
         "csrf_token": _jeton(client, "/connexion"),
     })
     verifier("Reconnexion avec les mêmes identifiants", reponse.status_code == 302)
+
+    # 2bis. Connexion en deux étapes : code OTP à 6 chiffres envoyé par email
+    app.config["OTP_ACTIVE"] = True
+    verifier("Déconnexion avant le test OTP", client.get("/deconnexion").status_code == 302)
+    reponse = client.post("/connexion", data={
+        "email": "awa.test@gmail.com",
+        "password": "motdepasse123",
+        "csrf_token": _jeton(client, "/connexion"),
+    })
+    verifier("Mot de passe correct → étape du code OTP demandée",
+             reponse.status_code == 302 and "/connexion/otp" in reponse.headers.get("Location", ""))
+    verifier("La page du code OTP s'affiche", client.get("/connexion/otp").status_code == 200)
+
+    # Un mauvais code laisse l'étudiant en attente (non connecté)
+    reponse = client.post("/connexion/otp", data={
+        "code": "000000",
+        "csrf_token": _jeton(client, "/connexion/otp"),
+    })
+    verifier("Un mauvais code est refusé", reponse.status_code == 200
+             and client.get("/connexion").status_code == 200)
+
+    # Le bon code (celui « envoyé par email », injecté ici en base) connecte l'étudiant
+    with app.app_context():
+        utilisateur = db.session.query(User).filter_by(email="awa.test@gmail.com").first()
+        utilisateur.otp_hash = generate_password_hash("654321")
+        utilisateur.otp_expiration = (datetime.now(timezone.utc).replace(tzinfo=None)
+                                      + timedelta(minutes=10))
+        db.session.commit()
+    reponse = client.post("/connexion/otp", data={
+        "code": "654321",
+        "csrf_token": _jeton(client, "/connexion/otp"),
+    })
+    verifier("Le bon code connecte l'étudiant", reponse.status_code == 302
+             and client.get("/connexion").status_code == 302)
+    app.config["OTP_ACTIVE"] = False   # retour à la connexion directe pour la suite
 
     # 3. Un simple étudiant n'a pas accès à l'administration
     verifier("Administration interdite aux étudiants (403)",
@@ -88,7 +146,7 @@ def main():
 
     # 4. Promotion en administrateur puis accès au tableau de bord
     with app.app_context():
-        utilisateur = db.session.query(User).filter_by(email="awa.test@exemple.sn").first()
+        utilisateur = db.session.query(User).filter_by(email="awa.test@gmail.com").first()
         utilisateur.is_admin = True
         db.session.commit()
     verifier("Tableau de bord accessible à l'administrateur",
@@ -128,6 +186,38 @@ def main():
     visiteur = app.test_client()   # nouveau client = non connecté
     verifier("Téléchargement refusé aux visiteurs (redirection connexion)",
              visiteur.get(f"/telecharger/{ressource_id}").status_code == 302)
+
+    # 7bis. Document réservé au Master 1 : chaque étudiant ne voit que son niveau
+    reponse = client.post("/admin/ressource/ajouter", data={
+        "titre": "Méthodologie de la recherche — Master",
+        "categorie": "cours",
+        "niveau": "master1",
+        "auteur": "Pr. Test",
+        "description": "Document réservé aux étudiants de Master 1.",
+        "fichier": (io.BytesIO(b"%PDF-1.4 master"), "cours_master.pdf"),
+        "csrf_token": _jeton(client, "/admin/ressource/ajouter"),
+    }, content_type="multipart/form-data")
+    verifier("Publication d'un document réservé au Master 1", reponse.status_code == 302)
+
+    etudiant_master = app.test_client()
+    reponse = etudiant_master.post("/inscription", data={
+        "nom_complet": "Moussa Test",
+        "email": "moussa.test@gmail.com",
+        "password": "motdepasse123",
+        "password2": "motdepasse123",
+        "niveau": "master1",
+        "csrf_token": _jeton(etudiant_master, "/inscription"),
+    })
+    verifier("Inscription d'un étudiant en Master 1", reponse.status_code == 302)
+    page_cours_master = etudiant_master.get("/cours").get_data(as_text=True)
+    verifier("Le Master 1 voit le document de son niveau",
+             "Méthodologie de la recherche" in page_cours_master)
+    verifier("Le Master 1 ne voit pas le document de Licence 1",
+             "Introduction à la Science Politique" not in page_cours_master)
+    with app.app_context():
+        id_licence1 = db.session.query(Resource).filter_by(niveau="licence1").first().id
+    verifier("Détail d'un document hors niveau interdit (403)",
+             etudiant_master.get(f"/ressource/{id_licence1}").status_code == 403)
 
     # 8. Favoris : ajout, consultation, retrait puis remise (pour la suite)
     jeton_formulaire = _jeton(client, f"/ressource/{ressource_id}")
@@ -214,12 +304,12 @@ def main():
                      admin is not None and admin.is_admin and admin.email_verifie)
 
         # Un compte déjà existant n'est jamais dupliqué ni écrasé
-        os.environ["SCIPO_ADMIN_EMAIL"] = "awa.test@exemple.sn"
+        os.environ["SCIPO_ADMIN_EMAIL"] = "awa.test@gmail.com"
         os.environ["SCIPO_ADMIN_MOT_DE_PASSE"] = "autre-secret-123"
         with app.app_context():
             _creer_admin_initial()
             verifier("Aucune duplication si le compte admin existe déjà",
-                     db.session.query(User).filter_by(email="awa.test@exemple.sn").count() == 1)
+                     db.session.query(User).filter_by(email="awa.test@gmail.com").count() == 1)
     finally:
         os.environ.pop("SCIPO_ADMIN_EMAIL", None)
         os.environ.pop("SCIPO_ADMIN_MOT_DE_PASSE", None)
