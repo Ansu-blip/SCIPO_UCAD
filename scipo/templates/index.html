@@ -13,7 +13,7 @@
     <button type="button" data-bs-target="#carrouselAccueil" data-bs-slide-to="4" aria-label="Diapositive 5"></button>
   </div>
   <div class="carousel-inner">
-    <div class="carousel-item active">
+    <div class="carousel-item active" data-bs-interval="3500">
       <img src="{{ url_for('static', filename='img/carrousel/diapo1.jpg') }}"
            alt="Rassemblement citoyen avec des drapeaux">
       <div class="carousel-caption">
@@ -27,7 +27,7 @@
         </div>
       </div>
     </div>
-    <div class="carousel-item">
+    <div class="carousel-item" data-bs-interval="3500">
       <img src="{{ url_for('static', filename='img/carrousel/diapo2.jpg') }}"
            alt="Bâtiment historique d'une université" loading="lazy">
       <div class="carousel-caption">
@@ -36,7 +36,7 @@
         <a href="{{ url_for('main.cours') }}" class="btn btn-contour-clair mt-3">Découvrir les cours <i class="bi bi-arrow-right ms-1"></i></a>
       </div>
     </div>
-    <div class="carousel-item">
+    <div class="carousel-item" data-bs-interval="3500">
       <img src="{{ url_for('static', filename='img/carrousel/diapo3.jpg') }}"
            alt="Notes et documents de révision sur une table" loading="lazy">
       <div class="carousel-caption">
@@ -45,7 +45,7 @@
         <a href="{{ url_for('main.epreuves') }}" class="btn btn-contour-clair mt-3">Voir les épreuves <i class="bi bi-arrow-right ms-1"></i></a>
       </div>
     </div>
-    <div class="carousel-item">
+    <div class="carousel-item" data-bs-interval="3500">
       <img src="{{ url_for('static', filename='img/carrousel/diapo4.jpg') }}"
            alt="Rayonnages d'une grande bibliothèque" loading="lazy">
       <div class="carousel-caption">
@@ -54,7 +54,7 @@
         <a href="{{ url_for('main.bibliotheque') }}" class="btn btn-contour-clair mt-3">Explorer la bibliothèque <i class="bi bi-arrow-right ms-1"></i></a>
       </div>
     </div>
-    <div class="carousel-item">
+    <div class="carousel-item" data-bs-interval="3500">
       <img src="{{ url_for('static', filename='img/carrousel/diapo5.jpg') }}"
            alt="Amphithéâtre pendant une conférence" loading="lazy">
       <div class="carousel-caption">
@@ -158,4 +158,24 @@
     </div>
   </div>
 </section>
+
+<script>
+/* Parallaxe légère : la légende suit doucement la souris (désactivé sur tactile) */
+(() => {
+  const carrousel = document.getElementById('carrouselAccueil');
+  if (!carrousel || window.matchMedia('(hover: none)').matches) return;
+  const legendes = carrousel.querySelectorAll('.carousel-caption');
+  carrousel.addEventListener('mousemove', (e) => {
+    const dx = e.clientX / window.innerWidth - 0.5;
+    const dy = e.clientY / window.innerHeight - 0.5;
+    legendes.forEach((legende) => {
+      legende.style.transform =
+        `translate(${(-dx * 16).toFixed(1)}px, ${(-dy * 10).toFixed(1)}px)`;
+    });
+  });
+  carrousel.addEventListener('mouseleave', () => {
+    legendes.forEach((legende) => { legende.style.transform = ''; });
+  });
+})();
+</script>
 {% endblock %}
