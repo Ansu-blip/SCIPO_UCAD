@@ -128,7 +128,7 @@ def connexion_otp():
         restantes = ESSAIS_OTP_MAX - (essais + 1)
         flash(f"Code invalide ou expiré. Il vous reste {restantes} tentative(s).", "danger")
 
-    return render_template("auth/otp.html")
+    return render_template("auth/otp.html", email=utilisateur.email)
 
 
 @auth.route("/connexion/otp/renvoyer", methods=["POST"])

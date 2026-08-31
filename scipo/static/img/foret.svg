@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Forêt bleue stylisée avec un cerf">
+  <defs>
+    <linearGradient id="ciel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c3d9ec"/>
+      <stop offset=".5" stop-color="#a3c1dd"/>
+      <stop offset="1" stop-color="#7fa3c4"/>
+    </linearGradient>
+    <radialGradient id="lumiere" cx=".5" cy=".42" r=".75">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".5"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vignette" cx=".5" cy=".5" r=".72">
+      <stop offset=".62" stop-color="#0c1f33" stop-opacity="0"/>
+      <stop offset="1" stop-color="#0c1f33" stop-opacity=".4"/>
+    </radialGradient>
+    <g id="touffe">
+      <path d="M-18,0 C-24,-24 -18,-46 -8,-62 C-5,-40 -3,-18 0,0 Z"/>
+      <path d="M-2,0 C-4,-30 2,-52 12,-68 C13,-44 10,-20 8,0 Z"/>
+      <path d="M8,0 C12,-24 20,-42 32,-54 C25,-30 20,-12 18,0 Z"/>
+    </g>
+  </defs>
+
+  <rect width="1200" height="700" fill="url(#ciel)"/>
+  <rect width="1200" height="700" fill="url(#lumiere)"/>
+
+  <!-- canopée lointaine -->
+  <g fill="#35608d" opacity=".55">
+    <ellipse cx="90" cy="40" rx="220" ry="110"/>
+    <ellipse cx="360" cy="10" rx="240" ry="100"/>
+    <ellipse cx="650" cy="30" rx="260" ry="105"/>
+    <ellipse cx="940" cy="0" rx="240" ry="110"/>
+    <ellipse cx="1160" cy="50" rx="200" ry="100"/>
+  </g>
+
+  <!-- troncs lointains -->
+  <g fill="#6f95bb" opacity=".65">
+    <path d="M95,0 L112,0 L104,700 L84,700 Z"/>
+    <path d="M235,0 L252,0 L248,700 L228,700 Z"/>
+    <path d="M420,0 L434,0 L430,700 L412,700 Z"/>
+    <path d="M585,0 L600,0 L596,700 L578,700 Z"/>
+    <path d="M760,0 L776,0 L774,700 L754,700 Z"/>
+    <path d="M935,0 L950,0 L948,700 L928,700 Z"/>
+    <path d="M1090,0 L1106,0 L1104,700 L1084,700 Z"/>
+  </g>
+  <g fill="#6f95bb" opacity=".55">
+    <path d="M243,150 L150,70 L160,60 L252,142 Z"/>
+    <path d="M590,180 L680,95 L690,105 L600,190 Z"/>
+    <path d="M940,120 L850,55 L858,45 L950,112 Z"/>
+  </g>
+
+  <!-- canopée moyenne -->
+  <g fill="#1d3d61" opacity=".9">
+    <ellipse cx="180" cy="55" rx="240" ry="115"/>
+    <ellipse cx="520" cy="20" rx="260" ry="110"/>
+    <ellipse cx="860" cy="45" rx="250" ry="115"/>
+    <ellipse cx="1120" cy="20" rx="220" ry="105"/>
+    <ellipse cx="70" cy="200" rx="120" ry="70"/>
+    <ellipse cx="1150" cy="190" rx="130" ry="70"/>
+  </g>
+
+  <!-- troncs moyens -->
+  <g fill="#2c5178">
+    <path d="M175,0 L210,0 L198,700 L150,700 Z"/>
+    <path d="M505,0 L536,0 L528,700 L486,700 Z"/>
+    <path d="M845,0 L878,0 L872,700 L826,700 Z"/>
+    <path d="M1040,0 L1068,0 L1066,700 L1024,700 Z"/>
+    <path d="M520,170 L610,80 L622,92 L532,182 Z"/>
+    <path d="M860,150 L770,70 L780,58 L872,140 Z"/>
+    <path d="M190,210 L280,130 L290,142 L200,222 Z"/>
+  </g>
+
+  <!-- canopée avant -->
+  <g fill="#0e2136">
+    <ellipse cx="60" cy="35" rx="260" ry="120"/>
+    <ellipse cx="330" cy="0" rx="250" ry="105"/>
+    <ellipse cx="620" cy="40" rx="270" ry="115"/>
+    <ellipse cx="900" cy="5" rx="260" ry="110"/>
+    <ellipse cx="1165" cy="45" rx="230" ry="115"/>
+    <ellipse cx="240" cy="120" rx="140" ry="60"/>
+    <ellipse cx="760" cy="130" rx="130" ry="55"/>
+    <ellipse cx="1050" cy="150" rx="120" ry="55"/>
+  </g>
+
+  <!-- troncs proches -->
+  <g fill="#0c1f33">
+    <path d="M335,0 L375,0 L360,700 L305,700 Z"/>
+    <path d="M700,0 L742,0 L736,700 L682,700 Z"/>
+    <path d="M1010,0 L1052,0 L1058,700 L1004,700 Z"/>
+    <path d="M355,150 L240,55 L252,42 L368,138 Z"/>
+    <path d="M718,120 L820,45 L830,58 L728,132 Z"/>
+  </g>
+
+  <!-- herbe arrière -->
+  <path fill="#1d3d61" d="M0,668 C120,652 240,664 360,658 C500,652 640,666 780,660 C920,654 1060,666 1200,656 L1200,700 L0,700 Z"/>
+
+  <!-- cerf -->
+  <g>
+    <g stroke="#0c1f33" stroke-linecap="round" fill="none">
+      <path d="M478,590 L468,668" stroke-width="17"/>
+      <path d="M512,596 L512,670" stroke-width="17"/>
+      <path d="M548,594 L558,668" stroke-width="17"/>
+      <path d="M576,586 L592,664" stroke-width="17"/>
+      <path d="M497,556 C486,516 474,486 458,460" stroke-width="30"/>
+      <path d="M452,444 C444,410 430,386 410,366" stroke-width="8"/>
+      <path d="M450,432 C436,412 420,402 400,398" stroke-width="8"/>
+      <path d="M456,440 C462,406 474,382 496,366" stroke-width="8"/>
+      <path d="M460,426 C474,408 488,398 508,394" stroke-width="8"/>
+    </g>
+    <ellipse cx="527" cy="570" rx="90" ry="50" fill="#0c1f33"/>
+    <ellipse cx="448" cy="446" rx="27" ry="19" fill="#0c1f33" transform="rotate(-28 448 446)"/>
+    <path d="M428,436 l-20,-8 14,17 z" fill="#0c1f33"/>
+    <path d="M458,426 l8,-20 8,17 z" fill="#0c1f33"/>
+    <path d="M470,418 l16,-16 2,18 z" fill="#0c1f33"/>
+    <path d="M610,558 l20,-12 -7,21 z" fill="#0c1f33"/>
+  </g>
+
+  <!-- herbe avant -->
+  <path fill="#0c1f33" d="M0,700 L0,676 C60,672 120,678 180,675 C260,671 340,679 420,676 C500,673 580,679 660,676 C740,673 820,679 900,676 C980,673 1060,679 1140,676 L1200,675 L1200,700 Z"/>
+  <g fill="#0c1f33">
+    <use href="#touffe" transform="translate(40,690)"/>
+    <use href="#touffe" transform="translate(130,696) scale(1.3)"/>
+    <use href="#touffe" transform="translate(230,688) scale(.9)"/>
+    <use href="#touffe" transform="translate(330,696) scale(1.15)"/>
+    <use href="#touffe" transform="translate(430,690)"/>
+    <use href="#touffe" transform="translate(540,696) scale(1.35)"/>
+    <use href="#touffe" transform="translate(640,688) scale(.85)"/>
+    <use href="#touffe" transform="translate(740,695) scale(1.2)"/>
+    <use href="#touffe" transform="translate(850,690)"/>
+    <use href="#touffe" transform="translate(950,696) scale(1.3)"/>
+    <use href="#touffe" transform="translate(1050,688) scale(.9)"/>
+    <use href="#touffe" transform="translate(1150,695) scale(1.2)"/>
+  </g>
+
+  <rect width="1200" height="700" fill="url(#vignette)"/>
+</svg>

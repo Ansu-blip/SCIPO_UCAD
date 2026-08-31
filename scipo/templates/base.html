@@ -9,10 +9,10 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
+<body class="{% block classe_body %}{% endblock %}">
 
 <nav class="navbar navbar-expand-lg navbar-dark navbar-scipo sticky-top">
   <div class="container">
@@ -51,7 +51,7 @@
             </ul>
           </li>
         {% else %}
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.connexion') }}">Connexion</a></li>
+          <li class="nav-item ms-lg-2"><a class="btn btn-contour-clair btn-sm px-3" href="{{ url_for('auth.connexion') }}">Connexion</a></li>
           <li class="nav-item ms-lg-2 my-1"><a class="btn btn-or btn-sm px-3" href="{{ url_for('auth.inscription') }}">S'inscrire</a></li>
         {% endif %}
       </ul>

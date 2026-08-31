@@ -1,17 +1,20 @@
 /* ============================================================
-   SciPo UCAD — Feuille de style principale
-   Thème académique : bleu nuit & or
+   Science Po UCAD — Feuille de style principale
+   Thème « forêt bleue » : verre dépoli & bleu nuit
    ============================================================ */
 
 :root {
-  --bleu-nuit: #0e1729;
-  --bleu-fonce: #16233f;
-  --bleu: #1e3a6d;
-  --or: #c9a227;
-  --or-clair: #e8c65a;
-  --or-pale: #f7efd8;
-  --fond: #f6f7fb;
-  --texte: #232a35;
+  --bleu-nuit: #0c1f33;   /* silhouettes, boutons, pieds de page */
+  --bleu-fonce: #16324f;  /* titres, soulignés des champs */
+  --bleu: #24466b;
+  --bleu-clair: #35608d;
+  --glace: #cfe4f5;       /* accents clairs */
+  --glace-pale: #e9f3fb;
+  --or: #e0b73e;          /* réservé aux étoiles et favoris */
+  --fond: #eef4fa;
+  --texte: #22303f;
+  --verre: linear-gradient(160deg, rgba(255, 255, 255, .38), rgba(208, 229, 246, .16));
+  --verre-bord: rgba(255, 255, 255, .55);
 }
 
 * { font-family: 'Inter', system-ui, sans-serif; }
@@ -25,84 +28,107 @@ body {
 }
 main { flex: 1 0 auto; }
 
-h1, h2, .hero-titre, .titre-section, .marque { font-family: 'Playfair Display', Georgia, serif; }
+h1, h2, h3, .hero-titre, .titre-section, .marque {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 800;
+}
+
+/* ---------- Pages « forêt » (connexion, inscription, code) ---------- */
+.page-foret {
+  background: url("../img/foret.svg") center/cover no-repeat fixed var(--bleu-nuit);
+}
+.page-foret main {
+  flex: 1 0 auto;
+  display: flex; flex-direction: column;
+  min-height: 100vh; padding: 100px 16px 48px;
+}
+.page-foret main > section { margin: auto 0; }   /* carte centrée verticalement */
+.page-foret .footer-scipo { display: none; }
+.page-foret .navbar-scipo {
+  position: absolute !important;   /* la navbar flotte sur le décor */
+  background: transparent; box-shadow: none;
+}
+.page-foret .navbar-collapse {   /* menu déroulé lisible sur mobile */
+  background: rgba(12, 31, 51, .93); border-radius: 12px;
+  padding: .75rem 1rem; margin-top: .5rem;
+}
 
 /* ---------- Barre de navigation ---------- */
 .navbar-scipo {
-  background: linear-gradient(135deg, var(--bleu-nuit), var(--bleu));
-  box-shadow: 0 2px 14px rgba(14, 23, 41, .35);
+  background: linear-gradient(135deg, var(--bleu-nuit), var(--bleu-clair));
+  box-shadow: 0 2px 14px rgba(12, 31, 51, .35);
 }
 .marque { font-size: 1.45rem; font-weight: 800; color: #fff !important; letter-spacing: .3px; }
-.marque span { color: var(--or-clair); }
-.navbar-scipo .nav-link { color: rgba(255, 255, 255, .82); font-weight: 500; }
+.marque span { color: #9cc3e5; }
+.navbar-scipo .nav-link { color: rgba(255, 255, 255, .85); font-weight: 500; }
 .navbar-scipo .nav-link:hover,
-.navbar-scipo .nav-link.actif { color: var(--or-clair); }
-.ma-recherche .form-control {
-  border: none; min-width: 200px;
-  border-radius: 20px 0 0 20px;
-}
-.ma-recherche .btn { border-radius: 0 20px 20px 0; }
+.navbar-scipo .nav-link.actif { color: #fff; }
+.ma-recherche .form-control { border: none; min-width: 200px; border-radius: 20px 0 0 20px; }
+.ma-recherche .btn-or { background: var(--glace); color: var(--bleu-nuit); border-radius: 0 20px 20px 0; }
+.ma-recherche .btn-or:hover { background: #fff; color: var(--bleu-nuit); }
 
 /* ---------- Boutons ---------- */
 .btn-or {
-  background: linear-gradient(135deg, var(--or), var(--or-clair));
-  border: none; color: var(--bleu-nuit); font-weight: 600;
+  background: var(--bleu-nuit); border: none; color: #fff; font-weight: 600; border-radius: 10px;
 }
-.btn-or:hover { background: linear-gradient(135deg, var(--or-clair), var(--or)); color: var(--bleu-nuit); }
-.btn-contour { border: 2px solid var(--bleu); color: var(--bleu); font-weight: 600; }
-.btn-contour:hover { background: var(--bleu); color: #fff; }
-.btn-contour-clair { border: 2px solid rgba(255, 255, 255, .7); color: #fff; font-weight: 600; }
+.btn-or:hover { background: var(--bleu-fonce); color: #fff; }
+.btn-contour { border: 2px solid var(--bleu-fonce); color: var(--bleu-fonce); font-weight: 600; }
+.btn-contour:hover { background: var(--bleu-fonce); color: #fff; }
+.btn-contour-clair {
+  border: 2px solid rgba(255, 255, 255, .8); color: #fff; font-weight: 600; border-radius: 10px;
+}
 .btn-contour-clair:hover { background: #fff; color: var(--bleu-nuit); }
-.btn-contour-or { border: 1.5px solid var(--or); color: var(--or); font-weight: 600; }
-.btn-contour-or:hover { background: var(--or); color: var(--bleu-nuit); }
-.btn-lien { color: var(--bleu); font-weight: 600; }
+.btn-contour-or { border: 1.5px solid var(--bleu-fonce); color: var(--bleu-fonce); font-weight: 600; }
+.btn-contour-or:hover { background: var(--bleu-fonce); color: #fff; }
+.btn-lien { color: var(--bleu-fonce); font-weight: 600; }
 
 /* ---------- Hero (accueil) ---------- */
 .hero {
   background:
-    radial-gradient(circle at 85% 15%, rgba(201, 162, 39, .18), transparent 45%),
-    linear-gradient(135deg, var(--bleu-nuit) 0%, var(--bleu-fonce) 55%, var(--bleu) 100%);
+    linear-gradient(180deg, rgba(12, 31, 51, .68), rgba(12, 31, 51, .82)),
+    url("../img/foret.svg") center/cover no-repeat;
   color: #fff;
 }
-.badge-hero { background: rgba(201, 162, 39, .18); color: var(--or-clair); border: 1px solid rgba(201, 162, 39, .5); }
+.badge-hero { background: rgba(255, 255, 255, .14); color: var(--glace-pale); border: 1px solid rgba(255, 255, 255, .4); }
 .hero-titre { font-size: clamp(1.9rem, 4vw, 3rem); font-weight: 800; line-height: 1.15; }
-.texte-or { color: var(--or-clair); }
-.hero-texte { color: rgba(255, 255, 255, .85); font-size: 1.1rem; max-width: 540px; }
+.texte-or { color: #a9cdf0; }
+.hero-texte { color: rgba(255, 255, 255, .88); font-size: 1.1rem; max-width: 540px; }
 .hero-embleme {
   width: 230px; height: 230px; margin: 0 auto;
   display: flex; align-items: center; justify-content: center;
-  font-size: 7rem; color: var(--or-clair);
-  border: 2px solid rgba(201, 162, 39, .45); border-radius: 50%;
-  background: rgba(255, 255, 255, .04);
-  box-shadow: 0 0 0 18px rgba(201, 162, 39, .07);
+  font-size: 7rem; color: var(--glace-pale);
+  border: 1px solid rgba(255, 255, 255, .45); border-radius: 50%;
+  background: rgba(255, 255, 255, .08);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 0 0 18px rgba(255, 255, 255, .05);
 }
 
 /* ---------- Titres & sections ---------- */
-.titre-section { font-weight: 700; color: var(--bleu-fonce); }
-.fond-doux { background: #eef1f7; }
+.titre-section { font-weight: 800; color: var(--bleu-fonce); }
+.fond-doux { background: #e3eef8; }
 
 /* ---------- Cartes de rubriques ---------- */
 .carte-rubrique {
   display: block; text-align: center; text-decoration: none;
   background: #fff; border-radius: 16px; padding: 2rem 1.2rem;
-  box-shadow: 0 4px 16px rgba(20, 32, 60, .07);
+  box-shadow: 0 4px 16px rgba(12, 31, 51, .08);
   transition: transform .25s ease, box-shadow .25s ease;
   color: var(--texte); height: 100%;
 }
-.carte-rubrique:hover { transform: translateY(-6px); box-shadow: 0 12px 28px rgba(20, 32, 60, .14); }
+.carte-rubrique:hover { transform: translateY(-6px); box-shadow: 0 12px 28px rgba(12, 31, 51, .16); }
 .carte-rubrique h3 { font-size: 1.05rem; font-weight: 700; color: var(--bleu-fonce); margin: .9rem 0 .3rem; }
-.carte-rubrique p { color: var(--or); font-weight: 600; margin: 0; }
+.carte-rubrique p { color: var(--bleu-clair); font-weight: 600; margin: 0; }
 .icone-rubrique {
   width: 66px; height: 66px; margin: 0 auto;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.8rem; color: var(--or);
-  background: var(--or-pale); border-radius: 50%;
+  font-size: 1.8rem; color: var(--bleu-fonce);
+  background: var(--glace-pale); border-radius: 50%;
 }
 
 /* ---------- Cartes de documents ---------- */
-.carte-ressource { border: none; border-radius: 14px; box-shadow: 0 4px 16px rgba(20, 32, 60, .07);
+.carte-ressource { border: none; border-radius: 14px; box-shadow: 0 4px 16px rgba(12, 31, 51, .08);
                    transition: transform .25s ease, box-shadow .25s ease; }
-.carte-ressource:hover { transform: translateY(-4px); box-shadow: 0 12px 26px rgba(20, 32, 60, .14); }
+.carte-ressource:hover { transform: translateY(-4px); box-shadow: 0 12px 26px rgba(12, 31, 51, .16); }
 .card-titre { color: var(--bleu-fonce); }
 .petit { font-size: .875rem; }
 .icone-fichier {
@@ -111,98 +137,143 @@ h1, h2, .hero-titre, .titre-section, .marque { font-family: 'Playfair Display', 
 }
 .icone-fichier.grande { width: 62px; height: 62px; font-size: 2rem; }
 .badge-niveau { background: var(--bleu-fonce); color: #fff; font-weight: 500; }
-.badge-or { background: var(--or); color: var(--bleu-nuit); font-weight: 600; }
+.badge-or { background: var(--bleu-nuit); color: #fff; font-weight: 600; }
 
 /* ---------- Filtres de niveau ---------- */
 .filtres { display: flex; flex-wrap: wrap; gap: .55rem; }
 .pill {
   padding: .45rem 1.1rem; border-radius: 999px; text-decoration: none;
   background: #fff; color: var(--bleu-fonce); font-weight: 600; font-size: .9rem;
-  border: 1.5px solid #dde3ee; transition: all .2s ease;
+  border: 1.5px solid #d4e0ee; transition: all .2s ease;
 }
-.pill:hover { border-color: var(--or); color: var(--or); }
-.pill-actif { background: var(--bleu-fonce); border-color: var(--bleu-fonce); color: #fff; }
+.pill:hover { border-color: var(--bleu-fonce); background: var(--glace-pale); color: var(--bleu-nuit); }
+.pill-actif { background: var(--bleu-nuit); border-color: var(--bleu-nuit); color: #fff; }
 
 /* ---------- En-tête des pages ---------- */
 .entete-page {
-  background: linear-gradient(135deg, var(--bleu-nuit), var(--bleu));
+  background:
+    linear-gradient(180deg, rgba(12, 31, 51, .78), rgba(36, 70, 107, .78)),
+    url("../img/foret.svg") center/cover no-repeat;
   color: #fff;
 }
 .entete-page h1 { font-weight: 800; }
-.entete-page p { color: rgba(255, 255, 255, .8); }
+.entete-page p { color: rgba(255, 255, 255, .85); }
 
 /* ---------- Étapes "comment ça marche" ---------- */
 .etape {
   position: relative; width: 92px; height: 92px; margin: 0 auto;
   display: flex; align-items: center; justify-content: center;
   background: #fff; border-radius: 50%;
-  box-shadow: 0 6px 18px rgba(20, 32, 60, .1);
-  font-size: 2.2rem; color: var(--bleu);
+  box-shadow: 0 6px 18px rgba(12, 31, 51, .1);
+  font-size: 2.2rem; color: var(--bleu-fonce);
 }
 .etape span {
   position: absolute; top: -6px; right: -6px;
   width: 32px; height: 32px; border-radius: 50%;
-  background: var(--or); color: var(--bleu-nuit);
+  background: var(--bleu-nuit); color: #fff;
   font-size: .95rem; font-weight: 700;
   display: flex; align-items: center; justify-content: center;
 }
 
-/* ---------- Formulaires & pages centrées ---------- */
-/* Champ du code à 6 chiffres (connexion en deux étapes) */
-.champ-code {
+/* ---------- Carte « verre dépoli » (connexion, inscription, code) ---------- */
+.carte-auth {
+  position: relative; width: 100%; max-width: 430px;
+  background: var(--verre);
+  border: 1px solid var(--verre-bord);
+  border-radius: 20px;
+  box-shadow: 0 18px 50px rgba(8, 22, 40, .45);
+  backdrop-filter: blur(16px) saturate(1.15);
+  -webkit-backdrop-filter: blur(16px) saturate(1.15);
+  color: var(--bleu-fonce);
+}
+.titre-carte { font-weight: 800; color: var(--bleu-nuit); font-size: 1.9rem; }
+.fermer-carte {
+  position: absolute; top: 14px; right: 16px;
+  width: 34px; height: 34px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bleu-nuit); color: #fff;
+  font-size: 1.25rem; line-height: 1; text-decoration: none;
+}
+.fermer-carte:hover { color: #fff; background: var(--bleu); }
+.carte-auth .text-muted, .carte-auth .form-text { color: #33526f !important; }
+.carte-auth .form-check-input { border-color: var(--bleu-fonce); }
+.carte-auth .form-check-input:checked { background-color: var(--bleu-nuit); border-color: var(--bleu-nuit); }
+.lien-or { color: var(--bleu-fonce); font-weight: 600; text-decoration: none; }
+.lien-or:hover { text-decoration: underline; }
+
+/* Champs soulignés avec icône (comme la maquette) */
+.champ-verre { position: relative; }
+.champ-verre .form-control,
+.champ-verre .form-select {
+  background: transparent; border: none; border-bottom: 2px solid var(--bleu-fonce);
+  border-radius: 0; padding: .65rem 2.3rem .65rem .3rem;
+  color: var(--bleu-nuit); font-weight: 500;
+}
+.champ-verre .form-control::placeholder { color: #2f5073; opacity: .95; }
+.champ-verre .form-control:focus,
+.champ-verre .form-select:focus {
+  box-shadow: none; outline: 0;
+  background: rgba(255, 255, 255, .28);
+  border-bottom-color: var(--bleu-nuit);
+}
+.champ-verre > .bi {
+  position: absolute; right: .4rem; top: 50%; transform: translateY(-50%);
+  color: var(--bleu-fonce); font-size: 1.05rem; pointer-events: none;
+}
+.champ-verre .form-select { appearance: none; }
+
+/* Champ du code à 6 chiffres (connexion en deux étapes) :
+   letter-spacing espace les chiffres, text-indent identique recentre l'ensemble */
+.champ-verre .champ-code {
+  padding-left: .3rem; padding-right: .3rem;
   font-size: 1.6rem; font-weight: 700; text-align: center;
-  /* letter-spacing espace les chiffres ; text-indent identique recentre l'ensemble */
   letter-spacing: .55em; text-indent: .55em;
 }
-.carte-auth { background: #fff; border-radius: 18px; box-shadow: 0 8px 30px rgba(20, 32, 60, .09); }
-.carte-auth { background: #fff; border-radius: 18px; box-shadow: 0 8px 30px rgba(20, 32, 60, .09); }
+
 .icone-rond {
-  width: 74px; height: 74px; font-size: 2.1rem; color: var(--or);
-  background: var(--or-pale); border-radius: 50%;
+  width: 74px; height: 74px; font-size: 2.1rem; color: var(--bleu-fonce);
+  background: var(--glace-pale); border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
 }
-.lien-or { color: var(--or); font-weight: 600; text-decoration: none; }
-.lien-or:hover { text-decoration: underline; }
 .description-pre { white-space: pre-line; }
 
 /* ---------- Administration ---------- */
 .carte-stat {
   background: #fff; border-radius: 14px; padding: 1.2rem 1.4rem;
-  box-shadow: 0 4px 14px rgba(20, 32, 60, .07);
+  box-shadow: 0 4px 14px rgba(12, 31, 51, .08);
   display: flex; align-items: center; gap: 1rem; height: 100%;
 }
 .carte-stat .valeur { font-size: 2rem; font-weight: 800; color: var(--bleu-fonce); line-height: 1; }
-.carte-stat .libelle { color: #6b7484; font-size: .95rem; }
+.carte-stat .libelle { color: #5f6d7e; font-size: .95rem; }
 .carte-admin { border: none; border-radius: 14px; overflow: hidden; }
-.carte-admin thead { background: var(--bleu-fonce); color: #fff; }
+.carte-admin thead { background: var(--bleu-nuit); color: #fff; }
 .carte-admin thead th { font-weight: 600; border: none; }
 
 /* ---------- États vides & erreurs ---------- */
-.etat-vide i { font-size: 3.4rem; color: #c3cbdb; }
+.etat-vide i { font-size: 3.4rem; color: #b8c7d9; }
 .erreur-code {
-  font-size: 5.5rem; font-weight: 800; color: var(--or); line-height: 1;
-  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 5.5rem; font-weight: 800; color: var(--bleu-nuit); line-height: 1;
 }
 
 /* ---------- Pied de page ---------- */
-.footer-scipo { background: var(--bleu-nuit); color: rgba(255, 255, 255, .75); margin-top: auto; }
-.marque-footer { font-family: 'Playfair Display', Georgia, serif; font-weight: 800; color: #fff; }
-.marque-footer span { color: var(--or-clair); }
-.titre-footer { color: var(--or-clair); text-transform: uppercase; letter-spacing: 1px; font-size: .85rem; }
+.footer-scipo { background: var(--bleu-nuit); color: rgba(255, 255, 255, .78); margin-top: auto; }
+.marque-footer { font-weight: 800; color: #fff; }
+.marque-footer span { color: #9cc3e5; }
+.titre-footer { color: #9cc3e5; text-transform: uppercase; letter-spacing: 1px; font-size: .85rem; }
 .texte-footer { font-size: .93rem; }
 .liste-footer { list-style: none; padding: 0; margin: 0; }
 .liste-footer li { margin-bottom: .5rem; }
-.liste-footer a { color: rgba(255, 255, 255, .75); text-decoration: none; }
-.liste-footer a:hover { color: var(--or-clair); }
+.liste-footer a { color: rgba(255, 255, 255, .78); text-decoration: none; }
+.liste-footer a:hover { color: #fff; }
 .separateur-footer { border-color: rgba(255, 255, 255, .12); }
 
 /* ---------- Ombres utilitaires ---------- */
-.ombre-douce { box-shadow: 0 6px 20px rgba(20, 32, 60, .1); }
+.ombre-douce { box-shadow: 0 6px 20px rgba(12, 31, 51, .12); }
 
 /* ---------- Favoris, étoiles & avis ---------- */
 .btn-favori {
   border: none; background: transparent; padding: .15rem .35rem;
-  font-size: 1.15rem; line-height: 1; color: #b9c1d0;
+  font-size: 1.15rem; line-height: 1; color: #b3c3d6;
   transition: transform .15s ease, color .15s ease;
 }
 .btn-favori:hover { color: var(--or); transform: scale(1.18); }
@@ -210,14 +281,14 @@ h1, h2, .hero-titre, .titre-section, .marque { font-family: 'Playfair Display', 
 .etoile { color: var(--or); }
 
 .carte-commentaire {
-  background: #fff; border: 1px solid #e6eaf2; border-radius: 14px;
+  background: #fff; border: 1px solid #e2eaf3; border-radius: 14px;
 }
 
 /* Choix de la note : radios masqués, étiquettes cliquables (ordre inversé
    pour que le sélecteur « input:checked ~ label » allume les bonnes étoiles) */
 .choix-etoiles { display: inline-flex; flex-direction: row-reverse; gap: .2rem; }
 .choix-etoiles input { display: none; }
-.choix-etoiles label { cursor: pointer; font-size: 1.4rem; color: #c3cbdb; transition: color .15s ease; }
+.choix-etoiles label { cursor: pointer; font-size: 1.4rem; color: #c3cfdd; transition: color .15s ease; }
 .choix-etoiles input:checked ~ label,
 .choix-etoiles label:hover,
 .choix-etoiles label:hover ~ label { color: var(--or); }

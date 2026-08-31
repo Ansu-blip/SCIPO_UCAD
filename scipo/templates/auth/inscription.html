@@ -1,59 +1,62 @@
 {% extends "base.html" %}
 {% block titre %}Inscription{% endblock %}
+{% block classe_body %}page-foret{% endblock %}
 
 {% block contenu %}
-<section class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-md-6 col-lg-5">
-      <div class="carte-auth p-4 p-md-5">
-        <div class="text-center mb-4">
-          <div class="icone-rond mx-auto mb-3"><i class="bi bi-mortarboard"></i></div>
-          <h1 class="h3 mb-1">Créer un compte</h1>
-          <p class="text-muted mb-0">Gratuit, réservé aux étudiants en Science Politique de l'UCAD.</p>
-        </div>
+<section class="container">
+  <div class="carte-auth mx-auto p-4 p-md-5">
+    <a href="{{ url_for('main.index') }}" class="fermer-carte" aria-label="Fermer et revenir à l'accueil">&times;</a>
 
-        <form method="post">
-          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-          <div class="mb-3">
-            <label for="nom_complet" class="form-label">Nom complet <span class="text-muted">(optionnel)</span></label>
-            <input type="text" class="form-control" id="nom_complet" name="nom_complet"
-                   placeholder="Ex : Awa Diop" autofocus>
-          </div>
-          <div class="mb-3">
-            <label for="email" class="form-label">Votre adresse Gmail</label>
-            <input type="email" class="form-control" id="email" name="email" required
-                   pattern="[^@\s]+@gmail\.com" title="Une adresse se terminant par @gmail.com"
-                   placeholder="vous@gmail.com">
-            <div class="form-text">L'inscription se fait avec une adresse <strong>@gmail.com</strong> :
-              c'est là que vous recevrez votre code de connexion.</div>
-          </div>
-          <div class="mb-3">
-            <label for="niveau" class="form-label">Votre niveau d'étude</label>
-            <select class="form-select" id="niveau" name="niveau" required>
-              <option value="" selected>Choisissez votre niveau…</option>
-              {% for cle, nom in niveaux.items() %}
-                <option value="{{ cle }}">{{ nom }}</option>
-              {% endfor %}
-            </select>
-            <div class="form-text">Vous ne verrez que les documents de votre niveau (et ceux ouverts à tous).</div>
-          </div>
-          <div class="mb-3">
-            <label for="password" class="form-label">Mot de passe <span class="text-muted">(min. 6 caractères)</span></label>
-            <input type="password" class="form-control" id="password" name="password" required minlength="6">
-          </div>
-          <div class="mb-4">
-            <label for="password2" class="form-label">Confirmez le mot de passe</label>
-            <input type="password" class="form-control" id="password2" name="password2" required minlength="6">
-          </div>
-          <button type="submit" class="btn btn-or btn-lg w-100"><i class="bi bi-mortarboard me-2"></i>Je m'inscris</button>
-        </form>
+    <h1 class="titre-carte text-center mb-2">Inscription</h1>
+    <p class="text-center petit mb-4">Gratuit, réservé aux étudiants en Science Politique de l'UCAD.</p>
 
-        <p class="text-center mt-4 mb-0">
-          Déjà inscrit ?
-          <a href="{{ url_for('auth.connexion') }}" class="lien-or">Connectez-vous</a>
-        </p>
+    <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="champ-verre mb-3">
+        <label for="nom_complet" class="visually-hidden">Nom complet (optionnel)</label>
+        <input type="text" class="form-control" id="nom_complet" name="nom_complet"
+               placeholder="Nom complet (optionnel)" autofocus>
+        <i class="bi bi-person"></i>
       </div>
-    </div>
+      <div class="champ-verre mb-1">
+        <label for="email" class="visually-hidden">Votre adresse Gmail</label>
+        <input type="email" class="form-control" id="email" name="email" required
+               pattern="[^@\s]+@gmail\.com" title="Une adresse se terminant par @gmail.com"
+               placeholder="Email (@gmail.com)">
+        <i class="bi bi-envelope"></i>
+      </div>
+      <p class="form-text petit mb-3">C'est sur cette adresse que vous recevrez votre code de connexion.</p>
+      <div class="champ-verre mb-1">
+        <label for="niveau" class="visually-hidden">Votre niveau d'étude</label>
+        <select class="form-select" id="niveau" name="niveau" required>
+          <option value="" selected>Niveau d'étude…</option>
+          {% for cle, nom in niveaux.items() %}
+            <option value="{{ cle }}">{{ nom }}</option>
+          {% endfor %}
+        </select>
+        <i class="bi bi-mortarboard"></i>
+      </div>
+      <p class="form-text petit mb-3">Vous ne verrez que les documents de votre niveau (et ceux ouverts à tous).</p>
+      <div class="champ-verre mb-3">
+        <label for="password" class="visually-hidden">Mot de passe (min. 6 caractères)</label>
+        <input type="password" class="form-control" id="password" name="password" required minlength="6"
+               placeholder="Mot de passe (min. 6 caractères)">
+        <i class="bi bi-lock"></i>
+      </div>
+      <div class="champ-verre mb-4">
+        <label for="password2" class="visually-hidden">Confirmez le mot de passe</label>
+        <input type="password" class="form-control" id="password2" name="password2" required minlength="6"
+               placeholder="Confirmez le mot de passe">
+        <i class="bi bi-lock-fill"></i>
+      </div>
+      <button type="submit" class="btn btn-or btn-lg w-100"><i class="bi bi-mortarboard me-2"></i>Je m'inscris</button>
+    </form>
+
+    <p class="text-center mt-4 mb-0 petit">
+      Déjà inscrit ?
+      <a href="{{ url_for('auth.connexion') }}" class="lien-or fw-bold">Connectez-vous</a>
+    </p>
   </div>
 </section>
 {% endblock %}
+
