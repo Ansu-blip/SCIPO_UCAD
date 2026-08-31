@@ -11,6 +11,38 @@ _dossier_donnees = os.environ.get("SCIPO_DATA_DIR", "").strip()
 DATA_DIR = Path(_dossier_donnees).resolve() if _dossier_donnees else BASE_DIR
 
 
+def charger_smtp_conf(dossier=None):
+    """Complète l'environnement avec le fichier optionnel « smtp.conf ».
+
+    Le fichier vit dans le dossier de données (DATA_DIR/smtp.conf), donc **hors
+    du dépôt Git** : le mot de passe d'application n'est jamais versionné.
+    Une variable par ligne, au format « CLE=valeur » :
+
+        SCIPO_SMTP_HOTE=smtp.gmail.com
+        SCIPO_SMTP_PORT=587
+        SCIPO_SMTP_UTILISATEUR=votre.adresse@gmail.com
+        SCIPO_SMTP_MOT_DE_PASSE=xxxx xxxx xxxx xxxx
+        SCIPO_EMAIL_EXPEDITEUR=SciPo UCAD <votre.adresse@gmail.com>
+
+    Les variables déjà présentes dans l'environnement restent prioritaires
+    (le fichier ne fait que compléter). Généré par deploy/configurer_smtp.py.
+    """
+    fichier = (Path(dossier).resolve() if dossier else DATA_DIR) / "smtp.conf"
+    if not fichier.is_file():
+        return
+    for ligne in fichier.read_text(encoding="utf-8-sig").splitlines():
+        ligne = ligne.strip()
+        if not ligne or ligne.startswith("#") or "=" not in ligne:
+            continue
+        cle, _, valeur = ligne.partition("=")
+        cle = cle.strip()
+        if cle.startswith("SCIPO_"):
+            os.environ.setdefault(cle, valeur.strip())
+
+
+charger_smtp_conf()
+
+
 class Config:
     """Configuration centrale de l'application SciPo UCAD."""
 

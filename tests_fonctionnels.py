@@ -5,17 +5,22 @@ d'un document → recherche → téléchargement → modification → suppressio
 
 Utilisation :  python tests_fonctionnels.py
 """
+import importlib
 import io
 import os
 import re
 import shutil
 import tempfile
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
+from unittest import mock
 
+import config as module_config
 from config import Config
 from itsdangerous import URLSafeTimedSerializer
 from werkzeug.security import generate_password_hash
 
+import scipo.auth
 from scipo import _creer_admin_initial, create_app, db
 from scipo.auth import SALT_VERIFICATION
 from scipo.models import Commentaire, Resource, User
@@ -335,6 +340,63 @@ def main():
     finally:
         os.environ.pop("SCIPO_ADMIN_EMAIL", None)
         os.environ.pop("SCIPO_ADMIN_MOT_DE_PASSE", None)
+
+    # 14. Configuration SMTP par fichier « smtp.conf » (hors dépôt, ex. PythonAnywhere)
+    dossier_smtp = Path(tempfile.mkdtemp())
+    (dossier_smtp / "smtp.conf").write_text(
+        "# Config de test\n"
+        "SCIPO_SMTP_HOTE=smtp.gmail.com\n"
+        "SCIPO_SMTP_PORT=465\n"
+        "SCIPO_SMTP_UTILISATEUR=awa.test@gmail.com\n"
+        "SCIPO_SMTP_MOT_DE_PASSE=abcd efgh ijkl mnop\n"
+        "SCIPO_EMAIL_EXPEDITEUR=SciPo UCAD <awa.test@gmail.com>\n",
+        encoding="utf-8")
+    # L'environnement est restauré tel quel à la fin (même si des variables
+    # SMTP existaient déjà sur la machine qui lance les tests).
+    cles_smtp = ("SCIPO_SMTP_HOTE", "SCIPO_SMTP_PORT", "SCIPO_SMTP_UTILISATEUR",
+                 "SCIPO_SMTP_MOT_DE_PASSE", "SCIPO_EMAIL_EXPEDITEUR")
+    sauvegarde_env = {cle: os.environ.get(cle) for cle in cles_smtp}
+    os.environ["SCIPO_DATA_DIR"] = str(dossier_smtp)
+    try:
+        importlib.reload(module_config)   # relit DATA_DIR puis smtp.conf
+
+        class ConfigSMTP(module_config.Config):
+            TESTING = True
+            SQLALCHEMY_DATABASE_URI = "sqlite://"
+            SECRET_KEY = "cle-de-test"
+            ADMIN_EMAILS = {"awa.test@gmail.com"}
+
+        application = create_app(ConfigSMTP)
+        verifier("smtp.conf lu : serveur SMTP configuré",
+                 application.config["SMTP_HOTE"] == "smtp.gmail.com")
+        verifier("smtp.conf lu : port personnalisé appliqué (465)",
+                 application.config["SMTP_PORT"] == 465)
+        verifier("smtp.conf lu : mot de passe d'application conservé tel quel",
+                 application.config["SMTP_MOT_DE_PASSE"] == "abcd efgh ijkl mnop")
+        verifier("SMTP configuré ⇒ le code OTP s'active automatiquement",
+                 application.config["OTP_ACTIVE"] is True)
+
+        # Port 587 → STARTTLS ; port 465 → SSL direct (smtplib simulé : aucun réseau)
+        for port, module_serveur, starttls_attendu in ((587, "SMTP", True),
+                                                       (465, "SMTP_SSL", False)):
+            application.config["SMTP_PORT"] = port
+            with mock.patch(f"scipo.auth.smtplib.{module_serveur}") as faux_serveur:
+                instance = faux_serveur.return_value.__enter__.return_value
+                with application.app_context():
+                    scipo.auth._envoyer_email("dest@gmail.com", "Sujet", "Contenu")
+                verifier(f"Envoi sur le port {port} : connexion + login + message",
+                         faux_serveur.called
+                         and instance.starttls.called is starttls_attendu
+                         and instance.login.called and instance.send_message.called)
+    finally:
+        os.environ.pop("SCIPO_DATA_DIR", None)
+        for cle, valeur in sauvegarde_env.items():
+            if valeur is None:
+                os.environ.pop(cle, None)
+            else:
+                os.environ[cle] = valeur
+        importlib.reload(module_config)
+        shutil.rmtree(dossier_smtp, ignore_errors=True)
 
     shutil.rmtree(dossier_temporaire, ignore_errors=True)
 

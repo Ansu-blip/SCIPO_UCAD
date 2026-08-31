@@ -176,10 +176,28 @@ def _envoyer_email(destinataire, sujet, contenu):
     email["To"] = destinataire
     email["Subject"] = sujet
     email.set_content(contenu)
-    with smtplib.SMTP(current_app.config["SMTP_HOTE"], current_app.config["SMTP_PORT"]) as serveur:
-        serveur.starttls()
-        serveur.login(current_app.config["SMTP_UTILISATEUR"], current_app.config["SMTP_MOT_DE_PASSE"])
-        serveur.send_message(email)
+
+    hote = current_app.config["SMTP_HOTE"]
+    port = current_app.config["SMTP_PORT"]
+    try:
+        if port == 465:
+            # Connexion SSL directe (alternative au STARTTLS du port 587,
+            # pratique quand le réseau ou l'hébergeur filtre le port 587).
+            with smtplib.SMTP_SSL(hote, port, timeout=15) as serveur:
+                serveur.login(current_app.config["SMTP_UTILISATEUR"],
+                              current_app.config["SMTP_MOT_DE_PASSE"])
+                serveur.send_message(email)
+        else:
+            with smtplib.SMTP(hote, port, timeout=15) as serveur:
+                serveur.starttls()
+                serveur.login(current_app.config["SMTP_UTILISATEUR"],
+                              current_app.config["SMTP_MOT_DE_PASSE"])
+                serveur.send_message(email)
+    except Exception:
+        # Trace complète dans le journal (log d'erreurs PythonAnywhere inclus),
+        # puis propagation : les appelants affichent un message à l'utilisateur.
+        current_app.logger.exception("Échec de l'envoi de l'email à %s", destinataire)
+        raise
 
 
 def _envoyer_email_verification(utilisateur):

@@ -76,12 +76,34 @@ SCIPO_UCAD/
 └── uploads/                # Documents téléversés (auto)
 ```
 
-## ✉️ Emails : vérification et code de connexion (optionnel)
+## ✉️ Emails : vérification et code de connexion (OTP)
 
 Par défaut (développement), le lien de vérification et le code de connexion sont
-affichés dans la console du serveur, et la connexion se fait par simple mot de passe.
-Pour envoyer réellement les emails, définissez ces variables d'environnement avant de lancer
-le site (exemple avec Gmail, qui demande un « mot de passe d'application ») :
+affichés dans la console du serveur, et la connexion se fait par simple mot de
+passe. Dès que l'envoi d'emails (SMTP) est configuré, **la connexion demande
+automatiquement un code à 6 chiffres envoyé par email** (valable 10 minutes,
+5 tentatives maximum) — c'est pourquoi l'inscription est réservée aux adresses
+**@gmail.com**. Pour désactiver ce code : `$env:SCIPO_OTP_ACTIF = "0"`.
+
+### Avec Gmail : préparez un « mot de passe d'application »
+
+1. Activez la **validation en deux étapes** de votre compte Google
+   ([myaccount.google.com/security](https://myaccount.google.com/security)).
+2. Puis **Mots de passe d'application** → créez-en un (ex. pour « SciPo ») :
+   Google affiche 16 caractères (ex. `abcd efgh ijkl mnop`). C'est **lui** — et
+   non votre mot de passe habituel — que le site utilisera.
+
+### Configuration en une commande (PC ou PythonAnywhere)
+
+```bash
+python deploy/configurer_smtp.py          # questions/réponses → écrit smtp.conf
+python deploy/configurer_smtp.py --test   # envoie un email de test pour vérifier
+python deploy/configurer_smtp.py --voir   # affiche la configuration (masquée)
+```
+
+Le script écrit `smtp.conf` dans le dossier de données (`~/donnees-scipo` en
+ligne) : le mot de passe d'application **n'est jamais versionné dans Git**.
+Équivalent par variables d'environnement, si vous préférez :
 
 ```powershell
 $env:SCIPO_SMTP_HOTE = "smtp.gmail.com"
@@ -91,11 +113,6 @@ $env:SCIPO_SMTP_MOT_DE_PASSE = "mot-de-passe-d-application"
 $env:SCIPO_EMAIL_EXPEDITEUR = "SciPo UCAD <votre.adresse@gmail.com>"
 ```
 
-> 💡 Dès que le SMTP est configuré, **la connexion demande un code à 6 chiffres**
-> envoyé par email (valable 10 minutes, 5 tentatives maximum) — c'est pourquoi
-> l'inscription est réservée aux adresses **@gmail.com**. Pour désactiver ce code :
-> `$env:SCIPO_OTP_ACTIF = "0"`.
->
 > 🔒 L'accès à l'administration est réservé aux emails listés dans
 > `SCIPO_ADMIN_EMAILS` (séparez plusieurs adresses par des virgules) :
 >
@@ -141,6 +158,17 @@ ce projet. Deux fichiers prêts à l'emploi se trouvent dans le dossier `deploy/
    automatiquement.
 7. Cochez **Force HTTPS**, cliquez sur le bouton vert **Reload** : le site est
    en ligne sur `https://votre-nom.pythonanywhere.com` ! 🎉
+8. **Activez le code OTP (recommandé)** — dans une console Bash :
+
+   ```bash
+   cd ~/SCIPO_UCAD && git pull
+   source ~/.virtualenvs/scipo/bin/activate
+   python deploy/configurer_smtp.py          # Gmail + mot de passe d'application
+   python deploy/configurer_smtp.py --test   # vérifie l'envoi réel d'un email
+   ```
+
+   puis bouton **Reload** (onglet Web) : la connexion exigera désormais le code
+   à 6 chiffres envoyé par email, et les liens de vérification partiront réellement.
 
 > 💡 Le plan gratuit de PythonAnywhere bloque l'envoi d'emails vers les serveurs
 > SMTP non autorisés (smtp.gmail.com fait partie des serveurs autorisés).
