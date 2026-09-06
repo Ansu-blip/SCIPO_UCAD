@@ -139,8 +139,35 @@ h1, h2, h3, .hero-titre, .titre-section, .marque {
   animation: kenburns 5.2s cubic-bezier(.22, .61, .36, 1) forwards;  /* dézoom lent, dès le chargement */
 }
 
-/* Portraits du corps enseignant : garder le visage dans le cadre malgré le recadrage « cover » */
-.carrousel-accueil .diapo-portrait img { object-position: center 30%; }
+/* ----- Portraits du corps enseignant : photo plus petite, nette et claire ----- */
+.carrousel-accueil .diapo-portrait .fond-portrait {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center 30%;
+  filter: blur(16px) saturate(1.15) brightness(.5);
+  transform: scale(1.12);               /* masque les bords du flou */
+}
+.carrousel-accueil .diapo-portrait::after {
+  /* voile léger en haut, assombri seulement en bas pour lire la légende */
+  background: linear-gradient(180deg, rgba(12,31,51,.3), rgba(12,31,51,0) 38%, rgba(12,31,51,0) 55%, rgba(12,31,51,.9));
+}
+.carrousel-accueil .diapo-portrait img {
+  position: relative; z-index: 1;
+  display: block; width: auto; height: auto; min-height: 0;
+  max-width: min(76vw, 480px);
+  margin: 4.5vh auto 0;
+  aspect-ratio: 1 / 1;
+  object-fit: cover; object-position: center 30%;
+  border-radius: 16px; border: 3px solid rgba(255,255,255,.9);
+  box-shadow: 0 20px 55px rgba(4,12,24,.55);
+  transform: none; transition: none; will-change: auto;
+  animation: none !important;           /* pas d'effet Ken Burns sur le portrait */
+}
+.carrousel-accueil .diapo-portrait.diapo-paysage img {
+  aspect-ratio: 16 / 10; max-width: min(86vw, 760px); object-position: center;
+}
+.carrousel-accueil .diapo-portrait .carousel-caption {
+  text-align: center; left: 10%; right: 10%; bottom: 5%;
+}
 @keyframes kenburns {
   from { transform: scale(1.14); }
   to   { transform: scale(1); }
@@ -179,7 +206,7 @@ h1, h2, h3, .hero-titre, .titre-section, .marque {
 .carrousel-accueil .carousel-indicators [data-bs-target]:hover { background: rgba(255, 255, 255, .55); }
 .carrousel-accueil .carousel-indicators .active::after {
   content: ""; position: absolute; inset: 0; border-radius: 4px; background: #fff;
-  transform-origin: left; animation: progression 3.5s linear forwards;
+  transform-origin: left; animation: progression 2.5s linear forwards;
 }
 @keyframes progression { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
