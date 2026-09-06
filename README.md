@@ -24,8 +24,8 @@ de l'Université Cheikh Anta Diop de Dakar (UCAD)**.
 - Design académique responsive (bleu nuit & or), mobile friendly
 
 > 🖼️ Les photos du carrousel d'accueil sont **dans le projet** : `scipo/static/img/carrousel/`
-> (`diapo1.jpg` → `diapo5.jpg`). Remplacez-les par vos propres images (mêmes noms de fichiers)
-> pour personnaliser l'accueil — rien d'autre à modifier.
+> (`diapo1.jpg` → `diapo12.jpg`, dont les portraits du corps enseignant). Remplacez-les par vos
+> propres images (mêmes noms de fichiers) pour personnaliser l'accueil — rien d'autre à modifier.
 
 ## 🛠️ Technologies
 

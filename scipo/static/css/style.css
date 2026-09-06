@@ -138,6 +138,9 @@ h1, h2, h3, .hero-titre, .titre-section, .marque {
 .carrousel-accueil .carousel-item.active img {
   animation: kenburns 5.2s cubic-bezier(.22, .61, .36, 1) forwards;  /* dézoom lent, dès le chargement */
 }
+
+/* Portraits du corps enseignant : garder le visage dans le cadre malgré le recadrage « cover » */
+.carrousel-accueil .diapo-portrait img { object-position: center 30%; }
 @keyframes kenburns {
   from { transform: scale(1.14); }
   to   { transform: scale(1); }

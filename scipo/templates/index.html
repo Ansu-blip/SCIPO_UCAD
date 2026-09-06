@@ -10,6 +10,13 @@
     <button type="button" data-bs-target="#carrouselAccueil" data-bs-slide-to="2" aria-label="Diapositive 3"></button>
     <button type="button" data-bs-target="#carrouselAccueil" data-bs-slide-to="3" aria-label="Diapositive 4"></button>
     <button type="button" data-bs-target="#carrouselAccueil" data-bs-slide-to="4" aria-label="Diapositive 5"></button>
+    <button type="button" data-bs-target="#carrouselAccueil" data-bs-slide-to="5" aria-label="Diapositive 6"></button>
+    <button type="button" data-bs-target="#carrouselAccueil" data-bs-slide-to="6" aria-label="Diapositive 7"></button>
+    <button type="button" data-bs-target="#carrouselAccueil" data-bs-slide-to="7" aria-label="Diapositive 8"></button>
+    <button type="button" data-bs-target="#carrouselAccueil" data-bs-slide-to="8" aria-label="Diapositive 9"></button>
+    <button type="button" data-bs-target="#carrouselAccueil" data-bs-slide-to="9" aria-label="Diapositive 10"></button>
+    <button type="button" data-bs-target="#carrouselAccueil" data-bs-slide-to="10" aria-label="Diapositive 11"></button>
+    <button type="button" data-bs-target="#carrouselAccueil" data-bs-slide-to="11" aria-label="Diapositive 12"></button>
   </div>
   <div class="carousel-inner">
     <div class="carousel-item active" data-bs-interval="3500">
@@ -60,6 +67,64 @@
         <p class="sur-titre-diapo mb-1">Favoris, avis &amp; notes</p>
         <h2 class="titre-diapo titre-diapo-2">Organisez vos révisions et partagez vos avis</h2>
         <a href="{{ url_for('main.favoris') }}" class="btn btn-contour-clair mt-3">Voir mes favoris <i class="bi bi-arrow-right ms-1"></i></a>
+      </div>
+    </div>
+
+    <!-- ===== Portraits du corps enseignant ===== -->
+    <div class="carousel-item diapo-portrait" data-bs-interval="3500">
+      <img src="{{ url_for('static', filename='img/carrousel/diapo6.jpg') }}"
+           alt="Professeur Boubacar Kanté" loading="lazy">
+      <div class="carousel-caption">
+        <p class="sur-titre-diapo mb-1">Corps enseignant &amp; recherche</p>
+        <h2 class="titre-diapo titre-diapo-2">PROFESSEUR BOUBACAR KANTE</h2>
+      </div>
+    </div>
+    <div class="carousel-item diapo-portrait" data-bs-interval="3500">
+      <img src="{{ url_for('static', filename='img/carrousel/diapo7.jpg') }}"
+           alt="Professeure Ndèye Astou Ndiaye" loading="lazy">
+      <div class="carousel-caption">
+        <p class="sur-titre-diapo mb-1">Corps enseignant &amp; recherche</p>
+        <h2 class="titre-diapo titre-diapo-2">PROFESSEUR NDEYE ASTOU NDAIYE</h2>
+      </div>
+    </div>
+    <div class="carousel-item diapo-portrait" data-bs-interval="3500">
+      <img src="{{ url_for('static', filename='img/carrousel/diapo8.jpg') }}"
+           alt="Enseignante de la faculté" loading="lazy">
+      <div class="carousel-caption">
+        <p class="sur-titre-diapo mb-1">Corps enseignant &amp; recherche</p>
+        <h2 class="titre-diapo titre-diapo-2">Une équipe pédagogique engagée pour votre réussite</h2>
+      </div>
+    </div>
+    <div class="carousel-item" data-bs-interval="3500">
+      <img src="{{ url_for('static', filename='img/carrousel/diapo9.jpg') }}"
+           alt="Dr Jean Charles Biagui, enseignant-chercheur en sciences politiques à l'UCAD" loading="lazy">
+      <div class="carousel-caption">
+        <p class="sur-titre-diapo mb-1">Enseignant-chercheur à l'UCAD</p>
+        <h2 class="titre-diapo titre-diapo-2">DR JEAN CHARLES BIAGUI</h2>
+      </div>
+    </div>
+    <div class="carousel-item diapo-portrait" data-bs-interval="3500">
+      <img src="{{ url_for('static', filename='img/carrousel/diapo10.jpg') }}"
+           alt="Enseignant de la faculté" loading="lazy">
+      <div class="carousel-caption">
+        <p class="sur-titre-diapo mb-1">Corps enseignant &amp; recherche</p>
+        <h2 class="titre-diapo titre-diapo-2">La recherche en science politique au quotidien</h2>
+      </div>
+    </div>
+    <div class="carousel-item diapo-portrait" data-bs-interval="3500">
+      <img src="{{ url_for('static', filename='img/carrousel/diapo11.jpg') }}"
+           alt="Enseignant en tenue traditionnelle" loading="lazy">
+      <div class="carousel-caption">
+        <p class="sur-titre-diapo mb-1">Corps enseignant &amp; recherche</p>
+        <h2 class="titre-diapo titre-diapo-2">Transmettre, accompagner, inspirer</h2>
+      </div>
+    </div>
+    <div class="carousel-item diapo-portrait" data-bs-interval="3500">
+      <img src="{{ url_for('static', filename='img/carrousel/diapo12.jpg') }}"
+           alt="Enseignant en conférence" loading="lazy">
+      <div class="carousel-caption">
+        <p class="sur-titre-diapo mb-1">Corps enseignant &amp; recherche</p>
+        <h2 class="titre-diapo titre-diapo-2">Des enseignants ouverts sur le monde</h2>
       </div>
     </div>
   </div>
