@@ -24,6 +24,17 @@ CHEMIN_PROJET = Path(__file__).resolve().parent.parent
 if str(CHEMIN_PROJET) not in sys.path:
     sys.path.insert(0, str(CHEMIN_PROJET))
 
+
+def dossier_donnees():
+    """Dossier de données : variable d'environnement ou ~/donnees-scipo."""
+    dossier = os.environ.get("SCIPO_DATA_DIR", "").strip()
+    return Path(dossier) if dossier else Path.home() / "donnees-scipo"
+
+
+# Rend le dossier de données visible par config.py AVANT son import :
+# c'est dans ce dossier que vit smtp.conf (~/donnees-scipo en ligne).
+os.environ.setdefault("SCIPO_DATA_DIR", str(dossier_donnees()))
+
 from config import charger_smtp_conf  # noqa: E402
 
 MODELE = """\
@@ -37,15 +48,9 @@ SCIPO_EMAIL_EXPEDITEUR={expediteur}
 """
 
 
-def dossier_donnees():
-    """Dossier de données : variable d'environnement ou ~/donnees-scipo."""
-    dossier = os.environ.get("SCIPO_DATA_DIR", "").strip()
-    return Path(dossier) if dossier else Path.home() / "donnees-scipo"
-
-
 def charger_configuration():
     """Configuration SMTP détectée (variables d'environnement + smtp.conf)."""
-    charger_smtp_conf()
+    charger_smtp_conf(dossier_donnees())
     return {
         "hote": os.environ.get("SCIPO_SMTP_HOTE", ""),
         "port": os.environ.get("SCIPO_SMTP_PORT", "587"),
@@ -105,7 +110,12 @@ def tester():
         os.environ["SCIPO_DATA_DIR"] = str(dossier)
     configuration = charger_configuration()
     if not configuration["hote"]:
-        print("❌ Aucun SMTP configuré. Lancez d'abord : python deploy/configurer_smtp.py")
+        print(f"❌ Aucun SMTP configuré — fichier attendu : {dossier / 'smtp.conf'}")
+        print("   Lancez d'abord : python deploy/configurer_smtp.py")
+        fichier_egare = CHEMIN_PROJET / "donnees-scipo" / "smtp.conf"
+        if fichier_egare.is_file():
+            print("   ⚠️ Un smtp.conf a été trouvé DANS le projet (mauvais emplacement) :")
+            print(f'      mv "{fichier_egare}" "{dossier / "smtp.conf"}"')
         return 1
     print(f"Serveur : {configuration['hote']}:{configuration['port']}  "
           f"Utilisateur : {configuration['utilisateur']}")

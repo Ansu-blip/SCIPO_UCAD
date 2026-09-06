@@ -210,6 +210,8 @@ def _envoyer_email_verification(utilisateur):
         "Bienvenue sur Science Po UCAD ! Pour activer votre compte, cliquez sur ce lien :\n"
         f"{lien}\n\n"
         "Ce lien est valable 24 heures. À bientôt sur la plateforme !\n"
+        "💡 Vous ne voyez pas cet email ? Regardez vos dossiers « Spam » et\n"
+        "« Promotions », puis ajoutez cet expéditeur à vos contacts.\n"
         "— L'équipe Science Po UCAD",
     )
 
@@ -255,6 +257,8 @@ def _envoyer_otp(utilisateur, code):
         f"Votre code de connexion est : {code}\n\n"
         "Ce code est valable 10 minutes. Ne le partagez avec personne.\n"
         "Si vous n'êtes pas à l'origine de cette connexion, ignorez cet email.\n"
+        "💡 Vous ne voyez pas cet email ? Regardez vos dossiers « Spam » et\n"
+        "« Promotions », puis ajoutez cet expéditeur à vos contacts.\n"
         "— Science Po UCAD",
     )
 
