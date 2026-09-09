@@ -667,3 +667,5 @@ body { overflow-x: hidden; }
 .page-foret .ma-recherche,
 .page-foret .navbar-scipo .navbar-nav:last-child { display: none; }
 .page-foret .menu-principal .nav-link { padding-left: .8rem; padding-right: .8rem; }
+/* Logo seul dans la navbar (texte retiré) : légèrement plus grand */
+.logo-marque { height: 52px; }

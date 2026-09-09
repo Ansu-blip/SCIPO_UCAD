@@ -10,14 +10,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=12) }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=13) }}">
 </head>
 <body class="{% block classe_body %}{% endblock %}">
 
 <!-- ===== Barre de contact (style ESGE-SA) : modifiez vos coordonnées ici ===== -->
 <div class="barre-contact">
   <div class="container d-flex flex-wrap justify-content-center gap-4 py-2">
-    <span class="item-contact"><i class="bi bi-envelope-fill"></i> scipo.ucad@gmail.com</span>
+    <span class="item-contact"><i class="bi bi-envelope-fill"></i> sciencepo.ucad@gmail.com</span>
     <span class="item-contact"><i class="bi bi-telephone-fill"></i> +221 78 217 36 07 | +221 76 319 33 70</span>
     <span class="item-contact"><i class="bi bi-clock-fill"></i> 08h : 00 à 20h : 00</span>
   </div>
@@ -25,9 +25,8 @@
 
 <nav class="navbar navbar-expand-lg navbar-light navbar-scipo sticky-top">
   <div class="container">
-    <a class="navbar-brand marque py-0" href="{{ url_for('main.index') }}">
+    <a class="navbar-brand marque py-0" href="{{ url_for('main.index') }}" aria-label="Accueil — Science Po UCAD">
       <img src="{{ url_for('static', filename='img/sciencespo.svg') }}" alt="Science Po UCAD" class="logo-marque">
-      <span class="texte-marque">Science Po<span class="marque-ucad">UCAD</span></span>
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal"
             aria-controls="menuPrincipal" aria-expanded="false" aria-label="Ouvrir le menu">
