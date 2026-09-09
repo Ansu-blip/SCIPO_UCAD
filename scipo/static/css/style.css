@@ -440,12 +440,10 @@ h1, h2, h3, .hero-titre, .titre-section, .marque {
 
 /* ---------- En-tête des pages ---------- */
 .entete-page {
-  background: #14356f;   /* même bleu que la barre de contact : bande derrière le titre */
-  color: #fff;
-  box-shadow: 0 2px 10px rgba(12, 31, 51, .25);
+  background: transparent;   /* pas de bande : juste la couleur du texte */
 }
-.entete-page h1 { font-weight: 800; }
-.entete-page p { color: rgba(255, 255, 255, .85); }
+.entete-page h1 { font-weight: 800; color: var(--bleu-nuit); }   /* bleu de nuit */
+.entete-page p { color: var(--bleu-fonce); }
 
 /* ---------- Étapes "comment ça marche" ---------- */
 .etape {
