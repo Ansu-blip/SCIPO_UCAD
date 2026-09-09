@@ -10,18 +10,38 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=10) }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=11) }}">
 </head>
 <body class="{% block classe_body %}{% endblock %}">
 
-<nav class="navbar navbar-expand-lg navbar-dark navbar-scipo sticky-top">
+<!-- ===== Barre de contact (style ESGE-SA) : modifiez vos coordonnées ici ===== -->
+<div class="barre-contact">
+  <div class="container d-flex flex-wrap justify-content-center gap-4 py-2">
+    <span class="item-contact"><i class="bi bi-envelope-fill"></i> scipo.ucad@gmail.com</span>
+    <span class="item-contact"><i class="bi bi-telephone-fill"></i> +221 78 217 36 07 | +221 76 319 33 70</span>
+    <span class="item-contact"><i class="bi bi-clock-fill"></i> 08h : 00 à 20h : 00</span>
+  </div>
+</div>
+
+<nav class="navbar navbar-expand-lg navbar-light navbar-scipo sticky-top">
   <div class="container">
-    <a class="navbar-brand marque" href="{{ url_for('main.index') }}">Science Po<span>UCAD</span></a>
+    <a class="navbar-brand marque py-0" href="{{ url_for('main.index') }}">
+      <img src="{{ url_for('static', filename='img/sciencespo.svg') }}" alt="Science Po UCAD" class="logo-marque">
+      <span class="texte-marque">Science Po<span class="marque-ucad">UCAD</span></span>
+    </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal"
             aria-controls="menuPrincipal" aria-expanded="false" aria-label="Ouvrir le menu">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="menuPrincipal">
+      <ul class="navbar-nav align-items-lg-center mx-lg-auto menu-principal">
+        <li class="nav-item"><a class="nav-link actif" href="{{ url_for('main.index') }}">Accueil</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.cours') }}">Cours</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.td') }}">Travaux Dirigés</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.epreuves') }}">Épreuves</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.bibliotheque') }}">Bibliothèque</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.oeuvres') }}">Œuvres</a></li>
+      </ul>
       <form class="d-flex ma-recherche my-2 my-lg-0" role="search" action="{{ url_for('main.recherche') }}" method="get">
         <input class="form-control" type="search" name="q" placeholder="Rechercher un document…"
                value="{{ request.args.get('q', '') }}" aria-label="Rechercher">
@@ -44,13 +64,19 @@
             </ul>
           </li>
         {% else %}
-          <li class="nav-item ms-lg-2"><a class="btn btn-contour-clair btn-sm px-3" href="{{ url_for('auth.connexion') }}">Connexion</a></li>
+          <li class="nav-item ms-lg-2"><a class="btn btn-contour btn-sm px-3" href="{{ url_for('auth.connexion') }}">Connexion</a></li>
           <li class="nav-item ms-lg-2 my-1"><a class="btn btn-or btn-sm px-3" href="{{ url_for('auth.inscription') }}">S'inscrire</a></li>
         {% endif %}
       </ul>
     </div>
   </div>
 </nav>
+
+<!-- Onglet vertical « Contactez-nous » (comme ESGE-SA) -->
+<a class="onglet-contact" href="mailto:scipo.ucad@gmail.com">
+  <span class="texte-onglet">Contactez-nous</span>
+  <i class="bi bi-envelope-paper"></i>
+</a>
 
 {% if current_user.is_authenticated and not current_user.email_verifie %}
   <div class="container mt-3">
