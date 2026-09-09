@@ -33,9 +33,12 @@ h1, h2, h3, .hero-titre, .titre-section, .marque {
   font-weight: 800;
 }
 
-/* ---------- Pages « forêt » (connexion, inscription, code) ---------- */
+/* ---------- Pages « forêt » (connexion, inscription, code) :
+   fond baobab du campus Sciences Po UCAD ---------- */
 .page-foret {
-  background: url("../img/foret.svg") center/cover no-repeat fixed var(--bleu-nuit);
+  background:
+    linear-gradient(180deg, rgba(12, 31, 51, .58), rgba(12, 31, 51, .38)),
+    url("../img/campus-baobab.jpg") center/cover no-repeat fixed var(--bleu-nuit);
 }
 .page-foret main {
   flex: 1 0 auto;
@@ -697,4 +700,19 @@ body { overflow-x: hidden; }
   .navbar-scipo .ma-recherche { width: 100% !important; }
   .carrousel-accueil .carousel-item img { min-height: 420px; height: 62vh; }
   .titre-diapo { font-size: clamp(1.5rem, 6vw, 2.4rem); }
+}
+
+/* ============================================================
+   Fond « baobab du campus » sur les pages internes
+   (cours, travaux dirigés, épreuves, bibliothèque, œuvres)
+   — l'accueil garde son carrousel Bootstrap
+   ============================================================ */
+.page-campus {
+  background:
+    linear-gradient(180deg, rgba(238, 244, 250, .87), rgba(238, 244, 250, .93)),
+    url("../img/campus-baobab.jpg") center/cover no-repeat fixed var(--fond);
+}
+/* Sur mobile (iOS notamment) background-attachment: fixed est mal géré */
+@media (max-width: 991px) {
+  .page-campus, .page-foret { background-attachment: scroll; }
 }
