@@ -440,9 +440,9 @@ h1, h2, h3, .hero-titre, .titre-section, .marque {
 
 /* ---------- En-tête des pages ---------- */
 .entete-page {
-  background: transparent;   /* plus de bande bleue : le baobab du campus passe derrière */
+  background: #14356f;   /* même bleu que la barre de contact : bande derrière le titre */
   color: #fff;
-  text-shadow: 0 1px 3px rgba(12, 31, 51, .55), 0 0 12px rgba(12, 31, 51, .35);
+  box-shadow: 0 2px 10px rgba(12, 31, 51, .25);
 }
 .entete-page h1 { font-weight: 800; }
 .entete-page p { color: rgba(255, 255, 255, .85); }
