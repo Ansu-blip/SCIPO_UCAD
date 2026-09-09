@@ -659,17 +659,24 @@ body { overflow-x: hidden; }
 .page-foret .navbar-scipo .navbar-nav:last-child { display: none; }
 .page-foret .menu-principal .nav-link { padding-left: .8rem; padding-right: .8rem; }
 /* Logo seul dans la navbar (texte retiré) : légèrement plus grand */
-.logo-marque { height: 52px; }
+/* Logo réduit : tous les onglets (Connexion / S'inscrire) tiennent sur une ligne */
+.logo-marque {
+  height: 38px; width: auto;
+  max-width: 180px; object-fit: contain; flex-shrink: 0;
+}
 /* ============================================================
    Navbar sur une seule ligne + badge Ouvert/FermÃ© + mobile
    ============================================================ */
 @media (min-width: 992px) {
   .navbar-scipo .navbar-collapse { flex-wrap: nowrap; }
-  .menu-principal { margin-left: 1.5rem !important; margin-right: auto !important; }
-  .menu-principal .nav-link { padding-left: .7rem !important; padding-right: .7rem !important; font-size: .85rem; white-space: nowrap; }
-  .navbar-scipo .ma-recherche { width: 200px !important; margin-right: .75rem; }
-  .navbar-scipo .ma-recherche .form-control { padding-left: .8rem; }
+  .navbar-scipo .navbar-brand { flex-shrink: 0; }
+  .menu-principal { margin-left: .5rem !important; margin-right: auto !important; }
+  .menu-principal .nav-link { padding-left: .55rem !important; padding-right: .55rem !important; font-size: .8rem; white-space: nowrap; }
+  .navbar-scipo .ma-recherche { width: 165px !important; margin-right: .5rem; }
+  .navbar-scipo .ma-recherche .form-control { padding-left: .7rem; font-size: .85rem; }
   .navbar-scipo .navbar-nav:last-child { flex: none; }
+  .navbar-scipo .navbar-nav:last-child .nav-item + .nav-item { margin-left: .35rem !important; }
+  .navbar-scipo .btn-contour, .navbar-scipo .btn-or { white-space: nowrap; }
 }
 
 /* Badge Ouvert (vert) / FermÃ© (rouge) dans la barre de contact */
@@ -685,7 +692,7 @@ body { overflow-x: hidden; }
 @media (max-width: 991px) {
   .barre-contact { font-size: .8rem; }
   .barre-contact .item-contact { justify-content: center; }
-  .logo-marque { height: 40px; }
+  .logo-marque { height: 32px; max-width: 150px; }
   .menu-principal .nav-link { padding: .45rem 1rem !important; }
   .navbar-scipo .ma-recherche { width: 100% !important; }
   .carrousel-accueil .carousel-item img { min-height: 420px; height: 62vh; }
