@@ -34,11 +34,11 @@ h1, h2, h3, .hero-titre, .titre-section, .marque {
 }
 
 /* ---------- Pages « forêt » (connexion, inscription, code) :
-   fond baobab du campus Sciences Po UCAD ---------- */
+   fond baobab du campus Sciences Po UCAD, plein écran, centré et clair ---------- */
 .page-foret {
   background:
-    linear-gradient(180deg, rgba(12, 31, 51, .58), rgba(12, 31, 51, .38)),
-    url("../img/campus-baobab.jpg") center/cover no-repeat fixed var(--bleu-nuit);
+    linear-gradient(180deg, rgba(12, 31, 51, .45), rgba(12, 31, 51, .26)),
+    url("../img/campus-baobab.jpg") center center/cover no-repeat fixed var(--bleu-nuit);
 }
 .page-foret main {
   flex: 1 0 auto;
@@ -136,7 +136,7 @@ h1, h2, h3, .hero-titre, .titre-section, .marque {
   width: 100%; height: min(calc(100vh - 66px), 800px); min-height: 560px; object-fit: cover;
   transform: scale(1.14);                  /* état de base : zoomé… */
   transition: transform 1.15s ease;        /* …retour doux de l'image sortante */
-  will-change: transform; filter: saturate(1.05);
+  will-change: transform; filter: saturate(1.08) contrast(1.05);   /* photos plus nettes et lumineuses */
 }
 .carrousel-accueil .carousel-item.active img {
   animation: kenburns 5.2s cubic-bezier(.22, .61, .36, 1) forwards;  /* dézoom lent, dès le chargement */
@@ -150,8 +150,9 @@ h1, h2, h3, .hero-titre, .titre-section, .marque {
   transform: scale(1.12);               /* masque les bords du flou */
 }
 .carrousel-accueil .diapo-portrait::after {
-  /* voile léger en haut, assombri seulement en bas pour lire la légende */
-  background: linear-gradient(180deg, rgba(12,31,51,.3), rgba(12,31,51,0) 38%, rgba(12,31,51,0) 55%, rgba(12,31,51,.9));
+  /* voile très léger : les photos doivent rester claires ; assombri seulement
+     en bas pour que la légende reste lisible */
+  background: linear-gradient(180deg, rgba(12,31,51,.18), rgba(12,31,51,0) 38%, rgba(12,31,51,0) 55%, rgba(12,31,51,.72));
 }
 .carrousel-accueil .diapo-portrait img {
   position: relative; z-index: 1;
@@ -160,6 +161,7 @@ h1, h2, h3, .hero-titre, .titre-section, .marque {
   margin: 4.5vh auto 0;
   aspect-ratio: 1 / 1;
   object-fit: cover; object-position: center 30%;
+  filter: saturate(1.1) contrast(1.07);    /* rendu plus net et lumineux */
   border-radius: 16px; border: 3px solid rgba(255,255,255,.9);
   box-shadow: 0 20px 55px rgba(4,12,24,.55);
   transform: none; transition: none; will-change: auto;
@@ -177,7 +179,8 @@ h1, h2, h3, .hero-titre, .titre-section, .marque {
 }
 .carrousel-accueil .carousel-item::after {
   content: ""; position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(12, 31, 51, .82), rgba(12, 31, 51, .28) 46%, rgba(12, 31, 51, .92));
+  /* voile allégé : photos visibles et claires, assombri surtout en bas pour la légende */
+  background: linear-gradient(180deg, rgba(12, 31, 51, .42), rgba(12, 31, 51, .06) 46%, rgba(12, 31, 51, .76));
 }
 .carrousel-accueil .carousel-caption {
   z-index: 2; text-align: left;
@@ -708,9 +711,10 @@ body { overflow-x: hidden; }
    — l'accueil garde son carrousel Bootstrap
    ============================================================ */
 .page-campus {
+  /* voile très léger : le baobab reste bien visible, centré, plein écran */
   background:
-    linear-gradient(180deg, rgba(238, 244, 250, .87), rgba(238, 244, 250, .93)),
-    url("../img/campus-baobab.jpg") center/cover no-repeat fixed var(--fond);
+    linear-gradient(180deg, rgba(238, 244, 250, .28), rgba(238, 244, 250, .46)),
+    url("../img/campus-baobab.jpg") center center/cover no-repeat fixed var(--fond);
 }
 /* Sur mobile (iOS notamment) background-attachment: fixed est mal géré */
 @media (max-width: 991px) {
