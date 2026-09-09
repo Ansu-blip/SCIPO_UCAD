@@ -440,10 +440,9 @@ h1, h2, h3, .hero-titre, .titre-section, .marque {
 
 /* ---------- En-tête des pages ---------- */
 .entete-page {
-  background:
-    linear-gradient(180deg, rgba(12, 31, 51, .78), rgba(36, 70, 107, .78)),
-    url("../img/foret.svg") center/cover no-repeat;
+  background: transparent;   /* plus de bande bleue : le baobab du campus passe derrière */
   color: #fff;
+  text-shadow: 0 1px 3px rgba(12, 31, 51, .55), 0 0 12px rgba(12, 31, 51, .35);
 }
 .entete-page h1 { font-weight: 800; }
 .entete-page p { color: rgba(255, 255, 255, .85); }
@@ -545,7 +544,12 @@ h1, h2, h3, .hero-titre, .titre-section, .marque {
 }
 
 /* ---------- Pied de page ---------- */
-.footer-scipo { background: var(--bleu-nuit); color: rgba(255, 255, 255, .78); margin-top: auto; }
+.footer-scipo {
+  background: linear-gradient(180deg, rgba(12, 31, 51, .28), rgba(12, 31, 51, .45));
+  color: rgba(255, 255, 255, .92);
+  text-shadow: 0 1px 2px rgba(12, 31, 51, .55);
+  margin-top: auto;
+}
 .marque-footer { font-weight: 800; color: #fff; }
 .marque-footer span { color: #9cc3e5; }
 .titre-footer { color: #9cc3e5; text-transform: uppercase; letter-spacing: 1px; font-size: .85rem; }
