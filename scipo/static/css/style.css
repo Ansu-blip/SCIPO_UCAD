@@ -636,3 +636,34 @@ h1, h2, h3, .hero-titre, .titre-section, .marque {
   }
 }
 .navbar-scipo .navbar-collapse .nav-link.dropdown-toggle { color: var(--bleu-fonce); }
+/* ============================================================
+   Onglet latéral « Accueil » + correction du débordement
+   horizontal des pages connexion / inscription
+   ============================================================ */
+.onglet-accueil {
+  position: fixed; left: 0; top: calc(46% - 92px); z-index: 1040;
+  writing-mode: vertical-rl; transform: rotate(180deg);
+  background: #0c1f33; color: #fff; font-weight: 600; font-size: .9rem;
+  padding: 1rem .55rem; text-decoration: none;
+  border-radius: 0 10px 10px 0; box-shadow: 0 4px 14px rgba(0, 0, 0, .25);
+}
+.onglet-accueil:hover { background: #16324f; color: #fff; }
+.onglet-accueil .bi { margin-top: .6rem; }
+
+/* Sécurité anti-débordement horizontal */
+body { overflow-x: hidden; }
+.navbar-scipo .navbar-collapse { flex-wrap: wrap; }
+
+/* Écrans intermédiaires : on resserre le menu et le champ de recherche */
+@media (min-width: 992px) and (max-width: 1399px) {
+  .menu-principal .nav-link { padding-left: .55rem !important; padding-right: .6rem !important; font-size: .82rem; }
+  .navbar-scipo .ma-recherche { width: 150px !important; }
+  .navbar-scipo .ma-recherche .form-control { padding-left: .7rem; }
+}
+
+/* Pages connexion / inscription (décors « forêt ») : la navbar est flottante
+   sur le décor ; on retire recherche et boutons pour éliminer le débordement —
+   la carte propose déjà le lien vers l'autre page et l'onglet Accueil revient. */
+.page-foret .ma-recherche,
+.page-foret .navbar-scipo .navbar-nav:last-child { display: none; }
+.page-foret .menu-principal .nav-link { padding-left: .8rem; padding-right: .8rem; }

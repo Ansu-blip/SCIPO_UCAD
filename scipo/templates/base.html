@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=11) }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=12) }}">
 </head>
 <body class="{% block classe_body %}{% endblock %}">
 
@@ -71,6 +71,12 @@
     </div>
   </div>
 </nav>
+
+<!-- Onglet vertical « Accueil » (flèche de retour, comme ESGE-SA) -->
+<a class="onglet-accueil" href="{{ url_for('main.index') }}">
+  <span class="texte-onglet">Accueil</span>
+  <i class="bi bi-house-door"></i>
+</a>
 
 <!-- Onglet vertical « Contactez-nous » (comme ESGE-SA) -->
 <a class="onglet-contact" href="mailto:scipo.ucad@gmail.com">
