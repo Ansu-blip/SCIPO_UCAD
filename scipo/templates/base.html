@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=13) }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=14) }}">
 </head>
 <body class="{% block classe_body %}{% endblock %}">
 
@@ -19,7 +19,9 @@
   <div class="container d-flex flex-wrap justify-content-center gap-4 py-2">
     <span class="item-contact"><i class="bi bi-envelope-fill"></i> sciencepo.ucad@gmail.com</span>
     <span class="item-contact"><i class="bi bi-telephone-fill"></i> +221 78 217 36 07 | +221 76 319 33 70</span>
-    <span class="item-contact"><i class="bi bi-clock-fill"></i> 08h : 00 à 20h : 00</span>
+    <span class="item-contact"><i class="bi bi-clock-fill"></i> 08h : 00 à 20h : 00
+      <span id="statutOuverture" class="badge-statut" aria-live="polite">…</span>
+    </span>
   </div>
 </div>
 
@@ -71,14 +73,8 @@
   </div>
 </nav>
 
-<!-- Onglet vertical « Accueil » (flèche de retour, comme ESGE-SA) -->
-<a class="onglet-accueil" href="{{ url_for('main.index') }}">
-  <span class="texte-onglet">Accueil</span>
-  <i class="bi bi-house-door"></i>
-</a>
-
 <!-- Onglet vertical « Contactez-nous » (comme ESGE-SA) -->
-<a class="onglet-contact" href="mailto:scipo.ucad@gmail.com">
+<a class="onglet-contact" href="mailto:sciencepo.ucad@gmail.com">
   <span class="texte-onglet">Contactez-nous</span>
   <i class="bi bi-envelope-paper"></i>
 </a>
@@ -142,5 +138,17 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* Statut horaire dans la barre de contact :
+   8h00 → 19h59 : « Ouvert » (vert) — 20h00 → 7h59 : « Fermé » (rouge) */
+(() => {
+  const badge = document.getElementById('statutOuverture');
+  if (!badge) return;
+  const heure = new Date().getHours();   /* 0 → 23 */
+  const ouvert = heure >= 8 && heure < 20;
+  badge.textContent = ouvert ? 'Ouvert' : 'Fermé';
+  badge.classList.add(ouvert ? 'statut-ouvert' : 'statut-ferme');
+})();
+</script>
 </body>
 </html>

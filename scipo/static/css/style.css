@@ -640,15 +640,6 @@ h1, h2, h3, .hero-titre, .titre-section, .marque {
    Onglet latéral « Accueil » + correction du débordement
    horizontal des pages connexion / inscription
    ============================================================ */
-.onglet-accueil {
-  position: fixed; left: 0; top: calc(46% - 92px); z-index: 1040;
-  writing-mode: vertical-rl; transform: rotate(180deg);
-  background: #0c1f33; color: #fff; font-weight: 600; font-size: .9rem;
-  padding: 1rem .55rem; text-decoration: none;
-  border-radius: 0 10px 10px 0; box-shadow: 0 4px 14px rgba(0, 0, 0, .25);
-}
-.onglet-accueil:hover { background: #16324f; color: #fff; }
-.onglet-accueil .bi { margin-top: .6rem; }
 
 /* Sécurité anti-débordement horizontal */
 body { overflow-x: hidden; }
@@ -669,3 +660,34 @@ body { overflow-x: hidden; }
 .page-foret .menu-principal .nav-link { padding-left: .8rem; padding-right: .8rem; }
 /* Logo seul dans la navbar (texte retiré) : légèrement plus grand */
 .logo-marque { height: 52px; }
+/* ============================================================
+   Navbar sur une seule ligne + badge Ouvert/FermÃ© + mobile
+   ============================================================ */
+@media (min-width: 992px) {
+  .navbar-scipo .navbar-collapse { flex-wrap: nowrap; }
+  .menu-principal { margin-left: 1.5rem !important; margin-right: auto !important; }
+  .menu-principal .nav-link { padding-left: .7rem !important; padding-right: .7rem !important; font-size: .85rem; white-space: nowrap; }
+  .navbar-scipo .ma-recherche { width: 200px !important; margin-right: .75rem; }
+  .navbar-scipo .ma-recherche .form-control { padding-left: .8rem; }
+  .navbar-scipo .navbar-nav:last-child { flex: none; }
+}
+
+/* Badge Ouvert (vert) / FermÃ© (rouge) dans la barre de contact */
+.badge-statut {
+  display: inline-block; margin-left: .5rem;
+  padding: .1rem .65rem; border-radius: 999px;
+  font-size: .8rem; font-weight: 700; color: #fff;
+}
+.badge-statut.statut-ouvert { background: #1d9a4b; }
+.badge-statut.statut-ferme { background: #d62828; }
+
+/* ---------- Affichage mobile sans dÃ©formation ---------- */
+@media (max-width: 991px) {
+  .barre-contact { font-size: .8rem; }
+  .barre-contact .item-contact { justify-content: center; }
+  .logo-marque { height: 40px; }
+  .menu-principal .nav-link { padding: .45rem 1rem !important; }
+  .navbar-scipo .ma-recherche { width: 100% !important; }
+  .carrousel-accueil .carousel-item img { min-height: 420px; height: 62vh; }
+  .titre-diapo { font-size: clamp(1.5rem, 6vw, 2.4rem); }
+}
