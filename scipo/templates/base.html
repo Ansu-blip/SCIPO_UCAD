@@ -18,19 +18,29 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=23) }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=24) }}">
 </head>
 <body class="{% block classe_body %}{% endblock %}">
 
-<!-- ===== Barre de contact (style ESGE-SA) : modifiez vos coordonnées ici ===== -->
+<!-- ===== Barre de contact défilante (style pro) : seul le badge Ouvert/Fermé reste fixe ===== -->
 <div class="barre-contact">
-  <div class="container d-flex flex-wrap justify-content-center gap-4 py-2">
-    <span class="item-contact"><i class="bi bi-envelope-fill"></i> sciencepo.ucad@gmail.com</span>
-    <span class="item-contact"><i class="bi bi-telephone-fill"></i> +221 78 217 36 07 | +221 76 319 33 70</span>
-    <span class="item-contact"><i class="bi bi-clock-fill"></i> 08h : 00 à 20h : 00
-      <span id="statutOuverture" class="badge-statut" aria-live="polite">…</span>
-    </span>
+  <div class="conteneur-ticker py-2">
+    <div class="piste-ticker">
+      <!-- Groupe 1 : les infos qui défilent -->
+      <span class="groupe-ticker">
+        <span class="item-contact"><i class="bi bi-envelope-fill"></i> sciencepo.ucad@gmail.com</span>
+        <span class="item-contact"><i class="bi bi-telephone-fill"></i> +221 78 217 36 07 | +221 76 319 33 70</span>
+        <span class="item-contact"><i class="bi bi-clock-fill"></i> 08h : 00 à 20h : 00</span>
+      </span>
+      <!-- Groupe 2 : copie exacte pour une boucle sans à-coups -->
+      <span class="groupe-ticker" aria-hidden="true">
+        <span class="item-contact"><i class="bi bi-envelope-fill"></i> sciencepo.ucad@gmail.com</span>
+        <span class="item-contact"><i class="bi bi-telephone-fill"></i> +221 78 217 36 07 | +221 76 319 33 70</span>
+        <span class="item-contact"><i class="bi bi-clock-fill"></i> 08h : 00 à 20h : 00</span>
+      </span>
+    </div>
   </div>
+  <span id="statutOuverture" class="badge-statut statut-fixe" aria-live="polite">…</span>
 </div>
 
 <nav class="navbar navbar-expand-lg navbar-light navbar-scipo sticky-top">

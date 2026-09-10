@@ -829,3 +829,35 @@ body { overflow-x: hidden; }
   .stat-carte { padding: 1.15rem .6rem 1rem; }
   .stat-carte .stat-nombre { font-size: 1.8rem; }
 }
+
+/* ============================================================
+   Barre de contact défilante (ticker) — infos en défilement
+   continu, badge « Ouvert / Fermé » fixe à droite
+   ============================================================ */
+.barre-contact { position: relative; }
+.conteneur-ticker {
+  overflow: hidden; min-width: 0;
+  padding-right: 160px;   /* place pour le badge fixe à droite */
+}
+.piste-ticker {
+  display: inline-flex; white-space: nowrap; will-change: transform;
+  animation: defiler-contact 26s linear infinite;
+}
+/* Pause propre quand la souris passe dessus */
+.barre-contact:hover .piste-ticker { animation-play-state: paused; }
+.groupe-ticker { display: inline-flex; gap: 2.5rem; padding-right: 2.5rem; }
+@keyframes defiler-contact {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }   /* -50% = un groupe exactement : boucle parfaite */
+}
+@media (prefers-reduced-motion: reduce) {
+  .piste-ticker { animation: none; }
+}
+.statut-fixe {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  z-index: 2; margin-left: 0;
+}
+@media (max-width: 991px) {
+  .conteneur-ticker { padding-right: 122px; }
+  .groupe-ticker { gap: 1.6rem; padding-right: 1.6rem; }
+}
