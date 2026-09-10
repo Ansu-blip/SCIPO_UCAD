@@ -164,7 +164,8 @@
   </aside>
 </div>
 
-<!-- ============ LA PLATEFORME EN CHIFFRES ============ -->
+<!-- ============ LA PLATEFORME EN CHIFFRES (réservé à l'administrateur) ============ -->
+{% if current_user.is_authenticated and current_user.is_admin %}
 <section class="section-chiffres py-5" aria-label="La plateforme en chiffres">
   <div class="container">
     <div class="row g-4 justify-content-center">
@@ -199,6 +200,7 @@
     </div>
   </div>
 </section>
+{% endif %}
 
 <!-- ============ RUBRIQUES DU NIVEAU CHOISI (centrées et élargies) ============ -->
 <section id="niveaux" class="section-niveaux py-5">
