@@ -5,7 +5,7 @@ from flask_login import current_user, login_required
 from sqlalchemy import func
 
 from scipo import db
-from scipo.models import LEVELS, Commentaire, Favori, Resource
+from scipo.models import LEVELS, Commentaire, Favori, Resource, User
 
 main = Blueprint("main", __name__)
 
@@ -90,8 +90,18 @@ def index():
     totaux = {cle: sum(par_niveau[cle].get(cat, 0) for cat in categories_rubriques)
               for cle in LEVELS}
 
+    # Chiffres réels de la plateforme (bandeau « La plateforme en chiffres »)
+    stats = {
+        "documents": visibles.count(),
+        "telechargements": visibles.with_entities(
+            func.coalesce(func.sum(Resource.telechargements), 0)).scalar() or 0,
+        "membres": db.session.query(User).count(),
+        "niveaux": len(LEVELS),
+    }
+
     return render_template("index.html", par_niveau=par_niveau, totaux=totaux,
-                           niveaux=list(LEVELS.items()), rubriques=RUBRIQUES_NIVEAU)
+                           niveaux=list(LEVELS.items()), rubriques=RUBRIQUES_NIVEAU,
+                           stats=stats)
 
 
 @main.route("/cours")

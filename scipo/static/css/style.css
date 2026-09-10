@@ -727,3 +727,105 @@ body { overflow-x: hidden; }
 @media (max-width: 991px) {
   .page-campus, .page-foret { background-attachment: scroll; }
 }
+
+/* ============================================================
+   PACK « EFFET WOW » — chiffres animés, apparitions au scroll,
+   FAQ, témoignages, retour en haut, finitions navbar/cartes
+   ============================================================ */
+
+/* ---------- Apparition au scroll (classe .js posée par le head) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .js .reveal {
+    opacity: 0; transform: translateY(26px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .js .reveal.visible { opacity: 1; transform: none; }
+}
+
+/* ---------- La plateforme en chiffres ---------- */
+.stat-carte {
+  background: #fff; border-radius: 16px; height: 100%;
+  padding: 1.6rem 1rem 1.4rem; text-align: center;
+  border-top: 3px solid var(--or);
+  box-shadow: 0 6px 18px rgba(12, 31, 51, .08);
+}
+.stat-carte .stat-icone { font-size: 1.7rem; color: var(--bleu-clair); }
+.stat-carte .stat-nombre {
+  display: block; font-size: 2.3rem; font-weight: 800;
+  color: var(--bleu-nuit); line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+.stat-carte .stat-libelle {
+  display: block; font-size: .82rem; font-weight: 600;
+  letter-spacing: .5px; text-transform: uppercase; color: #5f6d7e;
+}
+
+/* ---------- FAQ (accordéon Bootstrap personnalisé) ---------- */
+.accordions-faq .accordion-item {
+  border: none; border-radius: 14px !important; overflow: hidden;
+  box-shadow: 0 4px 14px rgba(12, 31, 51, .07); margin-bottom: .8rem;
+}
+.accordions-faq .accordion-button {
+  font-weight: 700; color: var(--bleu-nuit);
+  background: #fff; padding: 1.05rem 1.25rem;
+}
+.accordions-faq .accordion-button:not(.collapsed) {
+  background: var(--glace-pale); color: var(--bleu-nuit); box-shadow: none;
+}
+.accordions-faq .accordion-button:focus { box-shadow: 0 0 0 3px rgba(53, 96, 141, .18); }
+.accordions-faq .accordion-body { background: #fff; color: #44566a; font-size: .97rem; }
+
+/* ---------- Témoignages étudiants ---------- */
+.temoignage {
+  position: relative; margin: 0; height: 100%;
+  background: #fff; border-radius: 16px; border-top: 3px solid var(--bleu-clair);
+  padding: 2.2rem 1.6rem 1.6rem;
+  box-shadow: 0 6px 18px rgba(12, 31, 51, .08);
+}
+.temoignage > .bi {
+  position: absolute; top: -19px; left: 1.4rem;
+  font-size: 2.2rem; color: var(--or);
+  background: #fff; border-radius: 50%; padding: 0 .25rem;
+}
+.temoignage blockquote { margin: 0 0 1.1rem; font-size: .98rem; font-style: italic; color: #3d4f61; }
+.temoignage figcaption { display: flex; align-items: center; gap: .7rem; }
+.avatar-temoignage {
+  width: 44px; height: 44px; border-radius: 50%; flex: none;
+  background: var(--bleu-nuit); color: #fff;
+  font-weight: 700; font-size: .95rem;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.temoignage figcaption strong { display: block; color: var(--bleu-nuit); font-size: .95rem; }
+.temoignage figcaption small { color: #6b7a89; }
+
+/* ---------- Bouton « retour en haut » ---------- */
+.btn-haut {
+  position: fixed; right: 18px; bottom: 18px; z-index: 1050;
+  width: 46px; height: 46px; border-radius: 50%; border: none;
+  background: var(--bleu-nuit); color: #fff; font-size: 1.15rem;
+  box-shadow: 0 8px 20px rgba(12, 31, 51, .3);
+  opacity: 0; visibility: hidden; transform: translateY(14px);
+  transition: opacity .3s ease, transform .3s ease, visibility .3s;
+}
+.btn-haut.montre { opacity: 1; visibility: visible; transform: none; }
+.btn-haut:hover { background: var(--bleu); color: #fff; }
+
+/* ---------- Navbar : soulignement doré animé ---------- */
+.menu-principal .nav-link { position: relative; }
+.menu-principal .nav-link::after {
+  content: ""; position: absolute; left: 50%; bottom: 2px;
+  width: 0; height: 2.5px; border-radius: 2px;
+  background: var(--or); transform: translateX(-50%);
+  transition: width .28s ease;
+}
+.menu-principal .nav-link:hover::after,
+.menu-principal .nav-link.actif::after { width: 60%; }
+
+/* ---------- Zoom doux des cartes documents ---------- */
+.carte-ressource:hover { transform: translateY(-4px) scale(1.015); }
+
+/* ---------- Mobile : chiffres un peu plus compacts ---------- */
+@media (max-width: 575.98px) {
+  .stat-carte { padding: 1.15rem .6rem 1rem; }
+  .stat-carte .stat-nombre { font-size: 1.8rem; }
+}

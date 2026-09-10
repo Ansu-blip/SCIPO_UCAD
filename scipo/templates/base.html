@@ -5,12 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Science Po UCAD — Plateforme de ressources pour les étudiants en Science Politique de l'Université Cheikh Anta Diop de Dakar.">
   <title>{% block titre %}Accueil{% endblock %} · Science Po UCAD</title>
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/sciencespo.svg') }}">
+  <meta name="theme-color" content="#0c1f33">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Science Po UCAD">
+  <meta property="og:title" content="Science Po UCAD — La bibliothèque des étudiants en Science Politique">
+  <meta property="og:description" content="Cours, TD, épreuves anciennes et œuvres de référence pour la communauté Science Po de l'UCAD. Accès gratuit.">
+  <meta property="og:image" content="{{ url_for('static', filename='img/carrousel/diapo1.jpg', _external=True) }}">
+  <script>document.documentElement.classList.add('js');</script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=22) }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=23) }}">
 </head>
 <body class="{% block classe_body %}{% endblock %}">
 
@@ -137,6 +145,11 @@
   </div>
 </footer>
 
+<!-- Bouton « retour en haut » (apparaît après avoir scrollé) -->
+<button id="btnHaut" class="btn-haut" type="button" aria-label="Retour en haut de page">
+  <i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 /* Statut horaire dans la barre de contact :
@@ -148,6 +161,39 @@
   const ouvert = heure >= 8 && heure < 20;
   badge.textContent = ouvert ? 'Ouvert' : 'Fermé';
   badge.classList.add(ouvert ? 'statut-ouvert' : 'statut-ferme');
+})();
+
+/* Apparitions au scroll : tout élément .reveal glisse en fondu quand il entre à l'écran */
+(() => {
+  const elements = document.querySelectorAll('.reveal');
+  if (!elements.length) return;
+  const reduire = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduire || !('IntersectionObserver' in window)) {
+    elements.forEach((el) => el.classList.add('visible'));
+    return;
+  }
+  const observateur = new IntersectionObserver((entrees) => {
+    entrees.forEach((entree) => {
+      if (!entree.isIntersecting) return;
+      const el = entree.target;
+      const freres = [...(el.parentElement ? el.parentElement.children : [])]
+        .filter((c) => c.classList && c.classList.contains('reveal'));
+      el.style.transitionDelay = `${Math.min(freres.indexOf(el), 6) * 70}ms`;
+      el.classList.add('visible');
+      observateur.unobserve(el);
+    });
+  }, { threshold: .15 });
+  elements.forEach((el) => observateur.observe(el));
+})();
+
+/* Bouton « retour en haut » : visible après 420 px de défilement */
+(() => {
+  const bouton = document.getElementById('btnHaut');
+  if (!bouton) return;
+  const basculer = () => bouton.classList.toggle('montre', window.scrollY > 420);
+  window.addEventListener('scroll', basculer, { passive: true });
+  basculer();
+  bouton.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 })();
 </script>
 </body>

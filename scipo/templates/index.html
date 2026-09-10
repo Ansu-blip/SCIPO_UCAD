@@ -164,6 +164,42 @@
   </aside>
 </div>
 
+<!-- ============ LA PLATEFORME EN CHIFFRES ============ -->
+<section class="section-chiffres py-5" aria-label="La plateforme en chiffres">
+  <div class="container">
+    <div class="row g-4 justify-content-center">
+      <div class="col-6 col-lg-3 reveal">
+        <div class="stat-carte">
+          <i class="bi bi-files stat-icone"></i>
+          <span class="stat-nombre" data-cible="{{ stats.documents }}">{{ stats.documents }}</span>
+          <span class="stat-libelle">Documents disponibles</span>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3 reveal">
+        <div class="stat-carte">
+          <i class="bi bi-download stat-icone"></i>
+          <span class="stat-nombre" data-cible="{{ stats.telechargements }}">{{ stats.telechargements }}</span>
+          <span class="stat-libelle">Téléchargements</span>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3 reveal">
+        <div class="stat-carte">
+          <i class="bi bi-people-fill stat-icone"></i>
+          <span class="stat-nombre" data-cible="{{ stats.membres }}">{{ stats.membres }}</span>
+          <span class="stat-libelle">Membres inscrits</span>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3 reveal">
+        <div class="stat-carte">
+          <i class="bi bi-mortarboard-fill stat-icone"></i>
+          <span class="stat-nombre" data-cible="{{ stats.niveaux }}">{{ stats.niveaux }}</span>
+          <span class="stat-libelle">Niveaux (L1 → M1)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ RUBRIQUES DU NIVEAU CHOISI (centrées et élargies) ============ -->
 <section id="niveaux" class="section-niveaux py-5">
   <div class="container conteneur-niveaux">
@@ -171,14 +207,14 @@
 
       {% for cle, nom in niveaux %}
         <div class="tab-pane fade {{ 'show active' if loop.first }}" id="niveau-{{ cle }}" role="tabpanel" aria-label="{{ nom }}">
-          <header class="entete-niveau text-center">
+          <header class="entete-niveau text-center reveal">
             <p class="sur-titre-niveau">Niveau sélectionné</p>
             <h2 class="titre-niveau">{{ nom }}</h2>
             <p class="sous-titre-niveau">Tout votre niveau réuni : cours, travaux dirigés, épreuves anciennes et œuvres.</p>
           </header>
           <div class="grille-rubriques">
             {% for endpoint, categorie, rubrique, icone in rubriques %}
-              <a href="{{ url_for(endpoint, niveau=cle) }}" class="carte-rubrique">
+              <a href="{{ url_for(endpoint, niveau=cle) }}" class="carte-rubrique reveal">
                 <div class="icone-rubrique"><i class="bi {{ icone }}"></i></div>
                 <h3>{{ rubrique }}</h3>
                 <p>{{ par_niveau[cle].get(categorie, 0) }} document(s)</p>
@@ -198,23 +234,186 @@
     <p class="text-muted">Trois étapes suffisent pour accéder à toutes les ressources.</p>
   </div>
   <div class="row g-4">
-    <div class="col-md-4 text-center">
+    <div class="col-md-4 text-center reveal">
       <div class="etape"><span>1</span><i class="bi bi-person-plus"></i></div>
       <h3 class="h5 mt-3">Créez votre compte</h3>
       <p class="text-muted">Inscription gratuite avec votre adresse Gmail, en moins d'une minute.</p>
     </div>
-    <div class="col-md-4 text-center">
+    <div class="col-md-4 text-center reveal">
       <div class="etape"><span>2</span><i class="bi bi-search"></i></div>
       <h3 class="h5 mt-3">Trouvez vos documents</h3>
       <p class="text-muted">Parcourez par rubrique et par niveau, ou utilisez la recherche.</p>
     </div>
-    <div class="col-md-4 text-center">
+    <div class="col-md-4 text-center reveal">
       <div class="etape"><span>3</span><i class="bi bi-download"></i></div>
       <h3 class="h5 mt-3">Téléchargez librement</h3>
       <p class="text-muted">Cours, TD et livres disponibles en téléchargement immédiat.</p>
     </div>
   </div>
 </section>
+
+<!-- ============ QUESTIONS FRÉQUENTES ============ -->
+<section class="section-faq py-5" aria-label="Questions fréquentes">
+  <div class="container" style="max-width: 860px;">
+    <div class="text-center mb-4 reveal">
+      <h2 class="titre-section">Questions fréquentes</h2>
+      <p class="text-muted">Tout ce qu'il faut savoir avant de commencer.</p>
+    </div>
+    <div class="accordion accordions-faq reveal" id="faqAccueil">
+      <div class="accordion-item">
+        <h3 class="accordion-header">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1"
+                  aria-expanded="true" aria-controls="faq1">
+            L'inscription est-elle vraiment gratuite ?
+          </button>
+        </h3>
+        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccueil">
+          <div class="accordion-body">
+            Oui, à 100 %. La plateforme est un projet étudiant au service de la communauté Science Po de
+            l'UCAD : aucune cotisation, aucun paiement, aucun document payant.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h3 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2"
+                  aria-expanded="false" aria-controls="faq2">
+            Qui peut créer un compte ?
+          </button>
+        </h3>
+        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccueil">
+          <div class="accordion-body">
+            Tous les étudiants en Science Politique de l'Université Cheikh Anta Diop de Dakar, de la
+            Licence 1 au Master 1. Une adresse Gmail suffit pour s'inscrire en moins d'une minute.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h3 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3"
+                  aria-expanded="false" aria-controls="faq3">
+            Comment télécharger un document ?
+          </button>
+        </h3>
+        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccueil">
+          <div class="accordion-body">
+            Connectez-vous, choisissez votre niveau puis votre rubrique (Cours, TD, Épreuves, Œuvres),
+            ouvrez le document avec « Voir » et cliquez sur le bouton de téléchargement. C'est immédiat.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h3 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4"
+                  aria-expanded="false" aria-controls="faq4">
+            Pourquoi ne vois-je pas tous les documents ?
+          </button>
+        </h3>
+        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccueil">
+          <div class="accordion-body">
+            Chaque étudiant voit les documents de son niveau ainsi que ceux ouverts à tous les niveaux.
+            La bibliothèque est enrichie en continu : revenez régulièrement, de nouveaux supports
+            sont ajoutés chaque semaine.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h3 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5"
+                  aria-expanded="false" aria-controls="faq5">
+            Comment contacter l'équipe ?
+          </button>
+        </h3>
+        <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccueil">
+          <div class="accordion-body">
+            Par email à <strong>sciencepo.ucad@gmail.com</strong>, via l'onglet violet « Contactez-nous »
+            ou par téléphone au +221 78 217 36 07 / +221 76 319 33 70 (de 8h à 20h).
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="text-center mt-4 reveal">
+      <a href="{{ url_for('auth.inscription') }}" class="btn btn-or btn-lg px-4">
+        <i class="bi bi-person-plus me-2"></i>Créer mon compte gratuitement
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TÉMOIGNAGES ÉTUDIANTS ============ -->
+<section class="section-temoignages py-5" aria-label="Témoignages d'étudiants">
+  <div class="container">
+    <div class="text-center mb-5 reveal">
+      <h2 class="titre-section">Ils utilisent la plateforme</h2>
+      <p class="text-muted">Ce qu'en disent quelques étudiants.</p>
+    </div>
+    <div class="row g-4 justify-content-center">
+      <div class="col-md-4 reveal">
+        <figure class="temoignage">
+          <i class="bi bi-quote" aria-hidden="true"></i>
+          <blockquote>« Enfin tous nos cours et TD réunis au même endroit. Fini les groupes WhatsApp où
+            l'on cherche un document pendant des heures. »</blockquote>
+          <figcaption>
+            <span class="avatar-temoignage" aria-hidden="true">AM</span>
+            <span><strong>Awa M.</strong><small>Licence 2</small></span>
+          </figcaption>
+        </figure>
+      </div>
+      <div class="col-md-4 reveal">
+        <figure class="temoignage">
+          <i class="bi bi-quote" aria-hidden="true"></i>
+          <blockquote>« Les épreuves anciennes m'ont beaucoup aidé à préparer mes examens en conditions
+            réelles. Une vraie mine d'or pour les révisions. »</blockquote>
+          <figcaption>
+            <span class="avatar-temoignage" aria-hidden="true">MD</span>
+            <span><strong>Moussa D.</strong><small>Master 1</small></span>
+          </figcaption>
+        </figure>
+      </div>
+      <div class="col-md-4 reveal">
+        <figure class="temoignage">
+          <i class="bi bi-quote" aria-hidden="true"></i>
+          <blockquote>« Simple, clair et gratuit. Je me connecte depuis mon téléphone avant chaque
+            séance de TD et je télécharge ce dont j'ai besoin. »</blockquote>
+          <figcaption>
+            <span class="avatar-temoignage" aria-hidden="true">FS</span>
+            <span><strong>Fatou S.</strong><small>Licence 1</small></span>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+/* Compteurs animés du bandeau « La plateforme en chiffres » :
+   le nombre défile de 0 à sa valeur réelle quand il entre à l'écran. */
+(() => {
+  const nombres = document.querySelectorAll('.stat-nombre');
+  if (!nombres.length) return;
+  const reduire = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const animer = (el) => {
+    const cible = parseInt(el.dataset.cible || '0', 10);
+    if (reduire) { el.textContent = cible.toLocaleString('fr-FR'); return; }
+    const duree = 1400, debut = performance.now();
+    const tic = (t) => {
+      const progression = Math.min((t - debut) / duree, 1);
+      el.textContent = Math.round(cible * (1 - Math.pow(1 - progression, 3))).toLocaleString('fr-FR');
+      if (progression < 1) requestAnimationFrame(tic);
+    };
+    requestAnimationFrame(tic);
+  };
+
+  if (!('IntersectionObserver' in window)) { nombres.forEach(animer); return; }
+  const observateur = new IntersectionObserver((entrees) => {
+    entrees.forEach((entree) => {
+      if (entree.isIntersecting) { animer(entree.target); observateur.unobserve(entree.target); }
+    });
+  }, { threshold: .4 });
+  nombres.forEach((n) => observateur.observe(n));
+})();
+</script>
 
 <script>
 (() => {
