@@ -443,7 +443,17 @@ h1, h2, h3, .hero-titre, .titre-section, .marque {
   background: transparent;   /* pas de bande : juste la couleur du texte */
 }
 .entete-page h1 { font-weight: 800; color: var(--bleu-nuit); }   /* bleu de nuit */
-.entete-page p { color: var(--bleu-fonce); }
+/* Sous-titre : bande bleue qui épouse le texte (comme la barre de contact) */
+.entete-page p {
+  display: inline;
+  background: #14356f;
+  color: #fff;
+  padding: .4rem .85rem;
+  border-radius: 8px;
+  line-height: 2.1;   /* chaque ligne du texte a sa propre bande */
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
 
 /* ---------- Étapes "comment ça marche" ---------- */
 .etape {
